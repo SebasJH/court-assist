@@ -13,12 +13,37 @@
       </div>
 
       <div class="form-group">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Categorie</label>
-        <select v-model="form.category" class="form-input">
-          <option disabled value="">Kies categorie...</option>
-          <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
-        </select>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Categorieën</label>
+
+        <!-- Geselecteerde categorieën -->
+        <div class="flex flex-wrap gap-2 mb-2">
+    <span
+        v-for="cat in form.category"
+        :key="cat"
+        class="bg-blue-500 text-white px-2 py-1 rounded-full flex items-center gap-1"
+    >
+      {{ cat }}
+      <button type="button" @click="removeCategory(cat)" class="ml-1 font-bold">×</button>
+    </span>
+        </div>
+
+        <!-- Lijst met opties -->
+        <div class="flex flex-wrap gap-2">
+          <button
+              v-for="c in categories"
+              :key="c"
+              type="button"
+              @click="addCategory(c)"
+              :class="form.category.includes(c) ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-gray-100 hover:bg-blue-100 text-gray-800'"
+              class="px-2 py-1 rounded"
+              :disabled="form.category.includes(c)"
+          >
+            {{ c }}
+          </button>
+        </div>
       </div>
+
+
 
       <div class="form-group md:col-span-2">
         <label class="block text-sm font-medium text-gray-700 mb-1">Korte uitleg</label>
@@ -124,21 +149,21 @@
 </template>
 
 <script>
-import {ref, reactive, watch} from 'vue'
+import { ref, reactive, watch } from 'vue'
 import store from '../store'
 
 export default {
   props: {
-    initial: {type: Object, default: null},
-    categories: {type: Array, default: () => []} // 👈 categorieën meegeven
+    initial: { type: Object, default: null },
+    categories: { type: Array, default: () => [] } // categorieën meegeven
   },
-  setup(props, {emit}) {
+  setup(props, { emit }) {
     const emptyForm = () => ({
       id: null,
       name: '',
       short: '',
       full: '',
-      category: '',
+      category: [], // 👈 array ipv string
       minPlayers: 1,
       maxPlayers: null,
       intensity: 3,
@@ -153,22 +178,40 @@ export default {
     // Wanneer je iets opent om te editen, of nieuwe oefening maakt
     watch(() => props.initial, (v) => {
       if (v) {
-        Object.assign(form, v)
+        // Als initial.category een string is, zet naar array
+        const initialData = { ...v }
+        if (initialData.category && !Array.isArray(initialData.category)) {
+          initialData.category = [initialData.category]
+        }
+        Object.assign(form, initialData)
       } else {
         Object.assign(form, emptyForm())
       }
-    }, {immediate: true})
+    }, { immediate: true })
+
+    function addCategory(c) {
+      if (!form.category.includes(c)) {
+        form.category.push(c)
+      }
+    }
+
+    function removeCategory(c) {
+      const index = form.category.indexOf(c)
+      if (index > -1) {
+        form.category.splice(index, 1)
+      }
+    }
 
     function save() {
-      const payload = {...form}
+      const payload = { ...form }
 
       // basis validatie
       if (!payload.name) {
         alert('Naam is verplicht')
         return
       }
-      if (!payload.category) {
-        alert('Categorie is verplicht')
+      if (!payload.category.length) {
+        alert('Kies minstens één categorie')
         return
       }
 
@@ -184,11 +227,14 @@ export default {
       form,
       imageToAdd,
       save,
-      categories: props.categories
+      categories: props.categories,
+      addCategory,
+      removeCategory
     }
   }
 }
 </script>
+
 
 
 <style scoped>
