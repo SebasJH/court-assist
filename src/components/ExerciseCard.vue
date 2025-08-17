@@ -24,20 +24,26 @@
       <div class="exercise-details ">
         <div class="text-sm text-gray-600">{{ exercise.short }}</div>
 
-        <div class="flex flex-wrap items-center gap-x-1 mt-1">
+        <div class="flex flex-wrap items-center gap-x-2 mt-1">
           <div class="exercise-players text-sm text-gray-600 flex items-center gap-1">
-            <Users class="w-4 h-4" />
-            {{ exercise.players }}p
+            <Users class="h-4 w-fit" />
+            <div>
+              {{ exercise.minPlayers }}<span v-if="exercise.maxPlayers">-{{ exercise.maxPlayers }}</span>
+            </div>
           </div>
 
           <div class="exercise-duration text-sm text-gray-600 flex items-center gap-1">
-            <TimerReset class="w-4 h-4" />
-            {{ exercise.minutes }}min
+            <TimerReset class="h-4 w-fit" />
+            <div>
+              {{ exercise.minutes }}min
+            </div>
           </div>
 
           <div class="exercise-intensity text-sm text-gray-600 flex items-center gap-1">
-            <Zap class="w-4 h-4" />
+            <Zap class="h-4 w-fit" />
+            <div>
             {{ exercise.intensity }}/5
+            </div>
           </div>
         </div>
       </div>

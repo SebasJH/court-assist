@@ -91,11 +91,5 @@ export default {
 </script>
 
 <style scoped>
-.form-input {
-  @apply px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200;
-}
 
-.exercise-card {
-  @apply bg-white rounded-lg shadow-sm p-4 border border-gray-200 hover:shadow-md transition-shadow duration-200;
-}
 </style>

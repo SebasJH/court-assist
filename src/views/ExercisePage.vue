@@ -38,18 +38,26 @@
       />
     </div>
 
-    <exercise-form v-if="showForm" :initial="editItem" @close="closeForm" @save="onSave" />
+    <modal v-if="showForm" @close="closeForm">
+      <exercise-form
+          :initial="editItem"
+          :categories="categories"
+          @close="closeForm"
+          @save="onSave"
+      />
+    </modal>
   </div>
 </template>
 
 <script>
 import ExerciseCard from '../components/ExerciseCard.vue'
 import ExerciseForm from '../components/ExerciseForm.vue'
+import Modal from '../components/Modal.vue'
 import store from '../store'
 import { ref, computed } from 'vue'
 
 export default {
-  components: { ExerciseCard, ExerciseForm },
+  components: { ExerciseCard, ExerciseForm, Modal },
   setup() {
     const q = ref('')
     const filter = ref({ category: '', players: 0, intensity: 5 })
@@ -81,11 +89,35 @@ export default {
       })
     })
 
-    // seed some sample data if empty
-    if (store.state.exercises.length===0){
-      store.addExercise({ name:'Spot shooting 45', short:'Dribbel door 6 pylonen', full:'Volledige uitleg...','category':'Schieten', players:4, intensity:3, minutes:5, images:[], video:'' })
-      store.addExercise({ name:'1v1 verdediging', short:'1 tegen 1 oefening', full:'Volledige uitleg...','category':'Verdedigen', players:2, intensity:4, minutes:6, images:[], video:'' })
+    // Sample data if empty
+    if (store.state.exercises.length === 0) {
+      store.addExercise({
+        name: 'Spot shooting 45',
+        short: 'Dribbel door 6 pylonen',
+        full: 'Volledige uitleg...',
+        category: 'Schieten',
+        minPlayers: 2,       // minimum aantal spelers
+        maxPlayers: 4,       // maximum aantal spelers
+        intensity: 3,
+        minutes: 5,
+        images: [],
+        video: ''
+      })
+
+      store.addExercise({
+        name: '1v1 verdediging',
+        short: '1 tegen 1 oefening',
+        full: 'Volledige uitleg...',
+        category: 'Verdedigen',
+        minPlayers: 2,       // minimum aantal spelers
+        maxPlayers: null,    // optioneel, geen max
+        intensity: 4,
+        minutes: 6,
+        images: [],
+        video: ''
+      })
     }
+
 
     return { q, filter:filter.value, categories, filtered, openForm, showForm, editItem, closeForm, onSave, onDelete, onDuplicate, onToggleFav }
   }
@@ -93,7 +125,5 @@ export default {
 </script>
 
 <style scoped>
-.form-input {
-  @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200;
-}
+
 </style>
