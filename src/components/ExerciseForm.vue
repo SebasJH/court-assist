@@ -217,10 +217,7 @@ export default {
         alert('Naam is verplicht')
         return
       }
-      if (!form.category.length) {
-        alert('Kies minstens één categorie')
-        return
-      }
+
       if (form.maxPlayers && form.maxPlayers < form.minPlayers) {
         alert('Max spelers mag niet kleiner zijn dan minimale spelers')
         return
