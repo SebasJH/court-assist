@@ -46,11 +46,5 @@ export default { name: 'App' }
 </script>
 
 <style scoped>
-.nav-link {
-  @apply block w-full px-4 py-3 text-gray-600 rounded-lg mb-2 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-800;
-}
 
-.nav-link.active {
-  @apply bg-blue-50 text-blue-700 font-medium;
-}
 </style>
