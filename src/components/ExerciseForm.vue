@@ -30,22 +30,32 @@
           <Users class="w-4 h-4"/>
           Aantal spelers
         </label>
-        <div class="flex gap-2">
-          <input
-              type="number"
-              v-model.number="form.minPlayers"
-              min="1"
-              placeholder="Min spelers"
-              class="form-input"
-              required
-          />
-          <input
-              type="number"
-              v-model.number="form.maxPlayers"
-              :min="form.minPlayers"
-              placeholder="Max spelers (optioneel)"
-              class="form-input"
-          />
+        <div class="flex">
+          <!-- Min spelers -->
+          <div class="flex">
+            <input
+                type="number"
+                v-model.number="form.minPlayers"
+                min="1"
+                class="form-input !rounded-r-none border-r-0"
+            />
+            <div class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
+              min
+            </div>
+          </div>
+
+          <!-- Max spelers -->
+          <div class="flex ml-2">
+            <input
+                type="number"
+                v-model.number="form.maxPlayers"
+                :min="form.minPlayers"
+                class="form-input !rounded-r-none border-r-0"
+            />
+            <div class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
+              max
+            </div>
+          </div>
         </div>
       </div>
 
@@ -75,15 +85,19 @@
       <div class="form-group">
         <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
           <TimerReset class="w-4 h-4"/>
-          Duur (min)
+          Duur
         </label>
-        <input
-            type="number"
-            v-model.number="form.minutes"
-            min="1"
-            placeholder="Duur (min)"
-            class="form-input"
-        />
+        <div class="flex">
+          <input
+              type="number"
+              v-model.number="form.minutes"
+              min="1"
+              class="form-input !rounded-r-none !border-r-0"
+          />
+          <div class="bg-gray-100 border border-gray-300 border-l rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
+            minuten
+          </div>
+        </div>
       </div>
 
       <div class="form-group">
