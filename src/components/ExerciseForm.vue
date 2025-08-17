@@ -177,13 +177,6 @@ export default {
         return
       }
 
-
-      if (payload.id) {
-        store.updateExercise(payload.id, payload)
-      } else {
-        store.addExercise(payload)
-      }
-
       emit('save', payload)
     }
 
@@ -191,7 +184,7 @@ export default {
       form,
       imageToAdd,
       save,
-      categories: props.categories // 👈 beschikbaar in template
+      categories: props.categories
     }
   }
 }
