@@ -7,56 +7,51 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
 
-      <div class="form-group">
+
+      <!-- Naam -->
+      <div class="form-group col-span-2">
         <label class="block text-sm font-medium text-gray-700 mb-1">Naam</label>
         <input v-model="form.name" placeholder="Naam" class="form-input"/>
       </div>
 
-      <div class="form-group">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Categorieën</label>
 
-        <!-- Geselecteerde categorieën -->
-        <div class="flex flex-wrap gap-2 mb-2">
-    <span
-        v-for="cat in form.category"
-        :key="cat"
-        class="bg-blue-500 text-white px-2 py-1 rounded-full flex items-center gap-1"
-    >
-      {{ cat }}
-      <button type="button" @click="removeCategory(cat)" class="ml-1 font-bold">×</button>
-    </span>
-        </div>
+      <!-- Categories -->
+      <div class="form-group col-span-2">
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          Categorieën
+        </label>
 
-        <!-- Lijst met opties -->
         <div class="flex flex-wrap gap-2">
           <button
               v-for="c in categories"
               :key="c"
               type="button"
-              @click="addCategory(c)"
-              :class="form.category.includes(c) ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-gray-100 hover:bg-blue-100 text-gray-800'"
-              class="px-2 py-1 rounded"
-              :disabled="form.category.includes(c)"
+              @click="toggleCategory(c)"
+              :class="form.category.includes(c)
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-100 hover:bg-blue-100 text-gray-800'"
+              class="px-2 py-1 rounded cursor-pointer"
           >
             {{ c }}
           </button>
         </div>
       </div>
 
-
-
+      <!-- Short description -->
       <div class="form-group md:col-span-2">
         <label class="block text-sm font-medium text-gray-700 mb-1">Korte uitleg</label>
         <input v-model="form.short" placeholder="Korte uitleg" class="form-input"/>
       </div>
 
+      <!-- Amount of players -->
       <div class="form-group">
         <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
           <Users class="w-4 h-4"/>
           Aantal spelers
         </label>
         <div class="flex">
-          <!-- Min spelers -->
+
+          <!-- Min players -->
           <div class="flex">
             <input
                 type="number"
@@ -69,7 +64,7 @@
             </div>
           </div>
 
-          <!-- Max spelers -->
+          <!-- Max players -->
           <div class="flex ml-2">
             <input
                 type="number"
@@ -84,7 +79,7 @@
         </div>
       </div>
 
-
+      <!-- Intensity -->
       <div class="form-group">
         <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
           <Zap class="w-4 h-4"/>
@@ -106,7 +101,7 @@
         </div>
       </div>
 
-
+      <!-- Duration -->
       <div class="form-group">
         <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
           <TimerReset class="w-4 h-4"/>
@@ -125,17 +120,20 @@
         </div>
       </div>
 
+      <!-- Video -->
       <div class="form-group">
         <label class="block text-sm font-medium text-gray-700 mb-1">Video link</label>
         <input v-model="form.video" placeholder="Video link" class="form-input"/>
       </div>
 
+      <!-- Image -->
       <div class="form-group">
         <label class="block text-sm font-medium text-gray-700 mb-1">Afbeeldings-URL toevoegen</label>
         <input v-model="imageToAdd" placeholder="Afbeeldings URL" class="form-input"/>
       </div>
     </div>
 
+    <!-- Full description -->
     <div class="form-group">
       <label class="block text-sm font-medium text-gray-700 mb-1">Volledige uitleg</label>
       <textarea v-model="form.full" class="form-input h-32 resize-none" placeholder="Volledige uitleg"></textarea>
@@ -155,7 +153,7 @@ import store from '../store'
 export default {
   props: {
     initial: { type: Object, default: null },
-    categories: { type: Array, default: () => [] } // categorieën meegeven
+    categories: { type: Array, default: () => [] }
   },
   setup(props, { emit }) {
     const emptyForm = () => ({
@@ -163,7 +161,7 @@ export default {
       name: '',
       short: '',
       full: '',
-      category: [], // 👈 array ipv string
+      category: [],
       minPlayers: 1,
       maxPlayers: null,
       intensity: 3,
@@ -175,10 +173,9 @@ export default {
     const form = reactive(emptyForm())
     const imageToAdd = ref('')
 
-    // Wanneer je iets opent om te editen, of nieuwe oefening maakt
+    // Als initial wordt meegegeven, zet dit in het formulier
     watch(() => props.initial, (v) => {
       if (v) {
-        // Als initial.category een string is, zet naar array
         const initialData = { ...v }
         if (initialData.category && !Array.isArray(initialData.category)) {
           initialData.category = [initialData.category]
@@ -189,23 +186,19 @@ export default {
       }
     }, { immediate: true })
 
-    function addCategory(c) {
-      if (!form.category.includes(c)) {
-        form.category.push(c)
-      }
-    }
-
-    function removeCategory(c) {
+    // Toggle categorie aan/uit
+    function toggleCategory(c) {
       const index = form.category.indexOf(c)
       if (index > -1) {
-        form.category.splice(index, 1)
+        form.category.splice(index, 1) // verwijderen
+      } else {
+        form.category.push(c) // toevoegen
       }
     }
 
     function save() {
       const payload = { ...form }
 
-      // basis validatie
       if (!payload.name) {
         alert('Naam is verplicht')
         return
@@ -214,7 +207,6 @@ export default {
         alert('Kies minstens één categorie')
         return
       }
-
       if (payload.maxPlayers && payload.maxPlayers < payload.minPlayers) {
         alert('Max spelers mag niet kleiner zijn dan minimale spelers')
         return
@@ -228,13 +220,11 @@ export default {
       imageToAdd,
       save,
       categories: props.categories,
-      addCategory,
-      removeCategory
+      toggleCategory
     }
   }
 }
 </script>
-
 
 
 <style scoped>
