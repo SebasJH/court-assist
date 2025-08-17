@@ -59,7 +59,8 @@
                 min="1"
                 class="form-input !rounded-r-none border-r-0"
             />
-            <div class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
+            <div
+                class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
               min
             </div>
           </div>
@@ -72,7 +73,8 @@
                 :min="form.minPlayers"
                 class="form-input !rounded-r-none border-r-0"
             />
-            <div class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
+            <div
+                class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
               max
             </div>
           </div>
@@ -80,26 +82,26 @@
       </div>
 
       <!-- Intensity -->
+
       <div class="form-group">
         <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
           <Zap class="w-4 h-4"/>
           Intensiteit
         </label>
 
-        <div class="flex items-center gap-3">
-          <input
-              type="range"
-              v-model.number="form.intensity"
-              min="1"
-              max="5"
-              step="1"
-              class="w-full h-2 bg-gray-200 rounded-lg appearance-none accent-yellow-500 focus:outline-none"
+        <div class="flex flex-col gap-2">
+          <Slider
+              v-model="form.intensity"
+              :min="1"
+              :max="5"
+              :step="1"
+              :lazy="true"
+              :merge="false"
           />
-          <span class="text-sm text-gray-700 font-medium w-6 text-center">
-            {{ form.intensity }}
-          </span>
+          <div class="text-sm text-gray-800">{{ form.intensity }}</div>
         </div>
       </div>
+
 
       <!-- Duration -->
       <div class="form-group">
@@ -114,7 +116,8 @@
               min="1"
               class="form-input !rounded-r-none !border-r-0"
           />
-          <div class="bg-gray-100 border border-gray-300 border-l rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
+          <div
+              class="bg-gray-100 border border-gray-300 border-l rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
             minuten
           </div>
         </div>
@@ -147,15 +150,15 @@
 </template>
 
 <script>
-import { ref, reactive, watch } from 'vue'
+import {ref, reactive, watch} from 'vue'
 import store from '../store'
 
 export default {
   props: {
-    initial: { type: Object, default: null },
-    categories: { type: Array, default: () => [] }
+    initial: {type: Object, default: null},
+    categories: {type: Array, default: () => []}
   },
-  setup(props, { emit }) {
+  setup(props, {emit}) {
     const emptyForm = () => ({
       id: null,
       name: '',
@@ -176,15 +179,28 @@ export default {
     // Als initial wordt meegegeven, zet dit in het formulier
     watch(() => props.initial, (v) => {
       if (v) {
-        const initialData = { ...v }
-        if (initialData.category && !Array.isArray(initialData.category)) {
-          initialData.category = [initialData.category]
+        // Zorg ervoor dat alle velden correct worden ingesteld
+        const formData = {
+          id: v.id,
+          name: v.name || '',
+          short: v.short || '',
+          full: v.full || '',
+          category: Array.isArray(v.category) ? [...v.category] : (v.category ? [v.category] : []),
+          minPlayers: v.minPlayers || 1,
+          maxPlayers: v.maxPlayers || null,
+          intensity: v.intensity || 3,
+          minutes: v.minutes || 5,
+          images: v.images ? [...v.images] : [],
+          video: v.video || ''
         }
-        Object.assign(form, initialData)
+        Object.assign(form, formData)
       } else {
         Object.assign(form, emptyForm())
       }
     }, { immediate: true })
+
+
+
 
     // Toggle categorie aan/uit
     function toggleCategory(c) {
@@ -197,23 +213,31 @@ export default {
     }
 
     function save() {
-      const payload = { ...form }
-
-      if (!payload.name) {
+      if (!form.name) {
         alert('Naam is verplicht')
         return
       }
-      if (!payload.category.length) {
+      if (!form.category.length) {
         alert('Kies minstens één categorie')
         return
       }
-      if (payload.maxPlayers && payload.maxPlayers < payload.minPlayers) {
+      if (form.maxPlayers && form.maxPlayers < form.minPlayers) {
         alert('Max spelers mag niet kleiner zijn dan minimale spelers')
         return
       }
 
-      emit('save', payload)
+      // Zorg ervoor dat de id correct wordt meegestuurd
+      const saveData = { ...form }
+      if (props.initial && props.initial.id) {
+        saveData.id = props.initial.id
+      } else {
+        // Als er geen initial is, verwijder de id zodat er een nieuwe wordt aangemaakt
+        delete saveData.id
+      }
+      
+      emit('save', saveData)
     }
+
 
     return {
       form,

@@ -55,7 +55,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
       <exercise-card
           v-for="ex in filtered"
-          :key="ex.id || ex.name"
+          :key="ex.id"
           :exercise="ex"
           @edit="openForm(ex)"
           @delete="onDelete"
@@ -107,8 +107,11 @@ export default {
     }
 
     function onSave(payload) {
-      if (payload.id) store.updateExercise(payload.id, payload)
-      else store.addExercise(payload)
+      if (payload.id) {
+        store.updateExercise(payload.id, payload)
+      } else {
+        store.addExercise(payload)
+      }
       closeForm()
     }
 
