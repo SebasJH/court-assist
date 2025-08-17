@@ -1,20 +1,38 @@
 <template>
-  <div class="form-modal">
-    <h3>{{initial ? 'Wijzig oefening' : 'Nieuwe oefening'}}</h3>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
-      <input v-model="form.name" placeholder="Naam" />
-      <input v-model="form.category" placeholder="Categorie" />
-      <input v-model="form.short" placeholder="Korte uitleg" />
-      <input type="number" v-model.number="form.players" placeholder="Aantal spelers" />
-      <input type="number" v-model.number="form.intensity" placeholder="Intensiteit 1-5" min="1" max="5" />
-      <input type="number" v-model.number="form.minutes" placeholder="Duur (min)" />
-      <input v-model="form.video" placeholder="Video link (optioneel)" />
-      <input v-model="imageToAdd" placeholder="Afbeeldings URL toevoegen" />
+  <div class="training-form">
+    <h3 class="text-xl font-bold text-gray-800 mb-4">{{initial ? 'Wijzig oefening' : 'Nieuwe oefening'}}</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <div class="form-group">
+        <input v-model="form.name" placeholder="Naam" class="form-input" />
+      </div>
+      <div class="form-group">
+        <input v-model="form.category" placeholder="Categorie" class="form-input" />
+      </div>
+      <div class="form-group">
+        <input v-model="form.short" placeholder="Korte uitleg" class="form-input" />
+      </div>
+      <div class="form-group">
+        <input type="number" v-model.number="form.players" placeholder="Aantal spelers" class="form-input" />
+      </div>
+      <div class="form-group">
+        <input type="number" v-model.number="form.intensity" placeholder="Intensiteit 1-5" min="1" max="5" class="form-input" />
+      </div>
+      <div class="form-group">
+        <input type="number" v-model.number="form.minutes" placeholder="Duur (min)" class="form-input" />
+      </div>
+      <div class="form-group">
+        <input v-model="form.video" placeholder="Video link (optioneel)" class="form-input" />
+      </div>
+      <div class="form-group">
+        <input v-model="imageToAdd" placeholder="Afbeeldings URL toevoegen" class="form-input" />
+      </div>
     </div>
-    <textarea v-model="form.full" style="width:100%;height:120px;margin-top:10px" placeholder="Volledige uitleg"></textarea>
-    <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
-      <button class="btn" @click="save">Opslaan</button>
-      <button @click="$emit('close')">Annuleren</button>
+    <div class="form-group">
+      <textarea v-model="form.full" class="form-input h-32 resize-none" placeholder="Volledige uitleg"></textarea>
+    </div>
+    <div class="flex gap-3 mt-6">
+      <button class="btn-submit" @click="save">Opslaan</button>
+      <button class="btn-secondary" @click="$emit('close')">Annuleren</button>
     </div>
   </div>
 </template>
@@ -45,3 +63,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.form-input {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200;
+}
+</style>

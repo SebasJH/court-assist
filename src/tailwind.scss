@@ -1,0 +1,57 @@
+// Tailwind CSS imports
+@import "tailwindcss";
+
+// Custom SCSS variables
+$primary-color: #3b82f6;
+$secondary-color: #64748b;
+$accent-color: #f59e0b;
+$success-color: #10b981;
+$error-color: #ef4444;
+
+// Custom SCSS mixins
+@mixin button-base {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200;
+}
+
+@mixin card-base {
+    @apply bg-white rounded-xl shadow-lg p-6 border border-gray-100;
+}
+
+// Custom component styles
+.btn-primary {
+    @include button-base;
+    @apply bg-blue-500 text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.btn-secondary {
+    @include button-base;
+    @apply bg-gray-500 text-white hover:bg-gray-600 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
+}
+
+.card {
+    @include card-base;
+}
+
+// Custom utility classes
+.text-gradient {
+    @apply bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent;
+}
+
+// Responsive utilities
+@screen sm {
+    .container {
+        @apply px-4;
+    }
+}
+
+@screen md {
+    .container {
+        @apply px-6;
+    }
+}
+
+@screen lg {
+    .container {
+        @apply px-8;
+    }
+}

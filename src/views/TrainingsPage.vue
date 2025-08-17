@@ -1,45 +1,52 @@
 <template>
-  <div>
-    <div class="header"><div class="title">Trainingen</div></div>
+  <div class="container mx-auto px-4 py-6">
+    <div class="mb-8">
+      <div class="text-3xl font-bold text-gray-800">Trainingen</div>
+    </div>
 
-    <div class="training-shell">
-      <div class="library">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-          <div class="small">Bibliotheek</div>
-          <div class="small">Sleep oefeningen naar rechts</div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="library bg-white rounded-lg shadow-md p-6">
+        <div class="flex justify-between items-center mb-4">
+          <div class="text-sm font-medium text-gray-700">Bibliotheek</div>
+          <div class="text-sm text-gray-500">Sleep oefeningen naar rechts</div>
         </div>
 
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <div v-for="ex in exercises" :key="ex.id" class="card" draggable="true" @dragstart="onDragStart(ex)">
-            <div style="width:48px;height:48px;border-radius:8px;background:#f3f6f8;display:flex;align-items:center;justify-content:center">📷</div>
-            <div style="flex:1">
-              <div style="font-weight:700">{{ex.name}}</div>
-              <div class="small">{{ex.short}}</div>
+        <div class="flex flex-col gap-3">
+          <div v-for="ex in exercises" :key="ex.id" class="exercise-card cursor-move" draggable="true" @dragstart="onDragStart(ex)">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-lg">📷</div>
+              <div class="flex-1">
+                <div class="font-bold text-gray-800">{{ex.name}}</div>
+                <div class="text-sm text-gray-600">{{ex.short}}</div>
+              </div>
+              <div class="text-sm font-medium text-gray-700">{{ex.minutes}}m</div>
             </div>
-            <div class="small">{{ex.minutes}}m</div>
           </div>
         </div>
       </div>
 
-      <div class="program">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <div><strong>Training: </strong><input v-model="programName" placeholder="Naam training"/></div>
-          <div class="duration">Totale tijd: {{totalMinutes}} min</div>
+      <div class="program bg-white rounded-lg shadow-md p-6">
+        <div class="flex justify-between items-center mb-4">
+          <div class="flex items-center gap-2">
+            <strong class="text-gray-700">Training: </strong>
+            <input v-model="programName" placeholder="Naam training" class="form-input w-48" />
+          </div>
+          <div class="text-sm font-medium text-gray-700">Totale tijd: {{totalMinutes}} min</div>
         </div>
 
-        <draggable v-model="program" group="exercises" item-key="id" class="list" @add="onAdd">
+        <draggable v-model="program" group="exercises" item-key="id" class="min-h-32">
           <template #item="{element, index}">
-            <div class="row">
-              <div style="flex:1">{{index+1}}. {{element.name}}</div>
-              <div>{{element.minutes}}m</div>
-              <button @click="removeAt(index)">x</button>
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-2">
+              <div class="flex-1 text-gray-800">{{index+1}}. {{element.name}}</div>
+              <div class="text-sm font-medium text-gray-600 mr-3">{{element.minutes}}m</div>
+              <button @click="removeAt(index)" class="text-red-500 hover:text-red-700 font-bold">×</button>
             </div>
           </template>
         </draggable>
 
-        <div style="margin-top:10px;display:flex;gap:10px;align-items:center">
-          <button class="btn" @click="saveProgram">Opslaan</button>
-          <button @click="program.splice(0)">Leegmaken</button>
+        <div class="flex gap-3 mt-6">
+          <button class="btn-primary" @click="saveProgram">Opslaan</button>
+          <button class="btn-secondary" @click="program.splice(0)">Leegmaken</button>
         </div>
       </div>
     </div>
@@ -82,3 +89,13 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.form-input {
+  @apply px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200;
+}
+
+.exercise-card {
+  @apply bg-white rounded-lg shadow-sm p-4 border border-gray-200 hover:shadow-md transition-shadow duration-200;
+}
+</style>

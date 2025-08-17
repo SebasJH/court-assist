@@ -1,29 +1,32 @@
 <template>
-  <div>
-    <div class="header">
-      <div class="title">Oefeningen</div>
+  <div class="container mx-auto px-4 py-6">
+    <div class="flex justify-between items-center mb-8">
+      <div class="text-3xl font-bold text-gray-800">Oefeningen</div>
       <div class="controls">
-        <button class="btn" @click="openForm()">+ Nieuwe oefening</button>
+        <button class="btn-primary" @click="openForm()">+ Nieuwe oefening</button>
       </div>
     </div>
 
-    <div class="filter-bar">
-      <input class="search" v-model="q" placeholder="Zoek oefeningen..." />
-      <select v-model="filter.category">
-        <option value="">Alle categorieën</option>
-        <option v-for="c in categories" :key="c" :value="c">{{c}}</option>
-      </select>
-      <select v-model.number="filter.players">
-        <option value="0">Aantal spelers</option>
-        <option v-for="n in [1,2,3,4,5,6,7,8,9,10]" :key="n" :value="n">{{n}}</option>
-      </select>
-      <label class="small">Intensiteit <=
-        <input type="range" v-model.number="filter.intensity" min="1" max="5" />
-        {{filter.intensity || '5'}}
-      </label>
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <input class="form-input" v-model="q" placeholder="Zoek oefeningen..." />
+        <select v-model="filter.category" class="form-input">
+          <option value="">Alle categorieën</option>
+          <option v-for="c in categories" :key="c" :value="c">{{c}}</option>
+        </select>
+        <select v-model.number="filter.players" class="form-input">
+          <option value="0">Aantal spelers</option>
+          <option v-for="n in [1,2,3,4,5,6,7,8,9,10]" :key="n" :value="n">{{n}}</option>
+        </select>
+        <div class="flex items-center gap-2">
+          <label class="text-sm text-gray-600">Intensiteit ≤</label>
+          <input type="range" v-model.number="filter.intensity" min="1" max="5" class="flex-1" />
+          <span class="text-sm font-medium text-gray-800 w-8">{{filter.intensity || '5'}}</span>
+        </div>
+      </div>
     </div>
 
-    <div class="grid">
+    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
       <exercise-card
           v-for="ex in filtered"
           :key="ex.id"
@@ -88,3 +91,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.form-input {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200;
+}
+</style>
