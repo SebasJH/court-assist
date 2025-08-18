@@ -86,6 +86,8 @@ import { ref, computed } from 'vue'
 export default {
   components: { ExerciseCard, ExerciseForm, Modal },
   setup() {
+    // Backfill dateCreated for any pre-existing exercises missing it (defensive, non-destructive)
+    store.state.exercises.forEach(e => { if (!e.dateCreated) e.dateCreated = new Date().toISOString() })
     const q = ref('')
     const filter = ref({
       category: '',
@@ -155,21 +157,22 @@ export default {
     // Sample data als store leeg is (category als array)
     if (store.state.exercises.length === 0) {
       store.addExercise({
-        icon: 'Target',
         name: 'Spot shooting 45',
+        icon: 'Target',
         description: 'Dribbel door 6 pylonen',
-        coachingPoints: 'Dribbel door 6 pylonen en schiet daarna op doel vanaf 45 graden.',
+        coachingPoints: 'Dribbel door 6 pylonen en schiet daarna op de basket vanaf 45 graden.',
         category: ['Schieten'],
         minPlayers: 4,
         maxPlayers: 10,
         duration: 5,
         intensity: 2,
         materials: [],
-        video: ''
+        video: '',
+        dateCreated: '2025-08-16T20:00:00.000Z'
       })
       store.addExercise({
-        icon: 'Shield',
         name: '1v1 verdediging',
+        icon: 'Shield',
         description: '1 tegen 1 oefening',
         coachingPoints: '1 tegen 1 oefening waarbij de aanvaller probeert te scoren en de verdediger probeert te voorkomen dat er wordt gescoord.',
         category: ['Verdedigen', 'Conditie'],
@@ -178,7 +181,8 @@ export default {
         duration: 6,
         intensity: 4,
         materials: [],
-        video: ''
+        video: '',
+        dateCreated: '2025-08-16T20:00:00.000Z'
       })
     }
 

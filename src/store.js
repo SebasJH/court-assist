@@ -5,10 +5,16 @@ const state = reactive({
     nextId: 1
 })
 
+// Migration: backfill dateCreated for existing exercises without it
+// This ensures previously created exercises (before dateCreated was introduced) get a timestamp
+state.exercises.forEach(e => {
+    if (!e.dateCreated) e.dateCreated = new Date().toISOString()
+})
+
 function addExercise(payload) {
     const icon = payload.icon ?? payload.imageIcon ?? 'TrafficCone'
-    const { imageIcon, ...rest } = payload
-    const e = { id: state.nextId++, favorite: false, icon, ...rest }
+    const { imageIcon, dateCreated, ...rest } = payload
+    const e = { id: state.nextId++, favorite: false, icon, dateCreated: dateCreated ?? new Date().toISOString(), ...rest }
     state.exercises.unshift(e)
     return e
 }
@@ -25,12 +31,12 @@ function updateExercise(id, updates) {
     delete mapped.imageIcon
     
     // Behoud de favorite status en id, en update alleen de gewenste velden
-    const { favorite, id: updateId, ...updateData } = mapped
+    const { favorite, id: updateId, dateCreated: _ignoredDate, ...updateData } = mapped
     
     // Sla de originele id op
     const originalId = e.id
     
-    // Update alleen de gewenste velden, niet de id
+    // Update alleen de gewenste velden, niet de id en niet dateCreated
     Object.assign(e, updateData)
     
     // Herstel de originele id als deze is overschreven
@@ -53,7 +59,7 @@ function deleteExercise(id) {
 function duplicateExercise(id) {
     const orig = state.exercises.find(x => x.id === id)
     if (!orig) return
-    const copy = { ...orig, id: state.nextId++, name: orig.name + ' (copy)', favorite: false }
+    const copy = { ...orig, id: state.nextId++, name: orig.name + ' (copy)', favorite: false, dateCreated: new Date().toISOString() }
     state.exercises.unshift(copy)
 }
 
