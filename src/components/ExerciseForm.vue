@@ -198,12 +198,11 @@ export default {
     const imageToAdd = ref('')
 
     const materialOptions = [
-      'Basketbal',
       'Pionnen',
-      'Agility ladder',
+      'Loopladder',
       'Hoepel',
       'Stoel',
-      'Medicinbal',
+      'Medicijnbal',
       'Weerstandsband',
       'Springtouw',
       'Pylobox',

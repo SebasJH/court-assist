@@ -1,3 +1,24 @@
+:root {
+  /* Define theme color variables as RGB triplets for alpha support */
+  --color-primary: 59 130 246;        /* #3b82f6 */
+  --color-primary-light: 147 197 253; /* #93c5fd */
+  --color-primary-dark: 29 78 216;    /* #1d4ed8 */
+
+  --color-secondary: 100 116 139;        /* #64748b */
+  --color-secondary-light: 203 213 225;  /* #cbd5e1 */
+  --color-secondary-dark: 51 65 85;      /* #334155 */
+
+  --color-tertiary: 16 185 129;        /* #10b981 */
+  --color-tertiary-light: 134 239 172; /* #86efac */
+  --color-tertiary-dark: 4 120 87;     /* #047857 */
+
+  --color-accent: 245 158 11;        /* #f59e0b */
+
+  /* semantic (kept from previous config) */
+  --color-success: 16 185 129;       /* #10b981 */
+  --color-error: 239 68 68;          /* #ef4444 */
+}
+
 // Custom animations
 @keyframes fadeIn {
   from {

@@ -1,5 +1,10 @@
-// Import Tailwind utilities
-@import "tailwindcss";
+/* Tailwind v3 directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Project-wide Tailwind-based component utilities (buttons, cards, etc.)
+@import "../tailwind";
 
 // Base
 @import "base/sidebar";
