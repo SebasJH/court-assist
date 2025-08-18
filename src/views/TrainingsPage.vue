@@ -17,7 +17,7 @@
               <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-lg">📷</div>
               <div class="flex-1">
                 <div class="font-bold text-gray-800">{{ex.name}}</div>
-                <div class="text-sm text-gray-600">{{ex.shortDescription}}</div>
+                <div class="text-sm text-gray-600">{{ ex.description || ex.shortDescription }}</div>
               </div>
               <div class="text-sm font-medium text-gray-700">{{ex.duration}}m</div>
             </div>

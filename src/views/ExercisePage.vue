@@ -17,7 +17,7 @@
           <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
         </select>
 
-        <!-- Aantal spelers slider (range) -->
+        <!-- Aantal spelers slider -->
         <div class="flex flex-col gap-2">
           <label class="text-sm text-gray-600">Aantal spelers</label>
           <Slider
@@ -33,7 +33,7 @@
           </div>
         </div>
 
-        <!-- Intensiteit slider (range) -->
+        <!-- Intensiteit slider -->
         <div class="flex flex-col gap-2">
           <label class="text-sm text-gray-600">Intensiteit</label>
           <Slider
@@ -89,8 +89,8 @@ export default {
     const q = ref('')
     const filter = ref({
       category: '',
-      players: [1, 20],    // gekozen bereik
-      intensity: [1, 5],   // gekozen bereik
+      players: [1, 20],
+      intensity: [1, 5],
     })
     const showForm = ref(false)
     const editItem = ref(null)
@@ -133,8 +133,9 @@ export default {
       const selIntMax = filter.value.intensity[1]
 
       return store.state.exercises.filter(e => {
-        // zoek op naam/korte omschrijving
-        if (q.value && !(`${e.name ?? ''} ${e.shortDescription ?? ''}`.toLowerCase()).includes(q.value.toLowerCase()))
+        // zoek op naam/beschrijving (met fallback voor oude data)
+        const searchable = `${e.name ?? ''} ${e.description ?? e.shortDescription ?? ''}`.toLowerCase()
+        if (q.value && !searchable.includes(q.value.toLowerCase()))
           return false
 
         // categorie (nu array)
@@ -154,29 +155,29 @@ export default {
     // Sample data als store leeg is (category als array)
     if (store.state.exercises.length === 0) {
       store.addExercise({
+        icon: 'Target',
         name: 'Spot shooting 45',
-        shortDescription: 'Dribbel door 6 pylonen',
-        fullDescription: 'Dribbel door 6 pylonen en schiet daarna op doel vanaf 45 graden.',
+        description: 'Dribbel door 6 pylonen',
+        coachingPoints: 'Dribbel door 6 pylonen en schiet daarna op doel vanaf 45 graden.',
         category: ['Schieten'],
         minPlayers: 4,
         maxPlayers: 10,
+        duration: 5,
         intensity: 2,
         materials: [],
-        duration: 5,
-        icon: 'Target',
         video: ''
       })
       store.addExercise({
+        icon: 'Shield',
         name: '1v1 verdediging',
-        shortDescription: '1 tegen 1 oefening',
-        fullDescription: '1 tegen 1 oefening waarbij de aanvaller probeert te scoren en de verdediger probeert te voorkomen dat er wordt gescoord.',
+        description: '1 tegen 1 oefening',
+        coachingPoints: '1 tegen 1 oefening waarbij de aanvaller probeert te scoren en de verdediger probeert te voorkomen dat er wordt gescoord.',
         category: ['Verdedigen', 'Conditie'],
         minPlayers: 2,
         maxPlayers: null,
+        duration: 6,
         intensity: 4,
         materials: [],
-        duration: 6,
-        icon: 'Shield',
         video: ''
       })
     }

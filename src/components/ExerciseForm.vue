@@ -5,16 +5,23 @@
       {{ initial ? 'Wijzig oefening' : 'Nieuwe oefening' }}
     </h3>
 
-    <div class="grid grid-cols-4 gap-4 mb-4">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
       
+      <!-- Name -->
+      <div class="form-group col-span-1 md:col-span-3">
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          Naam <span class="text-red-500" aria-hidden="true">*</span>
+        </label>
+        <input v-model="form.name" placeholder="Naam" class="form-input" required aria-required="true"/>
+      </div>
+
       <!-- Icon -->
       <div class="form-group col-span-1 md:col-span-1">
         <label class="block text-sm font-medium text-gray-700 mb-1">Icoon</label>
-        <div class="relative inline-flex" ref="iconMenuContainerRef">
-          <div class="flex">
-            <!-- Icon cell matching input height -->
+        <div class="relative w-full" ref="iconMenuContainerRef">
+          <div class="flex w-full">
             <div
-              class="px-3 py-2 border border-gray-300 rounded-l-lg bg-white flex items-center justify-center focus:outline-none focus:ring-0"
+              class="px-3 py-2 h-[42px] border border-gray-300 rounded-l-lg bg-white flex items-center justify-center focus:outline-none focus:ring-0"
               :class="iconMenuOpen ? 'border-blue-500' : ''"
               :title="form.icon"
             >
@@ -23,7 +30,7 @@
             <!-- Trailing bar to change icon -->
             <button
               type="button"
-              class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-3 flex items-center text-gray-700 text-sm hover:bg-blue-50 hover:text-blue-700 transition-colors focus:outline-none focus:ring-0"
+              class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-3 h-[42px] flex items-center justify-center flex-1 text-gray-700 text-sm hover:bg-blue-50 hover:text-blue-700 transition-colors focus:outline-none focus:ring-0"
               @click="toggleIconMenu"
             >
               Wijzigen
@@ -52,12 +59,10 @@
         </div>
       </div>
 
-      <!-- Name -->
-      <div class="form-group col-span-3">
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          Naam <span class="text-red-500" aria-hidden="true">*</span>
-        </label>
-        <input v-model="form.name" placeholder="Naam" class="form-input" required aria-required="true"/>
+      <!-- Description -->
+      <div class="form-group col-span-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Beschrijving</label>
+        <textarea v-model="form.description" placeholder="Beschrijving" class="form-input h-24 resize-none"></textarea>
       </div>
 
       <!-- Categories -->
@@ -82,11 +87,9 @@
         </div>
       </div>
 
-      <!-- Short description -->
-      <div class="form-group col-span-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Korte uitleg</label>
-        <input v-model="form.shortDescription" placeholder="Korte uitleg" class="form-input"/>
-      </div>
+      <!-- Section: Details -->
+      <div class="col-span-4 border-t pt-3 mt-1 text-xs uppercase tracking-wide text-gray-500">Details</div>
+
 
       <!-- Amount of players -->
       <div class="form-group col-span-4 md:col-span-2">
@@ -126,26 +129,6 @@
         </div>
       </div>
 
-      <!-- Intensity -->
-      <div class="form-group col-span-4 md:col-span-2">
-        <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
-          <Zap class="w-4 h-4"/>
-          Intensiteit
-        </label>
-
-        <div class="flex flex-col gap-2">
-          <Slider
-              v-model="form.intensity"
-              :min="1"
-              :max="5"
-              :step="1"
-              :lazy="true"
-              :merge="false"
-          />
-          <div class="text-sm text-gray-800">{{ form.intensity }}</div>
-        </div>
-      </div>
-
       <!-- Duration -->
       <div class="form-group col-span-4 md:col-span-2">
         <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
@@ -166,12 +149,26 @@
         </div>
       </div>
 
-      <!-- Video -->
-      <div class="form-group col-span-4 md:col-span-2">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Video link</label>
-        <input v-model="form.video" placeholder="Video link" class="form-input"/>
+      <!-- Intensity -->
+      <div class="form-group col-span-4 md:col-span-4">
+        <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+          <Zap class="w-4 h-4"/>
+          Intensiteit
+        </label>
+
+        <div class="flex flex-col gap-2">
+          <Slider
+              v-model="form.intensity"
+              :min="1"
+              :max="5"
+              :step="1"
+              :lazy="true"
+              :merge="false"
+          />
+          <div class="text-sm text-gray-800">{{ form.intensity }}</div>
+        </div>
       </div>
-      
+
       <!-- Materials -->
       <div class="form-group col-span-4">
         <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -193,10 +190,19 @@
         </div>
       </div>
 
-      <!-- Full description -->
+      <!-- Coaching points -->
       <div class="form-group col-span-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Volledige uitleg</label>
-        <textarea v-model="form.fullDescription" class="form-input h-32 resize-none" placeholder="Volledige uitleg"></textarea>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Coaching points</label>
+        <textarea v-model="form.coachingPoints" class="form-input h-32 resize-none" placeholder="Coaching points"></textarea>
+      </div>
+
+      <!-- Section: Media -->
+      <div class="col-span-4 border-t pt-3 mt-1 text-xs uppercase tracking-wide text-gray-500">Media</div>
+
+      <!-- Video -->
+      <div class="form-group col-span-4 md:col-span-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Video link</label>
+        <input v-model="form.video" placeholder="Video link" class="form-input"/>
       </div>
     </div>
 
@@ -221,8 +227,8 @@ export default {
     const emptyForm = () => ({
       id: null,
       name: '',
-      shortDescription: '',
-      fullDescription: '',
+      description: '',
+      coachingPoints: '',
       category: [],
       minPlayers: 1,
       maxPlayers: null,
@@ -301,8 +307,8 @@ export default {
         const formData = {
           id: v.id,
           name: v.name || '',
-          shortDescription: v.shortDescription || v.short || '',
-          fullDescription: v.fullDescription || v.full || '',
+          description: v.description || v.shortDescription || v.short || '',
+          coachingPoints: v.coachingPoints || v.fullDescription || v.full || '',
           category: Array.isArray(v.category) ? [...v.category] : (v.category ? [v.category] : []),
           minPlayers: v.minPlayers || 1,
           maxPlayers: v.maxPlayers || null,
