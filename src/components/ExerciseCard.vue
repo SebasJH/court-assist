@@ -38,19 +38,19 @@
               class="absolute left-0 mt-2 w-40 bg-white border border-gray-200 rounded shadow-lg flex flex-col z-10"
           >
             <button
-                @click="$emit('edit', exercise)"
+                @click="onEdit"
                 class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 py-2 hover:bg-gray-100">
               <Pencil class="w-fit h-4"/>
               Wijzigen
             </button>
             <button
-                @click="$emit('duplicate', exercise.id)"
+                @click="onDuplicate"
                 class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 py-2 hover:bg-gray-100">
               <Copy class="w-fit h-4"/>
               Dupliceren
             </button>
             <button
-                @click="$emit('delete', exercise.id)"
+                @click="onDelete"
                 class="cursor-pointer border-t border-gray-200 text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 py-2 hover:bg-gray-100 text-red-500">
               <Trash class="w-fit h-4"/>
               Verwijderen
@@ -93,7 +93,9 @@
 <script setup>
 import {ref, onMounted, onBeforeUnmount} from 'vue'
 
-defineProps({
+const emit = defineEmits(['edit','duplicate','delete'])
+
+const props = defineProps({
   exercise: {type: Object, required: true}
 })
 
@@ -102,6 +104,25 @@ const menuRef = ref(null)  // Ref naar de dropdown-container
 
 function toggleMenu() {
   menuOpen.value = !menuOpen.value
+}
+
+function closeMenu() {
+  menuOpen.value = false
+}
+
+function onEdit() {
+  closeMenu()
+  emit('edit', props.exercise)
+}
+
+function onDuplicate() {
+  closeMenu()
+  emit('duplicate', props.exercise.id)
+}
+
+function onDelete() {
+  closeMenu()
+  emit('delete', props.exercise.id)
 }
 
 // Klik buiten menu detecteren
