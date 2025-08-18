@@ -95,7 +95,7 @@ export default {
     const showForm = ref(false)
     const editItem = ref(null)
 
-    const categories = ['Dribbelen', 'Schieten', 'Finishing', 'Verdedigen', 'Passen', 'Conditie']
+    const categories = ['Dribbelen', 'Schieten', 'Finishing', 'Verdedigen', 'Passen', 'Rebounden', 'Transition', 'Conditie', 'Warm up']
 
     function openForm(item = null) {
       editItem.value = item
@@ -133,8 +133,8 @@ export default {
       const selIntMax = filter.value.intensity[1]
 
       return store.state.exercises.filter(e => {
-        // zoek op naam/short
-        if (q.value && !(`${e.name ?? ''} ${e.short ?? ''}`.toLowerCase()).includes(q.value.toLowerCase()))
+        // zoek op naam/korte omschrijving
+        if (q.value && !(`${e.name ?? ''} ${e.shortDescription ?? ''}`.toLowerCase()).includes(q.value.toLowerCase()))
           return false
 
         // categorie (nu array)
@@ -155,25 +155,27 @@ export default {
     if (store.state.exercises.length === 0) {
       store.addExercise({
         name: 'Spot shooting 45',
-        short: 'Dribbel door 6 pylonen',
-        full: 'Volledige uitleg...',
+        shortDescription: 'Dribbel door 6 pylonen',
+        fullDescription: 'Dribbel door 6 pylonen en schiet daarna op doel vanaf 45 graden.',
         category: ['Schieten'],
         minPlayers: 2,
         maxPlayers: 4,
         intensity: 3,
-        minutes: 5,
+        materials: [],
+        duration: 5,
         images: [],
         video: ''
       })
       store.addExercise({
         name: '1v1 verdediging',
-        short: '1 tegen 1 oefening',
-        full: 'Volledige uitleg...',
+        shortDescription: '1 tegen 1 oefening',
+        fullDescription: '1 tegen 1 oefening waarbij de aanvaller probeert te scoren en de verdediger probeert te voorkomen dat er wordt gescoord.',
         category: ['Verdedigen', 'Conditie'],
         minPlayers: 2,
         maxPlayers: null,
         intensity: 4,
-        minutes: 6,
+        materials: [],
+        duration: 6,
         images: [],
         video: ''
       })

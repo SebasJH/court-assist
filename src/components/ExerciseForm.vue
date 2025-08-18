@@ -38,21 +38,21 @@
       </div>
 
       <!-- Short description -->
-      <div class="form-group md:col-span-2">
+      <div class="form-group col-span-2">
         <label class="block text-sm font-medium text-gray-700 mb-1">Korte uitleg</label>
-        <input v-model="form.short" placeholder="Korte uitleg" class="form-input"/>
+        <input v-model="form.shortDescription" placeholder="Korte uitleg" class="form-input"/>
       </div>
 
       <!-- Amount of players -->
-      <div class="form-group">
+      <div class="form-group col-span-2 md:col-span-1">
         <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
           <Users class="w-4 h-4"/>
           Aantal spelers
         </label>
-        <div class="flex">
+        <div class="flex gap-x-2">
 
           <!-- Min players -->
-          <div class="flex">
+          <div class="flex w-full">
             <input
                 type="number"
                 v-model.number="form.minPlayers"
@@ -66,7 +66,7 @@
           </div>
 
           <!-- Max players -->
-          <div class="flex ml-2">
+          <div class="flex w-full ml-2">
             <input
                 type="number"
                 v-model.number="form.maxPlayers"
@@ -82,8 +82,7 @@
       </div>
 
       <!-- Intensity -->
-
-      <div class="form-group">
+      <div class="form-group col-span-2 md:col-span-1">
         <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
           <Zap class="w-4 h-4"/>
           Intensiteit
@@ -102,9 +101,8 @@
         </div>
       </div>
 
-
       <!-- Duration -->
-      <div class="form-group">
+      <div class="form-group col-span-2 md:col-span-1">
         <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
           <TimerReset class="w-4 h-4"/>
           Duur
@@ -112,7 +110,7 @@
         <div class="flex">
           <input
               type="number"
-              v-model.number="form.minutes"
+              v-model.number="form.duration"
               min="1"
               class="form-input !rounded-r-none !border-r-0"
           />
@@ -124,23 +122,45 @@
       </div>
 
       <!-- Video -->
-      <div class="form-group">
+      <div class="form-group col-span-2 md:col-span-1">
         <label class="block text-sm font-medium text-gray-700 mb-1">Video link</label>
         <input v-model="form.video" placeholder="Video link" class="form-input"/>
       </div>
 
       <!-- Image -->
-      <div class="form-group">
+      <div class="form-group col-span-2 md:col-span-1">
         <label class="block text-sm font-medium text-gray-700 mb-1">Afbeeldings-URL toevoegen</label>
         <input v-model="imageToAdd" placeholder="Afbeeldings URL" class="form-input"/>
       </div>
+
+      <!-- Materials -->
+      <div class="form-group col-span-2">
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          Materialen
+        </label>
+        <div class="flex flex-wrap gap-2">
+          <button
+            v-for="m in materialOptions"
+            :key="m"
+            type="button"
+            @click="toggleMaterial(m)"
+            :class="form.materials.includes(m)
+                ? 'bg-green-500 text-white'
+                : 'bg-gray-100 hover:bg-green-100 text-gray-800'"
+            class="px-2 py-1 rounded cursor-pointer"
+          >
+            {{ m }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Full description -->
+      <div class="form-group col-span-2">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Volledige uitleg</label>
+        <textarea v-model="form.fullDescription" class="form-input h-32 resize-none" placeholder="Volledige uitleg"></textarea>
+      </div>
     </div>
 
-    <!-- Full description -->
-    <div class="form-group">
-      <label class="block text-sm font-medium text-gray-700 mb-1">Volledige uitleg</label>
-      <textarea v-model="form.full" class="form-input h-32 resize-none" placeholder="Volledige uitleg"></textarea>
-    </div>
 
     <div class="flex gap-3 mt-6 justify-end">
       <button type="button" class="btn-secondary" @click="$emit('close')">Annuleren</button>
@@ -162,19 +182,34 @@ export default {
     const emptyForm = () => ({
       id: null,
       name: '',
-      short: '',
-      full: '',
+      shortDescription: '',
+      fullDescription: '',
       category: [],
       minPlayers: 1,
       maxPlayers: null,
       intensity: 3,
-      minutes: 5,
+      materials: [],
+      duration: 5,
       images: [],
       video: ''
     })
 
     const form = reactive(emptyForm())
     const imageToAdd = ref('')
+
+    const materialOptions = [
+      'Basketbal',
+      'Pionnen',
+      'Agility ladder',
+      'Hoepel',
+      'Stoel',
+      'Medicinbal',
+      'Weerstandsband',
+      'Springtouw',
+      'Pylobox',
+      'Shotclock',
+      'Reboundmachine'
+    ]
 
     // Als initial wordt meegegeven, zet dit in het formulier
     watch(() => props.initial, (v) => {
@@ -183,13 +218,14 @@ export default {
         const formData = {
           id: v.id,
           name: v.name || '',
-          short: v.short || '',
-          full: v.full || '',
+          shortDescription: v.shortDescription || v.short || '',
+          fullDescription: v.fullDescription || v.full || '',
           category: Array.isArray(v.category) ? [...v.category] : (v.category ? [v.category] : []),
           minPlayers: v.minPlayers || 1,
           maxPlayers: v.maxPlayers || null,
           intensity: v.intensity || 3,
-          minutes: v.minutes || 5,
+          materials: Array.isArray(v.materials) ? [...v.materials] : (v.materials ? [v.materials].flat().filter(Boolean) : []),
+          duration: v.duration || v.minutes || 5,
           images: v.images ? [...v.images] : [],
           video: v.video || ''
         }
@@ -212,6 +248,16 @@ export default {
       }
     }
 
+    // Toggle materiaal aan/uit
+    function toggleMaterial(m) {
+      const idx = form.materials.indexOf(m)
+      if (idx > -1) {
+        form.materials.splice(idx, 1)
+      } else {
+        form.materials.push(m)
+      }
+    }
+
     function save() {
       if (!form.name) {
         alert('Naam is verplicht')
@@ -225,6 +271,8 @@ export default {
 
       // Zorg ervoor dat de id correct wordt meegestuurd
       const saveData = { ...form }
+      // form.materials is al de geselecteerde array
+
       if (props.initial && props.initial.id) {
         saveData.id = props.initial.id
       } else {
@@ -239,9 +287,11 @@ export default {
     return {
       form,
       imageToAdd,
+      materialOptions,
       save,
       categories: props.categories,
-      toggleCategory
+      toggleCategory,
+      toggleMaterial
     }
   }
 }

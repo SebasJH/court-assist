@@ -17,9 +17,9 @@
               <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-lg">📷</div>
               <div class="flex-1">
                 <div class="font-bold text-gray-800">{{ex.name}}</div>
-                <div class="text-sm text-gray-600">{{ex.short}}</div>
+                <div class="text-sm text-gray-600">{{ex.shortDescription}}</div>
               </div>
-              <div class="text-sm font-medium text-gray-700">{{ex.minutes}}m</div>
+              <div class="text-sm font-medium text-gray-700">{{ex.duration}}m</div>
             </div>
           </div>
         </div>
@@ -31,14 +31,14 @@
             <strong class="text-gray-700">Training: </strong>
             <input v-model="programName" placeholder="Naam training" class="form-input w-48" />
           </div>
-          <div class="text-sm font-medium text-gray-700">Totale tijd: {{totalMinutes}} min</div>
+          <div class="text-sm font-medium text-gray-700">Totale tijd: {{totalDuration}} min</div>
         </div>
 
         <draggable v-model="program" group="exercises" item-key="id" class="min-h-32">
           <template #item="{element, index}">
             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-2">
               <div class="flex-1 text-gray-800">{{index+1}}. {{element.name}}</div>
-              <div class="text-sm font-medium text-gray-600 mr-3">{{element.minutes}}m</div>
+              <div class="text-sm font-medium text-gray-600 mr-3">{{element.duration}}m</div>
               <button @click="removeAt(index)" class="text-red-500 hover:text-red-700 font-bold">×</button>
             </div>
           </template>
@@ -79,13 +79,13 @@ export default {
 
     function removeAt(i){ program.value.splice(i,1) }
 
-    const totalMinutes = computed(()=> program.value.reduce((s,e)=>s + (Number(e.minutes)||0), 0))
+    const totalDuration = computed(()=> program.value.reduce((s,e)=>s + (Number(e.duration)||0), 0))
 
     function saveProgram(){
-      alert(`Training "${programName.value}" opgeslagen met ${program.value.length} oefeningen (${totalMinutes.value} min)`)
+      alert(`Training "${programName.value}" opgeslagen met ${program.value.length} oefeningen (${totalDuration.value} min)`)
     }
 
-    return { exercises, program, programName, totalMinutes, removeAt, onDragStart, onAdd, saveProgram }
+    return { exercises, program, programName, totalDuration, removeAt, onDragStart, onAdd, saveProgram }
   }
 }
 </script>

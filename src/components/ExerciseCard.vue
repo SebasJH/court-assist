@@ -61,7 +61,7 @@
 
 
       <div class="exercise-details h-full flex flex-col justify-between">
-        <div class="text-sm text-gray-600">{{ exercise.short }}</div>
+        <div class="text-sm text-gray-600">{{ exercise.shortDescription }}</div>
         <div class="flex flex-wrap items-center gap-x-1 mt-2">
 
           <div class="exercise-players bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
@@ -74,7 +74,7 @@
           <div class="exercise-duration bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
             <TimerReset class="h-4 w-fit"/>
             <div>
-              {{ exercise.minutes }}min
+              {{ exercise.duration }}min
             </div>
           </div>
 
