@@ -163,7 +163,7 @@ export default {
         intensity: 2,
         materials: [],
         duration: 5,
-        images: [],
+        icon: 'Target',
         video: ''
       })
       store.addExercise({
@@ -176,7 +176,7 @@ export default {
         intensity: 4,
         materials: [],
         duration: 6,
-        images: [],
+        icon: 'Shield',
         video: ''
       })
     }

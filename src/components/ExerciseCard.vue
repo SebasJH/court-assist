@@ -3,7 +3,13 @@
     <div class="flex flex-col gap-y-4 h-full">
       <div class="flex items-start gap-4">
         <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
-          Image
+          <component
+            v-if="exercise.icon || exercise.imageIcon"
+            :is="exercise.icon || exercise.imageIcon"
+            class="w-8 h-8 text-gray-700"
+            :aria-label="`Icon ${exercise.icon || exercise.imageIcon}`"
+          />
+          <TrafficCone v-else class="w-8 h-8 text-gray-400" aria-label="Default icon" />
         </div>
 
         <div class="flex-1">
