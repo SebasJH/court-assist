@@ -52,7 +52,7 @@
     </div>
 
     <!-- Cards -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+    <transition-group name="exercise-list" tag="div" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
       <exercise-card
           v-for="ex in filtered"
           :key="ex.id"
@@ -62,7 +62,7 @@
           @duplicate="onDuplicate"
           @toggle-fav="onToggleFav"
       />
-    </div>
+    </transition-group>
 
     <!-- Modal -->
     <modal v-if="showForm" @close="closeForm">
@@ -205,4 +205,33 @@ export default {
 </script>
 
 <style scoped>
+/* Smooth movement for reordering and insertion */
+.exercise-list-move {
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+/* Enter animation for new items */
+.exercise-list-enter-active {
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+.exercise-list-enter-from {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+}
+.exercise-list-enter-to {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+/* Optional leave animation (e.g., on delete) */
+.exercise-list-leave-active {
+  transition: transform 180ms ease, opacity 180ms ease;
+  position: absolute; /* avoid layout gap during leave */
+}
+.exercise-list-leave-from {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.exercise-list-leave-to {
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+}
 </style>
