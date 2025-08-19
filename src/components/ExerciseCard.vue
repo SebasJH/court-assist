@@ -39,7 +39,7 @@
             :title="exercise.favorite ? 'Verwijder uit favorieten' : 'Markeer als favoriet'"
             @click.stop="toggleFav"
           >
-            <Star :class="exercise.favorite ? 'w-5 h-5 text-yellow-500' : 'w-5 h-5 text-gray-400'" :fill="exercise.favorite ? 'currentColor' : 'none'" :stroke="exercise.favorite ? 'currentColor' : 'currentColor'" />
+            <Star :class="exercise.favorite ? 'w-5 h-5 text-yellow-500' : 'w-5 h-5 '" :fill="exercise.favorite ? 'currentColor' : 'none'" :stroke="exercise.favorite ? 'currentColor' : 'currentColor'" />
           </button>
 
           <!-- Menu button wrapper is relative so dropdown anchors to the dots -->
