@@ -1,7 +1,8 @@
 <template>
-  <div class="exercise-card relative">
+  <div class="exercise-card relative cursor-pointer" role="link" :aria-label="`Open ${exercise.name}`" @click="goToDetail" tabindex="0" @keydown.enter.prevent="goToDetail" :class="menuOpen ? 'z-50' : ''">
     <div class="flex flex-col h-full">
       <div class="flex items-start gap-3">
+
         <!-- Icon -->
         <div class="bg-gray-100 w-16 h-16 rounded-lg flex justify-center items-center">
           <component
@@ -45,7 +46,7 @@
           <div class="relative">
             <div
               class="menu w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors duration-200 cursor-pointer"
-              @click="toggleMenu"
+              @click.stop="toggleMenu"
               ref="menuButtonRef"
             >
               <Ellipsis />
@@ -54,7 +55,8 @@
             <div
               v-if="menuOpen"
               ref="menuRef"
-              :class="['absolute top-full mt-2 w-40 bg-white border border-gray-200 rounded shadow-lg flex flex-col z-10', alignRight ? 'right-0' : 'left-0']"
+              @click.stop
+              :class="['absolute top-full mt-2 w-40 bg-white border border-gray-200 rounded shadow-lg flex flex-col z-50', alignRight ? 'right-0' : 'left-0']"
             >
               <button @click="onEdit" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 py-2 hover:bg-gray-100">
                 <Pencil class="w-fit h-4" />
@@ -98,7 +100,7 @@
               <div>{{ exercise.intensity }}/5</div>
             </div>
           </div>
-          <router-link :to="`/oefening/${slug}`" class="text-blue-600 hover:text-blue-700 hover:underline text-sm font-medium">Lees meer →</router-link>
+          <router-link :to="`/oefening/${slug}`" class="text-blue-600 hover:text-blue-700 hover:underline text-sm font-medium" @click.stop>Lees meer →</router-link>
         </div>
       </div>
     </div>
@@ -107,6 +109,7 @@
 
 <script setup>
 import {ref, onMounted, onBeforeUnmount, nextTick, computed} from 'vue'
+import { useRouter } from 'vue-router'
 
 const emit = defineEmits(['edit','duplicate','delete','toggle-fav'])
 
@@ -199,6 +202,13 @@ const slug = computed(() => {
 function toggleFav() {
   emit('toggle-fav', props.exercise.id)
 }
+
+const router = useRouter()
+function goToDetail() {
+  if (!props.exercise) return
+  router.push(`/oefening/${slug.value}`)
+}
+
 </script>
 
 

@@ -1,11 +1,11 @@
 <template>
-  <div class="container mx-auto px-4 py-6">
-    <div class="flex justify-between items-center mb-8">
-      <div class="text-3xl font-bold text-gray-800">Oefeningen</div>
-      <div class="controls">
+  <PageHeader title="Oefeningen">
+      <template #actions>
         <button class="btn-primary" @click="openForm()">+ Nieuwe oefening</button>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
+
+    <div class="container mx-auto px-4 py-6">
 
     <!-- Filters -->
     <div class="bg-white rounded-lg shadow-md p-6 mb-6">
@@ -80,11 +80,12 @@
 import ExerciseCard from '../components/ExerciseCard.vue'
 import ExerciseForm from '../components/ExerciseForm.vue'
 import Modal from '../components/Modal.vue'
+import PageHeader from '../components/PageHeader.vue'
 import store from '../store'
 import { ref, computed } from 'vue'
 
 export default {
-  components: { ExerciseCard, ExerciseForm, Modal },
+  components: { ExerciseCard, ExerciseForm, Modal, PageHeader },
   setup() {
     // Backfill dateCreated for any pre-existing exercises missing it (defensive, non-destructive)
     store.state.exercises.forEach(e => { if (!e.dateCreated) e.dateCreated = new Date().toISOString() })

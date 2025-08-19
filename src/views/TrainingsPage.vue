@@ -1,8 +1,7 @@
 <template>
+  <PageHeader title="Trainingen" />
+
   <div class="container mx-auto px-4 py-6">
-    <div class="mb-8">
-      <div class="text-3xl font-bold text-gray-800">Trainingen</div>
-    </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <div class="library bg-white rounded-lg shadow-md p-6">
@@ -55,8 +54,10 @@
 <script>
 import store from '../store'
 import { ref, computed } from 'vue'
+import PageHeader from '../components/PageHeader.vue'
 
 export default {
+  components: { PageHeader },
   setup(){
     // Ensure sample data exists even if user lands here first
     const exercises = store.state.exercises

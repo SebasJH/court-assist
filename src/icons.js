@@ -5,6 +5,7 @@ import {
     Trash,
     Star,
 
+    ArrowLeft,
     ArrowLeftToLine,
     ArrowRightToLine,
 
@@ -41,6 +42,7 @@ export function registerIcons(app) {
     app.component('Trash', Trash)
     app.component('Star', Star)
 
+    app.component('ArrowLeft', ArrowLeft)
     app.component('ArrowLeftToLine', ArrowLeftToLine)
     app.component('ArrowRightToLine', ArrowRightToLine)
 
