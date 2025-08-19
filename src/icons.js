@@ -1,11 +1,45 @@
 // src/icons.js
-import { Copy, Pencil, Trash, ArrowLeftToLine, ArrowRightToLine, TrafficCone, Dumbbell, ClipboardList, Shirt, Repeat2, Ellipsis, X, Users, TimerReset, Zap, Shield, BicepsFlexed, Crown, Medal, Trophy, Eye, Gauge, Speech, Target, Hourglass, Star } from 'lucide-vue-next'
+import {
+    Copy,
+    Pencil,
+    Trash,
+    Star,
+
+    ArrowLeftToLine,
+    ArrowRightToLine,
+
+    TrafficCone,
+    Dumbbell,
+    ClipboardList,
+    Shirt,
+    Repeat2,
+
+    Ellipsis,
+    X,
+    Users,
+    TimerReset,
+    Zap,
+
+    Shield,
+    BicepsFlexed,
+    Crown,
+    Medal,
+    Trophy,
+    Eye,
+    Gauge,
+    Activity,
+    Speech,
+    Target,
+    Hourglass
+   }
+    from 'lucide-vue-next'
 
 export function registerIcons(app) {
     // UI icons from Lucide
     app.component('Copy', Copy)
     app.component('Pencil', Pencil)
     app.component('Trash', Trash)
+    app.component('Star', Star)
 
     app.component('ArrowLeftToLine', ArrowLeftToLine)
     app.component('ArrowRightToLine', ArrowRightToLine)
@@ -30,8 +64,9 @@ export function registerIcons(app) {
     app.component('Trophy', Trophy)
     app.component('Eye', Eye)
     app.component('Gauge', Gauge)
+    app.component('Activity', Activity)
     app.component('Speech', Speech)
     app.component('Hourglass', Hourglass)
-    app.component('Star', Star)
+
 
 }

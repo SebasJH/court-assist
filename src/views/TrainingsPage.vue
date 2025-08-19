@@ -12,7 +12,7 @@
         </div>
 
         <div class="flex flex-col gap-3">
-          <div v-for="ex in exercises" :key="ex.id" class="exercise-card cursor-move" draggable="true" @dragstart="onDragStart(ex)">
+          <div v-for="ex in exercises" :key="ex.id" class="exercise-card cursor-move" draggable="true" @dragstart="onDragStart(ex, $event)">
             <div class="flex items-center gap-3">
               <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-lg">📷</div>
               <div class="flex-1">
@@ -34,15 +34,14 @@
           <div class="text-sm font-medium text-gray-700">Totale tijd: {{totalDuration}} min</div>
         </div>
 
-        <draggable v-model="program" group="exercises" item-key="id" class="min-h-32">
-          <template #item="{element, index}">
-            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-2">
-              <div class="flex-1 text-gray-800">{{index+1}}. {{element.name}}</div>
-              <div class="text-sm font-medium text-gray-600 mr-3">{{element.duration}}m</div>
-              <button @click="removeAt(index)" class="text-red-500 hover:text-red-700 font-bold">×</button>
-            </div>
-          </template>
-        </draggable>
+        <!-- Program list with HTML5 DnD drop support -->
+        <div class="min-h-32" @dragover.prevent @drop="onDrop">
+          <div v-for="(element, index) in program" :key="element.id" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-2">
+            <div class="flex-1 text-gray-800">{{index+1}}. {{element.name}}</div>
+            <div class="text-sm font-medium text-gray-600 mr-3">{{element.duration}}m</div>
+            <button @click="removeAt(index)" class="text-red-500 hover:text-red-700 font-bold">×</button>
+          </div>
+        </div>
 
         <div class="flex gap-3 mt-6">
           <button class="btn-primary" @click="saveProgram">Opslaan</button>
@@ -55,26 +54,35 @@
 
 <script>
 import store from '../store'
-import draggable from 'vuedraggable'
 import { ref, computed } from 'vue'
 
 export default {
-  components:{draggable},
   setup(){
+    // Ensure sample data exists even if user lands here first
     const exercises = store.state.exercises
     const program = ref([])
     const programName = ref('Nieuwe training')
 
-    function onDragStart(ex){
-      // using HTML5 drag/drop is not strictly necessary with vuedraggable, but we keep it simple
+    const draggingId = ref(null)
+
+    function onDragStart(ex, evt){
+      draggingId.value = ex.id
+      if (evt && evt.dataTransfer) {
+        try { evt.dataTransfer.setData('text/plain', String(ex.id)) } catch(_) {}
+      }
     }
 
-    function onAdd(evt){
-      // when added from outside, evt.item is the element; ensure it's a shallow copy
-      const added = evt.item.__draggable_context.element
-      // make sure we don't keep reference to store element (so edits later don't affect library)
+    function onDrop(evt){
+      let id = draggingId.value
+      if (evt && evt.dataTransfer) {
+        const data = evt.dataTransfer.getData('text/plain')
+        if (data) id = Number(data)
+      }
+      const added = exercises.find(e => e.id === Number(id))
+      if (!added) return
       const copy = { ...added }
-      program.value.splice(evt.newIndex, 1, copy) // replace with copy
+      program.value.push(copy)
+      draggingId.value = null
     }
 
     function removeAt(i){ program.value.splice(i,1) }
@@ -85,7 +93,7 @@ export default {
       alert(`Training "${programName.value}" opgeslagen met ${program.value.length} oefeningen (${totalDuration.value} min)`)
     }
 
-    return { exercises, program, programName, totalDuration, removeAt, onDragStart, onAdd, saveProgram }
+    return { exercises, program, programName, totalDuration, removeAt, onDragStart, onDrop }
   }
 }
 </script>

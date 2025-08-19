@@ -218,6 +218,7 @@ export default {
       'Shirt',
       'Eye',
       'Speech',
+      'Activity',
       'Gauge',
       'Hourglass',
     ]

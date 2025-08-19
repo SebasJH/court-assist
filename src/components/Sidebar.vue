@@ -28,7 +28,7 @@
           to="/oefeningen"
           class="nav-link items-center transition-all duration-300 ease-in-out"
           :class="[
-            $route.path.startsWith('/oefeningen') ? 'active' : '',
+            ($route.path.startsWith('/oefeningen') || $route.path.startsWith('/oefening')) ? 'active' : '',
             collapsed ? 'justify-center px-0 py-3 gap-0' : 'gap-2 px-4 py-3'
           ]"
       >
@@ -63,7 +63,9 @@
     <!-- Footer -->
     <div class="p-4 border-t border-gray-200">
       <button v-if="!collapsed" class="w-full mb-3 btn-secondary text-sm">Switch sport</button>
-      <div class="flex items-center" :class="collapsed ? 'justify-center' : 'gap-3'">
+
+      <!-- Profile -->
+      <div class="flex items-center justify-center" :class="collapsed ? '' : 'gap-3'">
         <div class="w-9 h-9 bg-blue-200 rounded-full flex items-center justify-center text-blue-800 font-medium">
           SH
         </div>

@@ -77,22 +77,28 @@
 
       <!-- Details -->
       <div class="exercise-details mt-6 h-full flex flex-col gap-y-4">
+
+        <!-- Description -->
         <div class="flex-1 text-sm leading-relaxed text-gray-600">{{ exercise.description || exercise.shortDescription }}</div>
-        <div class="flex flex-wrap items-center gap-x-1.5">
-          <div class="exercise-players bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
-            <Users class="h-4 w-fit" />
-            <div>
-              {{ exercise.minPlayers }}<span v-if="exercise.maxPlayers">-{{ exercise.maxPlayers }}</span>
+
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+          <div class="flex flex-wrap items-center gap-x-1.5">
+            <div class="exercise-players bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
+              <Users class="h-4 w-fit" />
+              <div>
+                {{ exercise.minPlayers }}<span v-if="exercise.maxPlayers">-{{ exercise.maxPlayers }}</span>
+              </div>
+            </div>
+            <div class="exercise-duration bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
+              <TimerReset class="h-4 w-fit" />
+              <div>{{ exercise.duration }}min</div>
+            </div>
+            <div class="exercise-intensity bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
+              <Zap class="h-4 w-fit" />
+              <div>{{ exercise.intensity }}/5</div>
             </div>
           </div>
-          <div class="exercise-duration bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
-            <TimerReset class="h-4 w-fit" />
-            <div>{{ exercise.duration }}min</div>
-          </div>
-          <div class="exercise-intensity bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
-            <Zap class="h-4 w-fit" />
-            <div>{{ exercise.intensity }}/5</div>
-          </div>
+          <router-link :to="`/oefening/${slug}`" class="text-blue-600 hover:text-blue-700 hover:underline text-sm font-medium">Lees meer →</router-link>
         </div>
       </div>
     </div>
@@ -100,7 +106,7 @@
 </template>
 
 <script setup>
-import {ref, onMounted, onBeforeUnmount, nextTick} from 'vue'
+import {ref, onMounted, onBeforeUnmount, nextTick, computed} from 'vue'
 
 const emit = defineEmits(['edit','duplicate','delete','toggle-fav'])
 
@@ -177,6 +183,17 @@ onMounted(() => {
 })
 onBeforeUnmount(() => {
   document.removeEventListener('mousedown', handleClickOutside)
+})
+
+const slug = computed(() => {
+  const name = props.exercise?.name || ''
+  return String(name)
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
 })
 
 function toggleFav() {
