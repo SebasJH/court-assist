@@ -8,7 +8,7 @@
     <!-- Scrollbare content -->
     <div
         ref="modalContent"
-        class="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6"
+        class="relative bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6"
         role="dialog"
         aria-modal="true"
     >

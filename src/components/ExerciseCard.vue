@@ -125,14 +125,14 @@ const alignRight = ref(false)
 function computeMenuAlignment() {
   try {
     const btn = menuButtonRef.value
-    if (!btn) return
+    if (!btn) { alignRight.value = false; return }
     const rect = btn.getBoundingClientRect()
     const viewportWidth = window.innerWidth || document.documentElement.clientWidth
-    const approxMenuWidth = 200 // w-40 (~160px) + padding/shadow safety
+    const measuredMenuWidth = menuRef.value?.offsetWidth || 160 // w-40 = 10rem fallback
     const spaceRight = viewportWidth - rect.right
     const spaceLeft = rect.left
-    // If not enough space on the right, align to right (open leftwards)
-    if (spaceRight < approxMenuWidth && spaceLeft > approxMenuWidth / 2) {
+    // Default is left-0; flip to right if not enough space on the right and there is room on the left
+    if (spaceRight < measuredMenuWidth && spaceLeft > measuredMenuWidth / 2) {
       alignRight.value = true
     } else {
       alignRight.value = false
@@ -181,11 +181,19 @@ function handleClickOutside(event) {
   menuOpen.value = false
 }
 
+function handleResizeOrScroll() {
+  if (menuOpen.value) computeMenuAlignment()
+}
+
 onMounted(() => {
   document.addEventListener('mousedown', handleClickOutside)
+  window.addEventListener('resize', handleResizeOrScroll)
+  window.addEventListener('scroll', handleResizeOrScroll, true)
 })
 onBeforeUnmount(() => {
   document.removeEventListener('mousedown', handleClickOutside)
+  window.removeEventListener('resize', handleResizeOrScroll)
+  window.removeEventListener('scroll', handleResizeOrScroll, true)
 })
 
 const slug = computed(() => {

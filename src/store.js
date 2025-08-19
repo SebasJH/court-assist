@@ -2,7 +2,8 @@ import { reactive, computed } from 'vue'
 
 const state = reactive({
     exercises: [],
-    nextId: 1
+    nextId: 1,
+    notifications: []
 })
 
 // Migration: backfill dateCreated for existing exercises without it
@@ -68,11 +69,28 @@ function toggleFavorite(id) {
     if (e) e.favorite = !e.favorite
 }
 
+function removeNotification(id) {
+    const idx = state.notifications.findIndex(n => n.id === id)
+    if (idx !== -1) state.notifications.splice(idx, 1)
+}
+
+function notify(message, type = 'success', timeout = 2500) {
+    const id = Math.round(Date.now() + Math.random() * 1000)
+    const n = { id, message, type }
+    state.notifications.push(n)
+    if (timeout && timeout > 0) {
+        setTimeout(() => removeNotification(id), timeout)
+    }
+    return id
+}
+
 export default {
     state,
     addExercise,
     updateExercise,
     deleteExercise,
     duplicateExercise,
-    toggleFavorite
+    toggleFavorite,
+    notify,
+    removeNotification
 }

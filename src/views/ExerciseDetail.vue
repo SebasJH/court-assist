@@ -29,7 +29,7 @@
           :title="exercise.favorite ? 'Verwijder uit favorieten' : 'Markeer als favoriet'"
           @click.stop="toggleFav"
         >
-          <Star :class="exercise.favorite ? 'w-5 h-5 text-yellow-500' : 'w-5 h-5 text-gray-400'" :fill="exercise.favorite ? 'currentColor' : 'none'" :stroke="exercise.favorite ? 'currentColor' : 'currentColor'" />
+          <Star :class="exercise.favorite ? 'w-5 h-5 text-yellow-500' : 'w-5 h-5 '" :fill="exercise.favorite ? 'currentColor' : 'none'" :stroke="exercise.favorite ? 'currentColor' : 'currentColor'" />
         </button>
         <!-- Menu button and dropdown -->
         <div class="relative">
@@ -156,6 +156,7 @@ function onSave(payload) {
     store.updateExercise(exercise.value.id, payload)
   }
   closeForm()
+  store.notify('Oefening opgeslagen', 'success', 2500)
 }
 
 // Header actions: favorite + menu
@@ -194,6 +195,7 @@ function toggleFav() {
 function onDuplicate() {
   if (!exercise.value) return
   store.duplicateExercise(exercise.value.id)
+  store.notify('Oefening gedupliceerd', 'success', 2500)
   menuOpen.value = false
 }
 
@@ -201,6 +203,7 @@ function onDelete() {
   if (!exercise.value) return
   if (confirm('Weet je het zeker?')) {
     store.deleteExercise(exercise.value.id)
+    store.notify('Oefening succesvol verwijderd', 'error', 2500)
     menuOpen.value = false
     router.push('/oefeningen')
   }

@@ -74,10 +74,15 @@ export default {
         if (!btn) { alignRight.value = false; return }
         const rect = btn.getBoundingClientRect()
         const viewportWidth = window.innerWidth || document.documentElement.clientWidth
-        const menuWidth = 256 // w-64 = 16rem
-        const spaceRight = viewportWidth - rect.left
-        // Default is left-0; flip to right if not enough space to the right
-        alignRight.value = spaceRight < menuWidth
+        const measuredMenuWidth = menuRef.value?.offsetWidth || 256 // fallback to w-64
+        const spaceRight = viewportWidth - rect.right
+        const spaceLeft = rect.left
+        // Default is left-0; flip to right if not enough space on the right and there is room on the left
+        if (spaceRight < measuredMenuWidth && spaceLeft > measuredMenuWidth / 2) {
+          alignRight.value = true
+        } else {
+          alignRight.value = false
+        }
       } catch (e) {
         alignRight.value = false
       }
@@ -105,8 +110,20 @@ export default {
       open.value = false
     }
 
-    onMounted(() => document.addEventListener('mousedown', handleOutside))
-    onBeforeUnmount(() => document.removeEventListener('mousedown', handleOutside))
+    function handleResizeOrScroll() {
+      if (open.value) computeAlignment()
+    }
+
+    onMounted(() => {
+      document.addEventListener('mousedown', handleOutside)
+      window.addEventListener('resize', handleResizeOrScroll)
+      window.addEventListener('scroll', handleResizeOrScroll, true)
+    })
+    onBeforeUnmount(() => {
+      document.removeEventListener('mousedown', handleOutside)
+      window.removeEventListener('resize', handleResizeOrScroll)
+      window.removeEventListener('scroll', handleResizeOrScroll, true)
+    })
 
     return { open, menuRef, containerRef, toggle, setSort, isActive, alignRight }
   }

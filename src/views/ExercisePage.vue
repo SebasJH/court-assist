@@ -34,17 +34,18 @@
       </div>
     </div>
 
-    <!-- Filters bar (collapsible) -->
-    <FiltersBar
-      v-show="showFilters"
-      :categories="categories"
-      :category="filter.category"
-      @update:category="val => filter.category = val"
-      :players="filter.players"
-      @update:players="val => filter.players = val"
-      :intensity="filter.intensity"
-      @update:intensity="val => filter.intensity = val"
-    />
+    <!-- Filters bar (collapsible with animation without display:none) -->
+    <div class="filters-collapsible" :class="{ 'is-open': showFilters }" :aria-hidden="!showFilters">
+      <FiltersBar
+        :categories="categories"
+        :category="filter.category"
+        @update:category="val => filter.category = val"
+        :players="filter.players"
+        @update:players="val => filter.players = val"
+        :intensity="filter.intensity"
+        @update:intensity="val => filter.intensity = val"
+      />
+    </div>
 
     <!-- Cards -->
     <transition-group name="exercise-list" tag="div" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -117,10 +118,19 @@ export default {
         store.addExercise(payload)
       }
       closeForm()
+      store.notify('Oefening opgeslagen', 'success', 2500)
     }
 
-    function onDelete(id) { if (confirm('Weet je het zeker?')) store.deleteExercise(id) }
-    function onDuplicate(id) { store.duplicateExercise(id) }
+    function onDelete(id) {
+      if (confirm('Weet je het zeker?')) {
+        store.deleteExercise(id)
+        store.notify('Oefening succesvol verwijderd', 'error', 2500)
+      }
+    }
+    function onDuplicate(id) {
+      store.duplicateExercise(id)
+      store.notify('Oefening gedupliceerd', 'success', 2500)
+    }
     function onToggleFav(id) { store.toggleFavorite(id) }
 
     // Helper: kijkt of spelers-bereiken overlappen (houdt rekening met maxPlayers = null)
@@ -279,4 +289,6 @@ export default {
   opacity: 0;
   transform: translateY(8px) scale(0.98);
 }
+.filters-collapsible { overflow: hidden; max-height: 0; opacity: 0; transform: translateY(-4px); transition: max-height 220ms ease, opacity 220ms ease, transform 220ms ease; }
+.filters-collapsible.is-open { max-height: 1000px; opacity: 1; transform: translateY(0); }
 </style>
