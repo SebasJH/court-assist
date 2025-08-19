@@ -35,10 +35,30 @@
 
         <!-- Program list with HTML5 DnD drop support -->
         <div class="min-h-32" @dragover.prevent @drop="onDrop">
-          <div v-for="(element, index) in program" :key="element.id" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-2">
-            <div class="flex-1 text-gray-800">{{index+1}}. {{element.name}}</div>
-            <div class="text-sm font-medium text-gray-600 mr-3">{{element.duration}}m</div>
-            <button @click="removeAt(index)" class="text-red-500 hover:text-red-700 font-bold">×</button>
+          <div v-for="(element, index) in program" :key="element.id" class="p-3 bg-gray-50 rounded-lg mb-2">
+            <div class="flex items-center justify-between">
+              <div class="flex-1 text-gray-800">{{index+1}}. {{element.name}}</div>
+              <div class="text-sm font-medium text-gray-600 mr-3">{{element.duration}}m</div>
+              <button @click="removeAt(index)" class="text-red-500 hover:text-red-700 font-bold">×</button>
+            </div>
+            <div class="mt-2 flex items-center gap-1.5 flex-wrap">
+              <div v-if="showPlayersFor(element)" class="bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
+                <Users class="h-4 w-fit" />
+                <div>{{ playersLabelFor(element) }}</div>
+              </div>
+              <div v-if="hasDurationFor(element)" class="bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
+                <TimerReset class="h-4 w-fit" />
+                <div>{{ element.duration }}min</div>
+              </div>
+              <div v-if="hasCourtFor(element)" class="bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
+                <Dribbble class="h-4 w-fit" />
+                <div>{{ courtLabelFor(element) }}</div>
+              </div>
+              <div class="bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
+                <Zap class="h-4 w-fit" />
+                <div>{{ element.intensity }}/5</div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -94,7 +114,38 @@ export default {
       alert(`Training "${programName.value}" opgeslagen met ${program.value.length} oefeningen (${totalDuration.value} min)`)
     }
 
-    return { exercises, program, programName, totalDuration, removeAt, onDragStart, onDrop }
+    // Helpers for showing details per exercise in the program
+    function isNum(v){ return typeof v === 'number' && !Number.isNaN(v) }
+    function showPlayersFor(ex){
+      if (!ex) return false
+      return isNum(ex.minPlayers) || isNum(ex.maxPlayers)
+    }
+    function playersLabelFor(ex){
+      if (!ex) return ''
+      const min = isNum(ex.minPlayers) ? ex.minPlayers : null
+      const max = isNum(ex.maxPlayers) ? ex.maxPlayers : null
+      if (min !== null && max !== null) return `${min}-${max}`
+      if (min !== null) return `${min} min`
+      if (max !== null) return `${max} max`
+      return ''
+    }
+    function hasDurationFor(ex){
+      return typeof ex?.duration === 'number' && ex.duration > 0
+    }
+    function hasCourtFor(ex){
+      return typeof ex?.court === 'string' && ex.court.trim().length > 0
+    }
+    function courtLabelFor(ex){
+      const v = (ex?.court || '').toString().trim()
+      if (!v) return ''
+      const norm = v.toLowerCase()
+      if (norm === 'halfcourt' || norm === 'half court') return 'Half'
+      if (norm === 'fullcourt' || norm === 'full court') return 'Full'
+      return v
+    }
+
+    return { exercises, program, programName, totalDuration, removeAt, onDragStart, onDrop,
+      showPlayersFor, playersLabelFor, hasDurationFor, hasCourtFor, courtLabelFor }
   }
 }
 </script>

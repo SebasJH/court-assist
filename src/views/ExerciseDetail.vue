@@ -21,7 +21,9 @@
       </div>
     </template>
     <template #actions>
+
       <div v-if="exercise" class="relative flex items-center gap-2" ref="actionsRef">
+        
         <!-- Favorite toggle -->
         <button
           class="star flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors duration-200 w-10 h-10 cursor-pointer"
@@ -31,6 +33,7 @@
         >
           <Star :class="exercise.favorite ? 'w-5 h-5 text-yellow-500' : 'w-5 h-5 '" :fill="exercise.favorite ? 'currentColor' : 'none'" :stroke="exercise.favorite ? 'currentColor' : 'currentColor'" />
         </button>
+        
         <!-- Menu button and dropdown -->
         <div class="relative">
           <div class="menu w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors duration-200 cursor-pointer" @click="toggleMenu" ref="menuButtonRef">
@@ -68,14 +71,7 @@
 
     <!-- Delete confirm modal -->
     <modal v-if="showDeleteModal" @close="cancelDelete">
-      <div class="p-2">
-        <h3 class="text-lg font-semibold text-gray-800 mb-2">Bevestig verwijderen</h3>
-        <p class="text-gray-700 mb-6">Je staat op het punt "{{ exercise.name }}" te verwijderen, weet je dit zeker?</p>
-        <div class="flex justify-end gap-3">
-          <button class="px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-800 hover:bg-gray-50" @click="cancelDelete">Annuleer</button>
-          <button class="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700" @click="confirmDelete">Verwijder</button>
-        </div>
-      </div>
+      <DeleteConfirm :name="exercise.name" @cancel="cancelDelete" @confirm="confirmDelete" />
     </modal>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -94,10 +90,23 @@
       <div class="lg:col-span-1">
         <div class="bg-white rounded-lg shadow-md p-6">
           <h2 class="text-lg font-semibold text-gray-800 mb-3">Details</h2>
-          <div class="flex flex-col gap-2 text-gray-800">
-            <div class="flex items-center gap-2"><Users class="w-4 h-4" /> <span>Spelers: {{ exercise.minPlayers }}<span v-if="exercise.maxPlayers">-{{ exercise.maxPlayers }}</span></span></div>
-            <div class="flex items-center gap-2"><TimerReset class="w-4 h-4" /> <span>Duur: {{ exercise.duration }} min</span></div>
-            <div class="flex items-center gap-2"><Zap class="w-4 h-4" /> <span>Intensiteit: {{ exercise.intensity }}/5</span></div>
+          <div class="flex flex-col gap-1.5  text-gray-800">
+            <div v-if="showPlayers" class="bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center w-fit gap-1">
+              <Users class="w-4 h-4" />
+              <div>{{ playersLabel }}</div>
+            </div>
+            <div v-if="hasDuration" class="bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center w-fit gap-1">
+              <TimerReset class="w-4 h-4" />
+              <div>{{ exercise.duration }} minuten</div>
+            </div>
+            <div v-if="hasCourt" class="bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center w-fit gap-1">
+              <Dribbble class="w-4 h-4" />
+              <div>{{ courtLabel }}</div>
+            </div>
+            <div class="bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center w-fit gap-1">
+              <Zap class="w-4 h-4" />
+              <div>{{ exercise.intensity }}/5</div>
+            </div>
           </div>
 
           <div v-if="exercise.materials && exercise.materials.length" class="mt-4">
@@ -128,6 +137,8 @@ import store from '../store'
 import PageHeader from '../components/PageHeader.vue'
 import Modal from '../components/Modal.vue'
 import ExerciseForm from '../components/ExerciseForm.vue'
+import DeleteConfirm from '../components/DeleteConfirm.vue'
+import { EXERCISE_CATEGORIES } from '../constants'
 
 function slugify(str) {
   return String(str || '')
@@ -149,10 +160,33 @@ const exercise = computed(() => {
   return list.find(e => slugify(e.name) === target)
 })
 
+// Players and duration display logic
+const minPlayersVal = computed(() => (typeof exercise.value?.minPlayers === 'number') ? exercise.value.minPlayers : null)
+const maxPlayersVal = computed(() => (typeof exercise.value?.maxPlayers === 'number') ? exercise.value.maxPlayers : null)
+const showPlayers = computed(() => minPlayersVal.value !== null || maxPlayersVal.value !== null)
+const playersLabel = computed(() => {
+  const min = minPlayersVal.value
+  const max = maxPlayersVal.value
+  if (min !== null && max !== null) return `${min} - ${max}`
+  if (min !== null) return `${min} minimaal`
+  if (max !== null) return `${max} maximaal`
+  return ''
+})
+const hasDuration = computed(() => typeof exercise.value?.duration === 'number' && exercise.value.duration > 0)
+const hasCourt = computed(() => typeof exercise.value?.court === 'string' && exercise.value.court.trim().length > 0)
+const courtLabel = computed(() => {
+  const v = (exercise.value?.court || '').toString().trim()
+  if (!v) return ''
+  const norm = v.toLowerCase()
+  if (norm === 'halfcourt' || norm === 'half court') return 'Half court'
+  if (norm === 'fullcourt' || norm === 'full court') return 'Full court'
+  return v
+})
+
 // Edit modal state
 const showForm = ref(false)
 const showDeleteModal = ref(false)
-const categories = ['Dribbelen', 'Schieten', 'Finishing', 'Verdedigen', 'Passen', 'Rebounden', 'Transition', 'Conditie', 'Warm up']
+const categories = EXERCISE_CATEGORIES
 
 function openForm() {
   showForm.value = true

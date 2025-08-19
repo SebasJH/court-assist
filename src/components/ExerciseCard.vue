@@ -75,8 +75,6 @@
         </div>
       </div>
 
-
-
       <!-- Details -->
       <div class="exercise-details mt-6 h-full flex flex-col gap-y-4">
 
@@ -85,19 +83,21 @@
 
         <div class="flex items-center justify-between gap-2 flex-wrap">
           <div class="flex flex-wrap items-center gap-x-1.5">
-            <div class="exercise-players bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
+            <div v-if="showPlayers" class="exercise-players bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
               <Users class="h-4 w-fit" />
-              <div>
-                {{ exercise.minPlayers }}<span v-if="exercise.maxPlayers">-{{ exercise.maxPlayers }}</span>
-              </div>
+              <div>{{ playersLabel }}</div>
             </div>
-            <div class="exercise-duration bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
+            <div v-if="hasDuration" class="exercise-duration bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
               <TimerReset class="h-4 w-fit" />
               <div>{{ exercise.duration }}min</div>
             </div>
             <div class="exercise-intensity bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
               <Zap class="h-4 w-fit" />
               <div>{{ exercise.intensity }}/5</div>
+            </div>
+            <div v-if="hasCourt" class="exercise-court bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
+              <Dribbble class="h-4 w-fit" />
+              <div>{{ courtLabel }}</div>
             </div>
           </div>
           <router-link :to="`/oefening/${slug}`" class="text-blue-600 hover:text-blue-700 hover:underline text-sm font-medium" @click.stop>Lees meer →</router-link>
@@ -211,6 +211,27 @@ function toggleFav() {
   emit('toggle-fav', props.exercise.id)
 }
 
+const minPlayersVal = computed(() => (typeof props.exercise?.minPlayers === 'number') ? props.exercise.minPlayers : null)
+const maxPlayersVal = computed(() => (typeof props.exercise?.maxPlayers === 'number') ? props.exercise.maxPlayers : null)
+const showPlayers = computed(() => minPlayersVal.value !== null || maxPlayersVal.value !== null)
+const playersLabel = computed(() => {
+  const min = minPlayersVal.value
+  const max = maxPlayersVal.value
+  if (min !== null && max !== null) return `${min}-${max}`
+  if (min !== null) return `${min} min`
+  if (max !== null) return `${max} max`
+  return ''
+})
+const hasDuration = computed(() => typeof props.exercise?.duration === 'number' && props.exercise.duration > 0)
+const hasCourt = computed(() => typeof props.exercise?.court === 'string' && props.exercise.court.trim().length > 0)
+const courtLabel = computed(() => {
+  const v = (props.exercise?.court || '').toString().trim()
+  if (!v) return ''
+  const norm = v.toLowerCase()
+  if (norm === 'halfcourt' || norm === 'half court') return 'Half'
+  if (norm === 'fullcourt' || norm === 'full court') return 'Full'
+  return v
+})
 const router = useRouter()
 function goToDetail() {
   if (!props.exercise) return

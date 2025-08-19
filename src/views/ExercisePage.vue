@@ -72,14 +72,7 @@
 
     <!-- Delete confirm modal -->
     <modal v-if="showDeleteModal" @close="cancelDelete">
-      <div class="p-2">
-        <h3 class="text-lg font-semibold text-gray-800 mb-2">Bevestig verwijderen</h3>
-        <p class="text-gray-700 mb-6">Je staat op het punt "{{ deleteName }}" te verwijderen, weet je dit zeker?</p>
-        <div class="flex justify-end gap-3">
-          <button class="px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-800 hover:bg-gray-50" @click="cancelDelete">Annuleer</button>
-          <button class="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700" @click="confirmDelete">Verwijder</button>
-        </div>
-      </div>
+      <DeleteConfirm :name="deleteName" @cancel="cancelDelete" @confirm="confirmDelete" />
     </modal>
   </div>
 </template>
@@ -91,11 +84,13 @@ import Modal from '../components/Modal.vue'
 import PageHeader from '../components/PageHeader.vue'
 import FiltersBar from '../components/FiltersBar.vue'
 import SortButton from '../components/SortButton.vue'
+import DeleteConfirm from '../components/DeleteConfirm.vue'
+import { EXERCISE_CATEGORIES } from '../constants'
 import store from '../store'
 import { ref, computed } from 'vue'
 
 export default {
-  components: { ExerciseCard, ExerciseForm, Modal, PageHeader, FiltersBar, SortButton },
+  components: { ExerciseCard, ExerciseForm, Modal, PageHeader, FiltersBar, SortButton, DeleteConfirm },
   setup() {
     // Sort state
     const sortBy = ref('dateCreated') // 'dateCreated' | 'name'
@@ -119,7 +114,7 @@ export default {
       return e ? e.name : ''
     })
 
-    const categories = ['Dribbelen', 'Schieten', 'Finishing', 'Verdedigen', 'Passen', 'Rebounden', 'Transition', 'Conditie', 'Warm up']
+    const categories = EXERCISE_CATEGORIES
 
     function openForm(item = null) {
       editItem.value = item
@@ -226,6 +221,7 @@ export default {
         maxPlayers: 10,
         duration: 5,
         intensity: 2,
+        court: '',
         materials: [],
         video: '',
         dateCreated: '2025-08-16T20:00:00.000Z',
@@ -241,6 +237,7 @@ export default {
         maxPlayers: null,
         duration: 8,
         intensity: 4,
+        court: 'Half Court',
         materials: [],
         video: '',
         dateCreated: '2025-08-16T21:00:00.000Z',
@@ -256,6 +253,7 @@ export default {
         maxPlayers: 15,
         duration: 10,
         intensity: 4,
+        court: 'Full Court',
         materials: [],
         video: '',
         dateCreated: '2025-08-16T22:00:00.000Z',

@@ -27,10 +27,10 @@
         <textarea v-model="form.description" placeholder="Beschrijving" class="form-input h-24 resize-none"></textarea>
       </div>
 
-      <!-- Categories -->
+      <!-- Exercise Categories -->
       <div class="form-group col-span-4">
         <label class="block text-sm font-medium text-gray-700 mb-1">
-          Categorieën
+          Categorieën (oefeningen)
         </label>
 
         <div class="flex flex-wrap gap-2">
@@ -79,7 +79,7 @@
             <input
                 type="number"
                 v-model.number="form.maxPlayers"
-                :min="form.minPlayers"
+                :min="(typeof form.minPlayers === 'number') ? form.minPlayers : null"
                 class="form-input !rounded-r-none border-r-0"
             />
             <div
@@ -99,7 +99,7 @@
         <div class="flex">
           <input
               type="number"
-              v-model.number="form.duration"
+              v-model="form.duration"
               min="1"
               class="form-input !rounded-r-none !border-r-0"
           />
@@ -128,6 +128,33 @@
           />
           <div class="text-sm text-gray-800">{{ form.intensity }}</div>
         </div>
+      </div>
+
+      <!-- Court -->
+      <div class="form-group col-span-4 md:col-span-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Veld</label>
+        <div class="inline-flex rounded-md overflow-hidden border border-gray-300">
+          <button
+            type="button"
+            class="px-3 py-2 text-sm font-medium focus:outline-none"
+            :class="form.court === 'halfcourt' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
+            @click="toggleCourt('halfcourt')"
+            :aria-pressed="form.court === 'halfcourt' ? 'true' : 'false'"
+          >Half court</button>
+          <button
+            type="button"
+            class="px-3 py-2 text-sm font-medium border-l border-gray-300 focus:outline-none"
+            :class="form.court === 'full court' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
+            @click="toggleCourt('full court')"
+            :aria-pressed="form.court === 'full court' ? 'true' : 'false'"
+          >Full court</button>
+        </div>
+        <button
+          type="button"
+          class="ml-3 text-sm text-gray-600 hover:text-gray-800 underline"
+          @click="form.court = ''"
+          v-if="form.court"
+        >Wissen</button>
       </div>
 
       <!-- Materials -->
@@ -197,11 +224,12 @@ export default {
       description: '',
       coachingPoints: '',
       category: [],
-      minPlayers: 1,
+      minPlayers: null,
       maxPlayers: null,
       intensity: 3,
+      court: '',
       materials: [],
-      duration: 5,
+      duration: null,
       icon: 'TrafficCone',
       video: ''
     })
@@ -226,7 +254,6 @@ export default {
       'Hourglass',
     ]
 
-
     const materialOptions = [
       'Pionnen',
       'Loopladder',
@@ -249,11 +276,12 @@ export default {
           description: v.description || v.shortDescription || v.short || '',
           coachingPoints: v.coachingPoints || v.fullDescription || v.full || '',
           category: Array.isArray(v.category) ? [...v.category] : (v.category ? [v.category] : []),
-          minPlayers: v.minPlayers || 1,
-          maxPlayers: v.maxPlayers || null,
+          minPlayers: (typeof v.minPlayers === 'number') ? v.minPlayers : null,
+          maxPlayers: (typeof v.maxPlayers === 'number') ? v.maxPlayers : null,
           intensity: v.intensity || 3,
+          court: v.court || '',
           materials: Array.isArray(v.materials) ? [...v.materials] : (v.materials ? [v.materials].flat().filter(Boolean) : []),
-          duration: v.duration || v.minutes || 5,
+          duration: (typeof v.duration === 'number' ? v.duration : (typeof v.minutes === 'number' ? v.minutes : null)),
           icon: v.icon || v.imageIcon || 'TrafficCone',
           video: v.video || ''
         }
@@ -284,20 +312,31 @@ export default {
       }
     }
 
+    // Toggle court knop (deselecteer indien opnieuw geklikt)
+    function toggleCourt(val) {
+      form.court = (form.court === val) ? '' : val
+    }
+
     function save() {
       if (!form.name) {
         alert('Naam is verplicht')
         return
       }
 
-      if (form.maxPlayers && form.maxPlayers < form.minPlayers) {
+      const min = (typeof form.minPlayers === 'number') ? form.minPlayers : null
+      const max = (typeof form.maxPlayers === 'number') ? form.maxPlayers : null
+      if (min !== null && max !== null && max < min) {
         alert('Max spelers mag niet kleiner zijn dan minimale spelers')
         return
       }
 
       // Zorg ervoor dat de id correct wordt meegestuurd
       const saveData = { ...form }
-      // form.materials is al de geselecteerde array
+      // Normaliseer spelers en duur waarden
+      saveData.minPlayers = (typeof min === 'number') ? min : null
+      saveData.maxPlayers = (typeof max === 'number') ? max : null
+      const dur = parseInt(form.duration, 10)
+      saveData.duration = (Number.isFinite(dur) && dur > 0) ? dur : null
 
       if (props.initial && props.initial.id) {
         saveData.id = props.initial.id
@@ -318,6 +357,7 @@ export default {
       categories: props.categories,
       toggleCategory,
       toggleMaterial,
+      toggleCourt,
       placeholderIcons,
       isEdit
     }

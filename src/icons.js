@@ -35,7 +35,8 @@ import {
     Target,
     Hourglass,
     Filter,
-    Search
+    Search,
+    Dribbble
    }
     from 'lucide-vue-next'
 
@@ -77,6 +78,6 @@ export function registerIcons(app) {
     app.component('Hourglass', Hourglass)
     app.component('Filter', Filter)
     app.component('Search', Search)
-
+    app.component('Dribbble', Dribbble)
 
 }
