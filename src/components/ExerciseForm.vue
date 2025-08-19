@@ -30,7 +30,7 @@
       <!-- Exercise Categories -->
       <div class="form-group col-span-4">
         <label class="block text-sm font-medium text-gray-700 mb-1">
-          Categorieën (oefeningen)
+          Categorieën
         </label>
 
         <div class="flex flex-wrap gap-2">

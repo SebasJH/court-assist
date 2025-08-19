@@ -1,5 +1,5 @@
 <template>
-  <div class="exercise-card relative cursor-pointer" role="link" :aria-label="`Open ${exercise.name}`" @click="goToDetail" tabindex="0" @keydown.enter.prevent="goToDetail" :class="menuOpen ? 'z-50' : ''">
+  <div class="exercise-card relative cursor-pointer hover:z-[10000] focus-within:z-[10000]" role="link" :aria-label="`Open ${exercise.name}`" @click="goToDetail" tabindex="0" @keydown.enter.prevent="goToDetail" :class="menuOpen ? 'z-[10000]' : ''">
     <div class="flex flex-col h-full">
       <div class="flex items-start gap-3">
 
@@ -82,22 +82,41 @@
         <div class="flex-1 text-sm leading-relaxed text-gray-600">{{ exercise.description || exercise.shortDescription }}</div>
 
         <div class="flex items-center justify-between gap-2 flex-wrap">
-          <div class="flex flex-wrap items-center gap-x-1.5">
-            <div v-if="showPlayers" class="exercise-players bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
-              <Users class="h-4 w-fit" />
-              <div>{{ playersLabel }}</div>
+          <div class="flex flex-wrap items-center gap-y-1 gap-x-1.5">
+            <!-- Players with tooltip -->
+            <div v-if="showPlayers" class="relative group">
+              <div class="exercise-players bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:bg-gray-300 hover:shadow-sm transition-colors transition-shadow duration-150">
+                <Users class="h-4 w-fit" />
+                <div>{{ playersLabel }}</div>
+              </div>
+              <Tooltip :title="playersTooltip.title" :body="playersTooltip.body" />
             </div>
-            <div v-if="hasDuration" class="exercise-duration bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
-              <TimerReset class="h-4 w-fit" />
-              <div>{{ exercise.duration }}min</div>
+
+            <!-- Duration with tooltip -->
+            <div v-if="hasDuration" class="relative group">
+              <div class="exercise-duration bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:bg-gray-300 hover:shadow-sm transition-colors transition-shadow duration-150">
+                <TimerReset class="h-4 w-fit" />
+                <div>{{ exercise.duration }} min</div>
+              </div>
+              <Tooltip :title="durationTooltip.title" :body="durationTooltip.body" />
             </div>
-            <div class="exercise-intensity bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
-              <Zap class="h-4 w-fit" />
-              <div>{{ exercise.intensity }}/5</div>
+
+            <!-- Intensity with tooltip -->
+            <div class="relative group">
+              <div class="exercise-intensity bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:bg-gray-300 hover:shadow-sm transition-colors transition-shadow duration-150">
+                <Zap class="h-4 w-fit" />
+                <div>{{ exercise.intensity }}/5</div>
+              </div>
+              <Tooltip :title="intensityTooltip.title" :body="intensityTooltip.body" />
             </div>
-            <div v-if="hasCourt" class="exercise-court bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
-              <Dribbble class="h-4 w-fit" />
-              <div>{{ courtLabel }}</div>
+
+            <!-- Court with tooltip -->
+            <div v-if="hasCourt" class="relative group">
+              <div class="exercise-court bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:bg-gray-300 hover:shadow-sm transition-colors transition-shadow duration-150">
+                <Dribbble class="h-4 w-fit" />
+                <div>{{ courtLabel }}</div>
+              </div>
+              <Tooltip :title="courtTooltip.title" :body="courtTooltip.body" />
             </div>
           </div>
           <router-link :to="`/oefening/${slug}`" class="text-blue-600 hover:text-blue-700 hover:underline text-sm font-medium" @click.stop>Lees meer →</router-link>
@@ -110,6 +129,7 @@
 <script setup>
 import {ref, onMounted, onBeforeUnmount, nextTick, computed} from 'vue'
 import { useRouter } from 'vue-router'
+import Tooltip from './Tooltip.vue'
 
 const emit = defineEmits(['edit','duplicate','delete','toggle-fav'])
 
@@ -232,6 +252,46 @@ const courtLabel = computed(() => {
   if (norm === 'fullcourt' || norm === 'full court') return 'Full'
   return v
 })
+
+// Tooltip texts
+const playersTooltip = computed(() => {
+  const min = minPlayersVal.value
+  const max = maxPlayersVal.value
+  let body = ''
+  if (min !== null && max !== null) {
+    body = `Geschikt voor ${min} tot ${max} spelers`
+  } else if (min !== null) {
+    body = `Minimaal ${min} spelers nodig`
+  } else if (max !== null) {
+    body = `Maximaal ${max} spelers`
+  }
+  return {
+    title: 'Aantal spelers',
+    body
+  }
+})
+const durationTooltip = computed(() => {
+  const d = (typeof props.exercise?.duration === 'number' && props.exercise.duration > 0)
+    ? props.exercise.duration
+    : ((typeof props.exercise?.minutes === 'number' && props.exercise.minutes > 0) ? props.exercise.minutes : null)
+  return {
+    title: 'Tijd van de oefening',
+    body: d !== null ? `De oefening duurt gemiddeld ${d} minuten` : 'Aantal minuten dat de oefening duurt'
+  }
+})
+const intensityTooltip = computed(() => ({
+  title: 'Intensiteit',
+  body: `Zwaarte van de oefening (1 = licht · 5 = zwaar) · Huidig: ${props.exercise?.intensity}/5`
+}))
+const courtTooltip = computed(() => {
+  const v = courtLabel.value
+  if (!v) return { title: 'Veldtype', body: 'Geen veldtype opgegeven' }
+  return {
+    title: 'Veldtype',
+    body: `Deze oefening is ontworpen voor ${v.toLowerCase()} court`
+  }
+})
+
 const router = useRouter()
 function goToDetail() {
   if (!props.exercise) return
