@@ -7,54 +7,49 @@
 
     <div class="container mx-auto px-4 py-6">
 
-    <!-- Filters -->
-    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <input class="form-input" v-model="q" placeholder="Zoek oefeningen..." />
-
-        <select v-model="filter.category" class="form-input">
-          <option value="">Alle categorieën</option>
-          <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
-        </select>
-
-        <!-- Aantal spelers slider -->
-        <div class="flex flex-col gap-2">
-          <label class="text-sm text-gray-600">Aantal spelers</label>
-          <Slider
-              v-model="filter.players"
-              :min="1"
-              :max="20"
-              :step="1"
-              :lazy="true"
-              :merge="false"
+    <!-- Top controls: Filter toggle, Sort button, Search -->
+    <div class="mb-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-end items-end">
+      <div class="flex items-center gap-2">
+        <button
+          class="inline-flex items-center gap-2 px-3 h-[42px] rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-sm text-gray-800 focus:outline-none"
+          :aria-pressed="showFilters ? 'true' : 'false'"
+          @click="showFilters = !showFilters"
+        >
+          <Filter class="w-4 h-4" />
+          <span>Filters</span>
+        </button>
+        <SortButton :sortBy="sortBy" :sortDir="sortDir" @update:sortBy="val => sortBy = val" @update:sortDir="val => sortDir = val" />
+      </div>
+      <div>
+        <div class="relative">
+          <Search class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            class="form-input w-64 md:w-72 !pl-9 pr-3"
+            :value="q"
+            @input="q = $event.target.value"
+            placeholder="Zoek oefeningen..."
+            aria-label="Zoek oefeningen"
           />
-          <div class="text-sm text-gray-800">
-            van {{ filter.players[0] }} tot {{ filter.players[1] }}
-          </div>
-        </div>
-
-        <!-- Intensiteit slider -->
-        <div class="flex flex-col gap-2">
-          <label class="text-sm text-gray-600">Intensiteit</label>
-          <Slider
-              v-model="filter.intensity"
-              :min="1"
-              :max="5"
-              :step="1"
-              :lazy="true"
-              :merge="false"
-          />
-          <div class="text-sm text-gray-800">
-            van {{ filter.intensity[0] }} tot {{ filter.intensity[1] }}
-          </div>
         </div>
       </div>
     </div>
 
+    <!-- Filters bar (collapsible) -->
+    <FiltersBar
+      v-show="showFilters"
+      :categories="categories"
+      :category="filter.category"
+      @update:category="val => filter.category = val"
+      :players="filter.players"
+      @update:players="val => filter.players = val"
+      :intensity="filter.intensity"
+      @update:intensity="val => filter.intensity = val"
+    />
+
     <!-- Cards -->
     <transition-group name="exercise-list" tag="div" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
       <exercise-card
-          v-for="ex in filtered"
+          v-for="ex in sorted"
           :key="ex.id"
           :exercise="ex"
           @edit="openForm(ex)"
@@ -81,12 +76,17 @@ import ExerciseCard from '../components/ExerciseCard.vue'
 import ExerciseForm from '../components/ExerciseForm.vue'
 import Modal from '../components/Modal.vue'
 import PageHeader from '../components/PageHeader.vue'
+import FiltersBar from '../components/FiltersBar.vue'
+import SortButton from '../components/SortButton.vue'
 import store from '../store'
 import { ref, computed } from 'vue'
 
 export default {
-  components: { ExerciseCard, ExerciseForm, Modal, PageHeader },
+  components: { ExerciseCard, ExerciseForm, Modal, PageHeader, FiltersBar, SortButton },
   setup() {
+    // Sort state
+    const sortBy = ref('dateCreated') // 'dateCreated' | 'name'
+    const sortDir = ref('desc') // 'asc' | 'desc'
     // Backfill dateCreated for any pre-existing exercises missing it (defensive, non-destructive)
     store.state.exercises.forEach(e => { if (!e.dateCreated) e.dateCreated = new Date().toISOString() })
     const q = ref('')
@@ -97,6 +97,7 @@ export default {
     })
     const showForm = ref(false)
     const editItem = ref(null)
+    const showFilters = ref(false)
 
     const categories = ['Dribbelen', 'Schieten', 'Finishing', 'Verdedigen', 'Passen', 'Rebounden', 'Transition', 'Conditie', 'Warm up']
 
@@ -155,6 +156,27 @@ export default {
       })
     })
 
+    const sorted = computed(() => {
+      const arr = filtered.value.slice()
+      const by = sortBy.value
+      const dir = sortDir.value
+      const m = dir === 'asc' ? 1 : -1
+      return arr.sort((a, b) => {
+        if (by === 'name') {
+          const an = (a.name || '').toString().toLowerCase()
+          const bn = (b.name || '').toString().toLowerCase()
+          const cmp = an.localeCompare(bn, 'nl', { sensitivity: 'base' })
+          if (cmp !== 0) return cmp * m
+          return ((a.id||0) - (b.id||0)) * m
+        } else { // dateCreated
+          const ad = new Date(a.dateCreated || 0).getTime() || 0
+          const bd = new Date(b.dateCreated || 0).getTime() || 0
+          if (ad === bd) return ((a.id||0) - (b.id||0)) * m
+          return (ad - bd) * m
+        }
+      })
+    })
+
     // Sample data als store leeg is (category als array)
     if (store.state.exercises.length === 0) {
       store.addExercise({
@@ -209,6 +231,10 @@ export default {
       filter,
       categories,
       filtered,
+      sorted,
+      // sort UI
+      sortBy,
+      sortDir,
       openForm,
       showForm,
       editItem,
@@ -216,7 +242,8 @@ export default {
       onSave,
       onDelete,
       onDuplicate,
-      onToggleFav
+      onToggleFav,
+      showFilters
     }
   }
 }

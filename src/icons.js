@@ -8,6 +8,7 @@ import {
     ArrowLeft,
     ArrowLeftToLine,
     ArrowRightToLine,
+    ArrowUpDown,
 
     TrafficCone,
     Dumbbell,
@@ -31,7 +32,9 @@ import {
     Activity,
     Speech,
     Target,
-    Hourglass
+    Hourglass,
+    Filter,
+    Search
    }
     from 'lucide-vue-next'
 
@@ -45,6 +48,7 @@ export function registerIcons(app) {
     app.component('ArrowLeft', ArrowLeft)
     app.component('ArrowLeftToLine', ArrowLeftToLine)
     app.component('ArrowRightToLine', ArrowRightToLine)
+    app.component('ArrowUpDown', ArrowUpDown)
 
     app.component('TrafficCone', TrafficCone)
     app.component('Dumbbell', Dumbbell)
@@ -69,6 +73,8 @@ export function registerIcons(app) {
     app.component('Activity', Activity)
     app.component('Speech', Speech)
     app.component('Hourglass', Hourglass)
+    app.component('Filter', Filter)
+    app.component('Search', Search)
 
 
 }
