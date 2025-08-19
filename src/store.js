@@ -17,7 +17,7 @@ function addExercise(payload, options = {}) {
     const { imageIcon, dateCreated, ...rest } = payload
     const e = { id: state.nextId++, favorite: false, icon, dateCreated: dateCreated ?? new Date().toISOString(), ...rest }
     state.exercises.unshift(e)
-    if (!options.silent) notify('Oefening opgeslagen', 'success', 2500)
+    if (!options.silent) notify('Oefening aangemaakt', 'success', 2500)
     return e
 }
 
@@ -57,7 +57,7 @@ function updateExercise(id, updates, options = {}) {
 function deleteExercise(id, options = {}) {
     const idx = state.exercises.findIndex(x => x.id === id)
     if (idx !== -1) state.exercises.splice(idx, 1)
-    if (!options.silent) notify('Oefening succesvol verwijderd', 'error', 2500)
+    if (!options.silent) notify('Oefening verwijderd', 'error', 2500)
 }
 
 function duplicateExercise(id, options = {}) {

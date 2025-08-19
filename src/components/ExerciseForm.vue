@@ -170,13 +170,16 @@
     <!-- Buttons -->
     <div class="flex gap-3 mt-6 justify-end">
       <button type="button" class="btn-secondary" @click="$emit('close')">Annuleren</button>
-      <button type="submit" class="btn-primary btn-submit">Opslaan</button>
+      <button
+        type="submit"
+        :class="isEdit ? 'btn-primary btn-submit' : 'btn-accent btn-submit'"
+      >{{ isEdit ? 'Opslaan' : 'Aanmaken' }}</button>
     </div>
   </form>
 </template>
 
 <script>
-import {ref, reactive, watch} from 'vue'
+import {ref, reactive, watch, computed} from 'vue'
 import store from '../store'
 import RichTextEditor from './RichTextEditor.vue'
 import IconPicker from './IconPicker.vue'
@@ -306,6 +309,8 @@ export default {
       emit('save', saveData)
     }
 
+    const isEdit = computed(() => !!(props.initial && props.initial.id))
+
     return {
       form,
       materialOptions,
@@ -313,7 +318,8 @@ export default {
       categories: props.categories,
       toggleCategory,
       toggleMaterial,
-      placeholderIcons
+      placeholderIcons,
+      isEdit
     }
   }
 }

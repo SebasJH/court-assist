@@ -26,6 +26,11 @@ $error-color: #ef4444;
     @apply bg-gray-500 text-white hover:bg-gray-600 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
 }
 
+.btn-accent {
+    @include button-base;
+    @apply bg-green-500 text-white hover:bg-green-600 focus:ring-2 focus:ring-green-500 focus:ring-offset-2;
+}
+
 .card {
     @include card-base;
 }
