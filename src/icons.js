@@ -13,6 +13,7 @@ import {
     TrafficCone,
     Dumbbell,
     ClipboardList,
+    CalendarDays,
     Shirt,
     Repeat2,
 
@@ -53,6 +54,7 @@ export function registerIcons(app) {
     app.component('TrafficCone', TrafficCone)
     app.component('Dumbbell', Dumbbell)
     app.component('ClipboardList', ClipboardList)
+    app.component('CalendarDays', CalendarDays)
     app.component('Shirt', Shirt)
     app.component('Repeat2', Repeat2)
 

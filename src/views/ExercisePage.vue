@@ -69,6 +69,18 @@
           @save="onSave"
       />
     </modal>
+
+    <!-- Delete confirm modal -->
+    <modal v-if="showDeleteModal" @close="cancelDelete">
+      <div class="p-2">
+        <h3 class="text-lg font-semibold text-gray-800 mb-2">Bevestig verwijderen</h3>
+        <p class="text-gray-700 mb-6">Je staat op het punt "{{ deleteName }}" te verwijderen, weet je dit zeker?</p>
+        <div class="flex justify-end gap-3">
+          <button class="px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-800 hover:bg-gray-50" @click="cancelDelete">Annuleer</button>
+          <button class="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700" @click="confirmDelete">Verwijder</button>
+        </div>
+      </div>
+    </modal>
   </div>
 </template>
 
@@ -99,6 +111,13 @@ export default {
     const showForm = ref(false)
     const editItem = ref(null)
     const showFilters = ref(false)
+    const showDeleteModal = ref(false)
+    const pendingDeleteId = ref(null)
+    const deleteName = computed(() => {
+      const id = pendingDeleteId.value
+      const e = store.state.exercises.find(x => x.id === id)
+      return e ? e.name : ''
+    })
 
     const categories = ['Dribbelen', 'Schieten', 'Finishing', 'Verdedigen', 'Passen', 'Rebounden', 'Transition', 'Conditie', 'Warm up']
 
@@ -118,18 +137,26 @@ export default {
         store.addExercise(payload)
       }
       closeForm()
-      store.notify('Oefening opgeslagen', 'success', 2500)
     }
 
     function onDelete(id) {
-      if (confirm('Weet je het zeker?')) {
+      pendingDeleteId.value = id
+      showDeleteModal.value = true
+    }
+    function cancelDelete() {
+      pendingDeleteId.value = null
+      showDeleteModal.value = false
+    }
+    function confirmDelete() {
+      const id = pendingDeleteId.value
+      if (id != null) {
         store.deleteExercise(id)
-        store.notify('Oefening succesvol verwijderd', 'error', 2500)
       }
+      pendingDeleteId.value = null
+      showDeleteModal.value = false
     }
     function onDuplicate(id) {
       store.duplicateExercise(id)
-      store.notify('Oefening gedupliceerd', 'success', 2500)
     }
     function onToggleFav(id) { store.toggleFavorite(id) }
 
@@ -203,7 +230,7 @@ export default {
         video: '',
         dateCreated: '2025-08-16T20:00:00.000Z',
         favorite: true
-      })
+      }, { silent: true })
       store.addExercise({
         name: '1v1 verdediging',
         icon: 'Shield',
@@ -218,7 +245,7 @@ export default {
         video: '',
         dateCreated: '2025-08-16T21:00:00.000Z',
         favorite: false
-      })
+      }, { silent: true })
       store.addExercise({
         name: 'Sheridan Drill',
         icon: 'Gauge',
@@ -233,7 +260,7 @@ export default {
         video: '',
         dateCreated: '2025-08-16T22:00:00.000Z',
         favorite: false
-      })
+      }, { silent: true })
     }
 
     return {
@@ -253,7 +280,12 @@ export default {
       onDelete,
       onDuplicate,
       onToggleFav,
-      showFilters
+      showFilters,
+      // delete modal
+      showDeleteModal,
+      deleteName,
+      cancelDelete,
+      confirmDelete
     }
   }
 }

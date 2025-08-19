@@ -1,7 +1,7 @@
 <!-- components/Modal.vue -->
 <template>
   <div
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      class="fixed inset-0 z-[80] flex items-center justify-center bg-black/50"
       @mousedown="onOverlayMouseDown"
       @click="onOverlayClick"
   >

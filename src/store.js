@@ -12,15 +12,16 @@ state.exercises.forEach(e => {
     if (!e.dateCreated) e.dateCreated = new Date().toISOString()
 })
 
-function addExercise(payload) {
+function addExercise(payload, options = {}) {
     const icon = payload.icon ?? payload.imageIcon ?? 'TrafficCone'
     const { imageIcon, dateCreated, ...rest } = payload
     const e = { id: state.nextId++, favorite: false, icon, dateCreated: dateCreated ?? new Date().toISOString(), ...rest }
     state.exercises.unshift(e)
+    if (!options.silent) notify('Oefening opgeslagen', 'success', 2500)
     return e
 }
 
-function updateExercise(id, updates) {
+function updateExercise(id, updates, options = {}) {
     const e = state.exercises.find(x => x.id === id)
     if (!e) return
     
@@ -49,19 +50,22 @@ function updateExercise(id, updates) {
     if (e.favorite === undefined) {
         e.favorite = false
     }
+    if (!options.silent) notify('Oefening opgeslagen', 'success', 2500)
 }
 
 
-function deleteExercise(id) {
+function deleteExercise(id, options = {}) {
     const idx = state.exercises.findIndex(x => x.id === id)
     if (idx !== -1) state.exercises.splice(idx, 1)
+    if (!options.silent) notify('Oefening succesvol verwijderd', 'error', 2500)
 }
 
-function duplicateExercise(id) {
+function duplicateExercise(id, options = {}) {
     const orig = state.exercises.find(x => x.id === id)
     if (!orig) return
     const copy = { ...orig, id: state.nextId++, name: orig.name + ' (copy)', favorite: false, dateCreated: new Date().toISOString() }
     state.exercises.unshift(copy)
+    if (!options.silent) notify('Oefening gedupliceerd', 'info', 2500)
 }
 
 function toggleFavorite(id) {

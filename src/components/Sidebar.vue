@@ -51,8 +51,12 @@
         <span :class="textClass">Plays</span>
       </a>
       <a class="nav-link items-center transition-all duration-300 ease-in-out" :class="collapsed ? 'justify-center px-0 py-3 gap-0' : 'gap-2 px-4 py-3'">
+        <CalendarDays :class="iconSizeClass" />
+        <span :class="textClass">Wedstrijden</span>
+      </a>
+      <a class="nav-link items-center transition-all duration-300 ease-in-out" :class="collapsed ? 'justify-center px-0 py-3 gap-0' : 'gap-2 px-4 py-3'">
         <Shirt :class="iconSizeClass" />
-        <span :class="textClass">Team</span>
+        <span :class="textClass">Teams</span>
       </a>
       <a class="nav-link items-center transition-all duration-300 ease-in-out" :class="collapsed ? 'justify-center px-0 py-3 gap-0' : 'gap-2 px-4 py-3'">
         <Repeat2 :class="iconSizeClass" />

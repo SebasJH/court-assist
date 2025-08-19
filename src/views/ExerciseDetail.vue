@@ -66,6 +66,18 @@
       />
     </modal>
 
+    <!-- Delete confirm modal -->
+    <modal v-if="showDeleteModal" @close="cancelDelete">
+      <div class="p-2">
+        <h3 class="text-lg font-semibold text-gray-800 mb-2">Bevestig verwijderen</h3>
+        <p class="text-gray-700 mb-6">Je staat op het punt "{{ exercise.name }}" te verwijderen, weet je dit zeker?</p>
+        <div class="flex justify-end gap-3">
+          <button class="px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-800 hover:bg-gray-50" @click="cancelDelete">Annuleer</button>
+          <button class="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700" @click="confirmDelete">Verwijder</button>
+        </div>
+      </div>
+    </modal>
+
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div class="lg:col-span-2">
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
@@ -139,6 +151,7 @@ const exercise = computed(() => {
 
 // Edit modal state
 const showForm = ref(false)
+const showDeleteModal = ref(false)
 const categories = ['Dribbelen', 'Schieten', 'Finishing', 'Verdedigen', 'Passen', 'Rebounden', 'Transition', 'Conditie', 'Warm up']
 
 function openForm() {
@@ -156,7 +169,6 @@ function onSave(payload) {
     store.updateExercise(exercise.value.id, payload)
   }
   closeForm()
-  store.notify('Oefening opgeslagen', 'success', 2500)
 }
 
 // Header actions: favorite + menu
@@ -195,18 +207,27 @@ function toggleFav() {
 function onDuplicate() {
   if (!exercise.value) return
   store.duplicateExercise(exercise.value.id)
-  store.notify('Oefening gedupliceerd', 'success', 2500)
   menuOpen.value = false
 }
 
 function onDelete() {
   if (!exercise.value) return
-  if (confirm('Weet je het zeker?')) {
-    store.deleteExercise(exercise.value.id)
-    store.notify('Oefening succesvol verwijderd', 'error', 2500)
-    menuOpen.value = false
-    router.push('/oefeningen')
+  showDeleteModal.value = true
+  menuOpen.value = false
+}
+
+function cancelDelete() {
+  showDeleteModal.value = false
+}
+
+function confirmDelete() {
+  if (!exercise.value) {
+    showDeleteModal.value = false
+    return
   }
+  store.deleteExercise(exercise.value.id)
+  showDeleteModal.value = false
+  router.push('/oefeningen')
 }
 </script>
 
