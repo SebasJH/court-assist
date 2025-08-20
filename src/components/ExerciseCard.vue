@@ -102,7 +102,7 @@
             </div>
 
             <!-- Intensity with tooltip -->
-            <div class="relative" ref="intensityRef" @mouseenter="onEnterIntensity" @mouseleave="onLeaveIntensity">
+            <div v-if="typeof exercise.intensity === 'number'" class="relative" ref="intensityRef" @mouseenter="onEnterIntensity" @mouseleave="onLeaveIntensity">
               <div class="exercise-intensity bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:bg-gray-300 hover:shadow-sm transition-colors transition-shadow duration-150">
                 <Zap class="h-4 w-fit" />
                 <div>{{ exercise.intensity }}/5</div>

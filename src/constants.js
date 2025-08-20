@@ -10,8 +10,8 @@ export const EXERCISE_CATEGORIES = [
   'Warm up'
 ]
 
-// Shared materials list (keep in sync with ExerciseForm options)
-export const MATERIAL_OPTIONS = [
+// Shared materials list for exercises
+export const EXERCISE_MATERIALS = [
   'Pionnen',
   'Loopladder',
   'Hoepel',
@@ -24,6 +24,7 @@ export const MATERIAL_OPTIONS = [
   'Reboundmachine'
 ]
 
+
 // Normalize court values to one of: '', 'halfcourt', 'fullcourt'
 export function normalizeCourt(val) {
   const v = (val || '').toString().toLowerCase().trim().replace(/\s+/g, '')
@@ -31,6 +32,3 @@ export function normalizeCourt(val) {
   if (v === 'fullcourt') return 'fullcourt'
   return ''
 }
-
-// Backward compatibility (existing imports)
-export const CATEGORIES = EXERCISE_CATEGORIES

@@ -133,7 +133,7 @@ import FiltersBar from '../components/FiltersBar.vue'
 import SortButton from '../components/SortButton.vue'
 import DeleteConfirm from '../components/DeleteConfirm.vue'
 import Pagination from '../components/Pagination.vue'
-import { EXERCISE_CATEGORIES, MATERIAL_OPTIONS, normalizeCourt } from '../constants'
+import { EXERCISE_CATEGORIES, EXERCISE_MATERIALS, normalizeCourt } from '../constants'
 import store from '../store'
 import { ref, computed, watch, nextTick } from 'vue'
 import { ensureSampleExercises } from '../data/sampleExercises'
@@ -167,7 +167,7 @@ export default {
     })
 
     const categories = EXERCISE_CATEGORIES
-    const materialOptions = MATERIAL_OPTIONS
+    const materialOptions = EXERCISE_MATERIALS
 
     function openForm(item = null) {
       editItem.value = item
@@ -258,9 +258,11 @@ export default {
         // aantal spelers (range overlap)
         if (!playersOverlap(e, selPlayersMin, selPlayersMax)) return false
 
-        // intensiteit binnen bereik
-        const intensity = typeof e.intensity === 'number' ? e.intensity : 0
-        if (intensity < selIntMin || intensity > selIntMax) return false
+        // intensiteit binnen bereik (oefeningen zonder intensiteit blijven zichtbaar)
+        const intensityVal = typeof e.intensity === 'number' ? e.intensity : null
+        if (intensityVal !== null) {
+          if (intensityVal < selIntMin || intensityVal > selIntMax) return false
+        }
 
         return true
       })
