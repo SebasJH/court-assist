@@ -62,7 +62,8 @@
           v-if="menuOpen"
           ref="menuRef"
           @click.stop
-          :class="['absolute top-full mt-2 w-40 bg-white border border-gray-200 rounded shadow-lg flex flex-col z-[3000]', alignRight ? 'right-0' : 'left-0']"
+          :class="['fixed w-40 bg-white border border-gray-200 rounded shadow-lg flex flex-col z-[3000]']"
+          :style="menuStyle"
         >
           <button @click="onEdit" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 py-2 hover:bg-gray-100">
             <Pencil class="w-fit h-4" />
@@ -137,6 +138,7 @@ const menuOpen = ref(false)
 const menuRef = ref(null)
 const menuButtonRef = ref(null)
 const alignRight = ref(false)
+const menuStyle = ref({ left: '0px', top: '0px' })
 const hoverCount = ref(0)
 function liftEnter(){ hoverCount.value++ }
 function liftLeave(){ hoverCount.value = Math.max(0, hoverCount.value - 1) }
@@ -146,15 +148,37 @@ function computeMenuAlignment(){
     const btn = menuButtonRef.value
     if (!btn) { alignRight.value = false; return }
     const rect = btn.getBoundingClientRect()
-    const viewportWidth = window.innerWidth || document.documentElement.clientWidth
-    const measuredMenuWidth = menuRef.value?.offsetWidth || 160
-    const spaceRight = viewportWidth - rect.right
+    const vw = window.innerWidth || document.documentElement.clientWidth
+    const vh = window.innerHeight || document.documentElement.clientHeight
+    const menuEl = menuRef.value
+    const menuW = (menuEl && menuEl.offsetWidth) || 160
+    const menuH = (menuEl && menuEl.offsetHeight) || 160
+    const gap = 8
+
+    // Horizontal placement
+    const spaceRight = vw - rect.right
     const spaceLeft = rect.left
-    if (spaceRight < measuredMenuWidth && spaceLeft > measuredMenuWidth / 2) {
+    let left = rect.left
+    if (spaceRight < menuW && spaceLeft > menuW / 2) {
       alignRight.value = true
+      left = rect.right - menuW
     } else {
       alignRight.value = false
+      left = rect.left
     }
+
+    // Vertical placement
+    const spaceBelow = vh - rect.bottom
+    let top = rect.bottom + gap
+    if (spaceBelow < menuH && rect.top > menuH + gap) {
+      top = rect.top - menuH - gap
+    }
+
+    // Clamp within viewport
+    left = Math.min(Math.max(8, left), vw - menuW - 8)
+    top = Math.min(Math.max(8, top), vh - menuH - 8)
+
+    menuStyle.value = { left: left + 'px', top: top + 'px' }
   } catch(e) {
     alignRight.value = false
   }

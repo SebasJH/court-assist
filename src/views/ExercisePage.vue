@@ -84,7 +84,7 @@
       </template>
       <template v-else>
         <div class="bg-white rounded-lg shadow-md">
-          <div class="overflow-x-auto" role="region" aria-label="Lijstweergave, horizontaal scrollen indien nodig">
+          <div class="overflow-x-auto overflow-y-visible" role="region" aria-label="Lijstweergave, horizontaal scrollen indien nodig">
             <div class="min-w-[48rem]">
               <div class="hidden md:flex items-center gap-4 px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-b bg-gray-50">
                 <div class="w-12"></div>
