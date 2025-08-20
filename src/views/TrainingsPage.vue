@@ -42,22 +42,10 @@
               <button @click="removeAt(index)" class="text-red-500 hover:text-red-700 font-bold">×</button>
             </div>
             <div class="mt-2 flex items-center gap-1.5 flex-wrap">
-              <div v-if="showPlayersFor(element)" class="bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
-                <Users class="h-4 w-fit" />
-                <div>{{ playersLabelFor(element) }}</div>
-              </div>
-              <div v-if="hasDurationFor(element)" class="bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
-                <TimerReset class="h-4 w-fit" />
-                <div>{{ element.duration }}min</div>
-              </div>
-              <div v-if="hasCourtFor(element)" class="bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
-                <Dribbble class="h-4 w-fit" />
-                <div>{{ courtLabelFor(element) }}</div>
-              </div>
-              <div class="bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
-                <Zap class="h-4 w-fit" />
-                <div>{{ element.intensity }}/5</div>
-              </div>
+              <ExerciseBadge :exercise="element" kind="players" />
+              <ExerciseBadge :exercise="element" kind="duration" />
+              <ExerciseBadge :exercise="element" kind="court" />
+              <ExerciseBadge :exercise="element" kind="intensity" />
             </div>
           </div>
         </div>
@@ -75,10 +63,11 @@
 import store from '../store'
 import { ref, computed } from 'vue'
 import PageHeader from '../components/PageHeader.vue'
+import ExerciseBadge from '../components/ExerciseBadge.vue'
 import { ensureSampleExercises } from '../data/sampleExercises'
 
 export default {
-  components: { PageHeader },
+  components: { PageHeader, ExerciseBadge },
   setup(){
     // Ensure sample data exists even if user lands here first
     ensureSampleExercises(store)

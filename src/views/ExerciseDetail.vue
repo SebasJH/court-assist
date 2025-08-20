@@ -91,22 +91,10 @@
         <div class="bg-white rounded-lg shadow-md p-6">
           <h2 class="text-lg font-semibold text-gray-800 mb-3">Details</h2>
           <div class="flex flex-col gap-1.5  text-gray-800">
-            <div v-if="showPlayers" class="bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center w-fit gap-1">
-              <Users class="w-4 h-4" />
-              <div>{{ playersLabel }}</div>
-            </div>
-            <div v-if="hasDuration" class="bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center w-fit gap-1">
-              <TimerReset class="w-4 h-4" />
-              <div>{{ exercise.duration }} minuten</div>
-            </div>
-            <div v-if="hasCourt" class="bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center w-fit gap-1">
-              <Dribbble class="w-4 h-4" />
-              <div>{{ courtLabel }}</div>
-            </div>
-            <div class="bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center w-fit gap-1">
-              <Zap class="w-4 h-4" />
-              <div>{{ exercise.intensity }}/5</div>
-            </div>
+            <ExerciseBadge :exercise="exercise" kind="players" variant="detail" />
+            <ExerciseBadge :exercise="exercise" kind="duration" variant="detail" />
+            <ExerciseBadge :exercise="exercise" kind="court" variant="detail" />
+            <ExerciseBadge :exercise="exercise" kind="intensity" variant="detail" />
           </div>
 
           <div v-if="exercise.materials && exercise.materials.length" class="mt-4">
@@ -138,6 +126,7 @@ import PageHeader from '../components/PageHeader.vue'
 import Modal from '../components/Modal.vue'
 import ExerciseForm from '../components/ExerciseForm.vue'
 import DeleteConfirm from '../components/DeleteConfirm.vue'
+import ExerciseBadge from '../components/ExerciseBadge.vue'
 import { EXERCISE_CATEGORIES } from '../constants'
 
 function slugify(str) {

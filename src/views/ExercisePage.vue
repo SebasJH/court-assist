@@ -49,9 +49,9 @@
 
     <!-- Cards or Empty state -->
     <template v-if="sorted.length > 0">
-      <transition-group name="exercise-list" tag="div" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+      <transition-group name="exercise-list" tag="div" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6" :css="!pageSwitching">
         <exercise-card
-            v-for="ex in sorted"
+            v-for="ex in pageItems"
             :key="ex.id"
             :exercise="ex"
             @edit="openForm(ex)"
@@ -60,6 +60,14 @@
             @toggle-fav="onToggleFav"
         />
       </transition-group>
+
+      <Pagination
+        v-if="pageCount > 1"
+        class="mt-6"
+        :page="page"
+        :pageCount="pageCount"
+        @update:page="setPage"
+      />
     </template>
     <div v-else class="py-20">
       <div class="bg-white border border-dashed border-gray-300 rounded-xl p-10 text-center max-w-xl mx-auto">
@@ -109,13 +117,14 @@ import PageHeader from '../components/PageHeader.vue'
 import FiltersBar from '../components/FiltersBar.vue'
 import SortButton from '../components/SortButton.vue'
 import DeleteConfirm from '../components/DeleteConfirm.vue'
+import Pagination from '../components/Pagination.vue'
 import { EXERCISE_CATEGORIES } from '../constants'
 import store from '../store'
-import { ref, computed } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
 import { ensureSampleExercises } from '../data/sampleExercises'
 
 export default {
-  components: { ExerciseCard, ExerciseForm, Modal, PageHeader, FiltersBar, SortButton, DeleteConfirm },
+  components: { ExerciseCard, ExerciseForm, Modal, PageHeader, FiltersBar, SortButton, DeleteConfirm, Pagination },
   setup() {
     // Sort state
     const sortBy = ref('dateCreated') // 'dateCreated' | 'name'
@@ -234,6 +243,44 @@ export default {
       })
     })
 
+    // Pagination (page size = 2 for testing)
+    const pageSize = 6
+    const pageSwitching = ref(false)
+    const page = ref(1)
+    const pageCount = computed(() => {
+      const total = sorted.value.length
+      return Math.max(1, Math.ceil(total / pageSize))
+    })
+    const pageItems = computed(() => {
+      const start = (page.value - 1) * pageSize
+      const end = start + pageSize
+      return sorted.value.slice(start, end)
+    })
+
+    function setPage(p) {
+      const pc = pageCount.value
+      const np = Math.max(1, Math.min(pc, Number(p) || 1))
+      if (np === page.value) return
+      pageSwitching.value = true
+      page.value = np
+      nextTick(() => {
+        // ensure DOM has swapped items before re-enabling transitions
+        setTimeout(() => { pageSwitching.value = false }, 0)
+      })
+    }
+    function goPrev() { setPage(page.value - 1) }
+    function goNext() { setPage(page.value + 1) }
+
+    // Reset to first page when query, filters or sorting change
+    watch([q, sortBy, sortDir], () => { page.value = 1 })
+    watch(filter, () => { page.value = 1 }, { deep: true })
+
+    // Clamp current page when the sorted results length changes (e.g., delete/filter)
+    watch(sorted, () => {
+      if (page.value > pageCount.value) page.value = pageCount.value
+      if (sorted.value.length === 0) page.value = 1
+    })
+
     // Empty-state helpers
     const hasAny = computed(() => Array.isArray(store.state.exercises) && store.state.exercises.length > 0)
 
@@ -268,6 +315,14 @@ export default {
       hasAny,
       isFilterActive,
       resetFilters,
+      // pagination
+      page,
+      pageCount,
+      pageItems,
+      pageSwitching,
+      setPage,
+      goPrev,
+      goNext,
       // sort UI
       sortBy,
       sortDir,
