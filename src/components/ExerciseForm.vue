@@ -233,6 +233,7 @@ import {ref, reactive, watch, computed, nextTick, onBeforeUnmount} from 'vue'
 import store from '../store'
 import RichTextEditor from './RichTextEditor.vue'
 import IconPicker from './IconPicker.vue'
+import { MATERIAL_OPTIONS } from '../constants'
 
 export default {
   components: { RichTextEditor, IconPicker },
@@ -297,18 +298,8 @@ export default {
       'Hourglass',
     ]
 
-    const materialOptions = [
-      'Pionnen',
-      'Loopladder',
-      'Hoepel',
-      'Stoel',
-      'Medicijnbal',
-      'Weerstandsband',
-      'Springtouw',
-      'Pylobox',
-      'Shotclock',
-      'Reboundmachine'
-    ]
+    // Gebruik gedeelde materialenlijst uit constants
+    const materialOptions = MATERIAL_OPTIONS
 
     // Als initial wordt meegegeven, zet dit in het formulier
     watch(() => props.initial, (v) => {

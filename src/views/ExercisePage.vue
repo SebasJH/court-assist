@@ -19,6 +19,16 @@
           <span>Filters</span>
         </button>
         <SortButton :sortBy="sortBy" :sortDir="sortDir" @update:sortBy="val => sortBy = val" @update:sortDir="val => sortDir = val" />
+        <button
+          class="inline-flex items-center gap-2 px-3 h-[42px] rounded-md border text-sm focus:outline-none"
+          :class="filter.favorites ? 'bg-blue-500 border-blue-500 text-white' : 'bg-white border-gray-300 text-gray-800 hover:bg-gray-50'"
+          @click="filter.favorites = !filter.favorites"
+          :aria-pressed="filter.favorites ? 'true' : 'false'"
+          title="Toon alleen favorieten"
+        >
+          <Star :class="filter.favorites ? 'w-4 h-4' : 'w-4 h-4'" :fill="filter.favorites ? 'currentColor' : 'none'" :stroke="'currentColor'" />
+          <span>Favorieten</span>
+        </button>
       </div>
       <div>
         <div class="relative">
@@ -44,6 +54,11 @@
         @update:players="val => filter.players = val"
         :intensity="filter.intensity"
         @update:intensity="val => filter.intensity = val"
+        :court="filter.court"
+        @update:court="val => filter.court = val"
+        :materials="filter.materials"
+        @update:materials="val => filter.materials = val"
+        :materialOptions="materialOptions"
       />
     </div>
 
@@ -118,7 +133,7 @@ import FiltersBar from '../components/FiltersBar.vue'
 import SortButton from '../components/SortButton.vue'
 import DeleteConfirm from '../components/DeleteConfirm.vue'
 import Pagination from '../components/Pagination.vue'
-import { EXERCISE_CATEGORIES } from '../constants'
+import { EXERCISE_CATEGORIES, MATERIAL_OPTIONS, normalizeCourt } from '../constants'
 import store from '../store'
 import { ref, computed, watch, nextTick } from 'vue'
 import { ensureSampleExercises } from '../data/sampleExercises'
@@ -136,6 +151,9 @@ export default {
       category: '',
       players: [1, 20],
       intensity: [1, 5],
+      favorites: false,
+      court: [],
+      materials: []
     })
     const showForm = ref(false)
     const editItem = ref(null)
@@ -149,6 +167,7 @@ export default {
     })
 
     const categories = EXERCISE_CATEGORIES
+    const materialOptions = MATERIAL_OPTIONS
 
     function openForm(item = null) {
       editItem.value = item
@@ -201,6 +220,11 @@ export default {
       const selPlayersMax = filter.value.players[1]
       const selIntMin = filter.value.intensity[0]
       const selIntMax = filter.value.intensity[1]
+      const selFav = !!filter.value.favorites
+      const selCourts = Array.isArray(filter.value.court)
+        ? filter.value.court.map(c => normalizeCourt(c)).filter(Boolean)
+        : []
+      const selMaterials = Array.isArray(filter.value.materials) ? filter.value.materials : []
 
       return store.state.exercises.filter(e => {
         // zoek op titel en beschrijving (geen fallback naar shortDescription)
@@ -208,8 +232,28 @@ export default {
         if (q.value && !searchable.includes(q.value.toLowerCase()))
           return false
 
+        // favorieten
+        if (selFav && !e.favorite) return false
+
         // categorie (nu array)
         if (filter.value.category && !e.category.includes(filter.value.category)) return false
+
+        // court type (checkboxes allow selecting one or both). If none selected, don't filter.
+        if (selCourts.length > 0) {
+          const ec = normalizeCourt(e.court)
+          // If both options are selected, include all (also those with empty court)
+          if (selCourts.length === 1) {
+            if (!selCourts.includes(ec)) return false
+          }
+        }
+
+        // materialen (vereist alle geselecteerde materialen aanwezig)
+        if (selMaterials.length > 0) {
+          const em = Array.isArray(e.materials) ? e.materials : []
+          for (const m of selMaterials) {
+            if (!em.includes(m)) return false
+          }
+        }
 
         // aantal spelers (range overlap)
         if (!playersOverlap(e, selPlayersMin, selPlayersMax)) return false
@@ -291,7 +335,10 @@ export default {
       const f = filter.value
       const playersActive = f.players[0] !== DEFAULT_PLAYERS[0] || f.players[1] !== DEFAULT_PLAYERS[1]
       const intensityActive = f.intensity[0] !== DEFAULT_INTENSITY[0] || f.intensity[1] !== DEFAULT_INTENSITY[1]
-      return (q.value && q.value.trim().length > 0) || (f.category && f.category.length > 0) || playersActive || intensityActive
+      const favoritesActive = !!f.favorites
+      const courtActive = Array.isArray(f.court) && f.court.length > 0
+      const materialsActive = Array.isArray(f.materials) && f.materials.length > 0
+      return (q.value && q.value.trim().length > 0) || (f.category && f.category.length > 0) || playersActive || intensityActive || favoritesActive || courtActive || materialsActive
     })
 
     function resetFilters() {
@@ -300,6 +347,9 @@ export default {
         category: '',
         players: [...DEFAULT_PLAYERS],
         intensity: [...DEFAULT_INTENSITY],
+        favorites: false,
+        court: [],
+        materials: []
       }
     }
 
@@ -310,6 +360,7 @@ export default {
       q,
       filter,
       categories,
+      materialOptions,
       filtered,
       sorted,
       hasAny,
