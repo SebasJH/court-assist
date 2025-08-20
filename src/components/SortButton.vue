@@ -11,7 +11,7 @@
     <div
       v-if="open"
       ref="menuRef"
-      :class="['absolute overflow-hidden top-full mt-2 w-64 bg-white border border-gray-200 rounded shadow-lg z-20', alignRight ? 'right-0' : 'left-0']"
+      :class="['absolute overflow-hidden top-full mt-2 w-64 bg-white border border-gray-200 rounded shadow-lg z-[3000]', alignRight ? 'right-0' : 'left-0']"
       @click.stop
     >
       <div>

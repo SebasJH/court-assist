@@ -137,16 +137,16 @@
           <button
             type="button"
             class="px-3 py-2 text-sm font-medium focus:outline-none"
-            :class="form.court === 'halfcourt' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
+            :class="normalizedCourt === 'halfcourt' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
             @click="toggleCourt('halfcourt')"
-            :aria-pressed="form.court === 'halfcourt' ? 'true' : 'false'"
+            :aria-pressed="normalizedCourt === 'halfcourt' ? 'true' : 'false'"
           >Half court</button>
           <button
             type="button"
             class="px-3 py-2 text-sm font-medium border-l border-gray-300 focus:outline-none"
-            :class="form.court === 'full court' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
-            @click="toggleCourt('full court')"
-            :aria-pressed="form.court === 'full court' ? 'true' : 'false'"
+            :class="normalizedCourt === 'fullcourt' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
+            @click="toggleCourt('fullcourt')"
+            :aria-pressed="normalizedCourt === 'fullcourt' ? 'true' : 'false'"
           >Full court</button>
         </div>
         <button
@@ -236,6 +236,14 @@ export default {
 
     const form = reactive(emptyForm())
 
+    // Normalize court for reliable UI comparisons (e.g., 'Full court' vs 'fullcourt')
+    const normalizedCourt = computed(() => {
+      const v = (form.court || '').toString().toLowerCase().trim().replace(/\s+/g, '')
+      if (v === 'halfcourt') return 'halfcourt'
+      if (v === 'fullcourt') return 'fullcourt'
+      return v
+    })
+
 
     const placeholderIcons = [
       'TrafficCone',
@@ -312,9 +320,16 @@ export default {
       }
     }
 
-    // Toggle court knop (deselecteer indien opnieuw geklikt)
+    // Toggle court knop (deselecteer indien opnieuw geklikt), using normalized comparison
     function toggleCourt(val) {
-      form.court = (form.court === val) ? '' : val
+      const normVal = String(val || '').toLowerCase().trim().replace(/\s+/g, '')
+      const isActive = normalizedCourt.value === normVal
+      if (isActive) {
+        form.court = ''
+      } else {
+        // Save canonical labels with a space for readability
+        form.court = normVal === 'halfcourt' ? 'half court' : (normVal === 'fullcourt' ? 'full court' : val)
+      }
     }
 
     function save() {
@@ -359,7 +374,8 @@ export default {
       toggleMaterial,
       toggleCourt,
       placeholderIcons,
-      isEdit
+      isEdit,
+      normalizedCourt
     }
   }
 }

@@ -19,7 +19,7 @@
           <div class="text-lg font-bold text-gray-800 break-words">{{ exercise.name }}</div>
 
           <!-- Categories -->
-          <div class="flex flex-wrap gap-1.5 mt-1">
+          <div class="flex flex-wrap gap-1 mt-1">
             <span
                 v-for="cat in exercise.category"
                 :key="cat"
