@@ -7,19 +7,13 @@
 
 <script setup>
 import { computed } from 'vue'
+import { isNum, hasPlayers, hasDuration as hasDurationField, hasCourt as hasCourtField, formatPlayersFromExercise, formatDurationFromExercise, formatIntensityFromExercise, formatCourtFromExercise } from '../utils/exerciseFormat'
 
 const props = defineProps({
   exercise: { type: Object, required: true },
   kind: { type: String, required: true }, // 'players' | 'duration' | 'intensity' | 'court'
   variant: { type: String, default: 'compact' } // 'compact' | 'detail'
 })
-
-function isNum(v){ return typeof v === 'number' && Number.isFinite(v) }
-
-const minPlayers = computed(() => isNum(props.exercise?.minPlayers) ? props.exercise.minPlayers : null)
-const maxPlayers = computed(() => isNum(props.exercise?.maxPlayers) ? props.exercise.maxPlayers : null)
-const hasDuration = computed(() => isNum(props.exercise?.duration) && props.exercise.duration > 0)
-const hasCourt = computed(() => typeof props.exercise?.court === 'string' && props.exercise.court.trim().length > 0)
 
 const icon = computed(() => {
   switch (props.kind) {
@@ -33,57 +27,24 @@ const icon = computed(() => {
 
 const visible = computed(() => {
   switch (props.kind) {
-    case 'players': return minPlayers.value !== null || maxPlayers.value !== null
-    case 'duration': return hasDuration.value
-    case 'intensity': return typeof props.exercise?.intensity === 'number'
-    case 'court': return hasCourt.value
+    case 'players': return hasPlayers(props.exercise?.minPlayers, props.exercise?.maxPlayers)
+    case 'duration': return hasDurationField(props.exercise?.duration)
+    case 'intensity': return isNum(props.exercise?.intensity)
+    case 'court': return hasCourtField(props.exercise?.court)
     default: return false
   }
 })
 
-const courtLabel = computed(() => {
-  const v = (props.exercise?.court || '').toString().trim()
-  if (!v) return ''
-  const norm = v.toLowerCase()
-  if (props.variant === 'detail') {
-    if (norm === 'halfcourt' || norm === 'half court') return 'Half court'
-    if (norm === 'fullcourt' || norm === 'full court') return 'Full court'
-  } else {
-    if (norm === 'halfcourt' || norm === 'half court') return 'Half'
-    if (norm === 'fullcourt' || norm === 'full court') return 'Full'
-  }
-  return v
-})
-
 const label = computed(() => {
   switch (props.kind) {
-    case 'players': {
-      const min = minPlayers.value
-      const max = maxPlayers.value
-      if (props.variant === 'detail') {
-        if (min !== null && max !== null) return `${min} - ${max}`
-        if (min !== null) return `${min} minimaal`
-        if (max !== null) return `${max} maximaal`
-        return ''
-      }
-      // compact
-      if (min !== null && max !== null) return `${min}-${max}`
-      if (min !== null) return `${min} min`
-      if (max !== null) return `${max} max`
-      return ''
-    }
-    case 'duration': {
-      const d = props.exercise?.duration
-      if (!isNum(d) || d <= 0) return ''
-      return props.variant === 'detail' ? `${d} minuten` : `${d} min`
-    }
-    case 'intensity': {
-      const i = props.exercise?.intensity
-      return isNum(i) ? `${i}/5` : ''
-    }
-    case 'court': {
-      return courtLabel.value
-    }
+    case 'players':
+      return formatPlayersFromExercise(props.exercise, { variant: props.variant })
+    case 'duration':
+      return formatDurationFromExercise(props.exercise, { variant: props.variant })
+    case 'intensity':
+      return formatIntensityFromExercise(props.exercise)
+    case 'court':
+      return formatCourtFromExercise(props.exercise, { variant: props.variant })
     default:
       return ''
   }

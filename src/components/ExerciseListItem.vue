@@ -86,6 +86,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
+import { formatPlayersFromExercise, formatDurationFromExercise, formatCourtFromExercise, formatIntensityFromExercise } from '../utils/exerciseFormat'
 
 const emit = defineEmits(['edit','duplicate','delete','toggle-fav'])
 const props = defineProps({ exercise: { type: Object, required: true } })
@@ -103,33 +104,10 @@ function goToDetail(){
   router.push(`/oefening/${slug}`)
 }
 
-function isNum(v){ return typeof v === 'number' && Number.isFinite(v) }
-const minPlayersVal = computed(() => isNum(props.exercise?.minPlayers) ? props.exercise.minPlayers : null)
-const maxPlayersVal = computed(() => isNum(props.exercise?.maxPlayers) ? props.exercise.maxPlayers : null)
-const playersLabel = computed(() => {
-  const min = minPlayersVal.value
-  const max = maxPlayersVal.value
-  if (min !== null && max !== null) return `${min}-${max}`
-  if (min !== null) return `${min} min`
-  if (max !== null) return `${max} max`
-  return ''
-})
-const durationLabel = computed(() => {
-  const d = props.exercise?.duration
-  return isNum(d) && d > 0 ? `${d} min` : ''
-})
-const courtLabel = computed(() => {
-  const v = (props.exercise?.court || '').toString().trim()
-  if (!v) return ''
-  const norm = v.toLowerCase()
-  if (norm === 'halfcourt' || norm === 'half court') return 'Half'
-  if (norm === 'fullcourt' || norm === 'full court') return 'Full'
-  return v
-})
-const intensityLabel = computed(() => {
-  const i = props.exercise?.intensity
-  return isNum(i) ? `${i}/5` : ''
-})
+const playersLabel = computed(() => formatPlayersFromExercise(props.exercise, { variant: 'compact' }))
+const durationLabel = computed(() => formatDurationFromExercise(props.exercise, { variant: 'compact' }))
+const courtLabel = computed(() => formatCourtFromExercise(props.exercise, { variant: 'compact' }))
+const intensityLabel = computed(() => formatIntensityFromExercise(props.exercise))
 
 function toggleFav(){ emit('toggle-fav', props.exercise.id) }
 

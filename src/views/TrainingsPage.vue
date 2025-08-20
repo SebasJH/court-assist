@@ -65,6 +65,7 @@ import { ref, computed } from 'vue'
 import PageHeader from '../components/PageHeader.vue'
 import ExerciseBadge from '../components/ExerciseBadge.vue'
 import { ensureSampleExercises } from '../data/sampleExercises'
+import { hasPlayers, formatPlayersFromExercise, hasDuration as hasDurationField, hasCourt as hasCourtField, formatCourtFromExercise } from '../utils/exerciseFormat'
 
 export default {
   components: { PageHeader, ExerciseBadge },
@@ -109,30 +110,20 @@ export default {
     function isNum(v){ return typeof v === 'number' && !Number.isNaN(v) }
     function showPlayersFor(ex){
       if (!ex) return false
-      return isNum(ex.minPlayers) || isNum(ex.maxPlayers)
+      return hasPlayers(ex.minPlayers, ex.maxPlayers)
     }
     function playersLabelFor(ex){
       if (!ex) return ''
-      const min = isNum(ex.minPlayers) ? ex.minPlayers : null
-      const max = isNum(ex.maxPlayers) ? ex.maxPlayers : null
-      if (min !== null && max !== null) return `${min}-${max}`
-      if (min !== null) return `${min} min`
-      if (max !== null) return `${max} max`
-      return ''
+      return formatPlayersFromExercise(ex, { variant: 'compact' })
     }
     function hasDurationFor(ex){
-      return typeof ex?.duration === 'number' && ex.duration > 0
+      return hasDurationField(ex?.duration)
     }
     function hasCourtFor(ex){
-      return typeof ex?.court === 'string' && ex.court.trim().length > 0
+      return hasCourtField(ex?.court)
     }
     function courtLabelFor(ex){
-      const v = (ex?.court || '').toString().trim()
-      if (!v) return ''
-      const norm = v.toLowerCase()
-      if (norm === 'halfcourt' || norm === 'half court') return 'Half'
-      if (norm === 'fullcourt' || norm === 'full court') return 'Full'
-      return v
+      return formatCourtFromExercise(ex, { variant: 'compact' })
     }
 
     return { exercises, program, programName, totalDuration, removeAt, onDragStart, onDrop,

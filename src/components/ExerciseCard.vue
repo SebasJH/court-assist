@@ -130,6 +130,7 @@
 import {ref, onMounted, onBeforeUnmount, nextTick, computed} from 'vue'
 import { useRouter } from 'vue-router'
 import Tooltip from './Tooltip.vue'
+import { isNum, hasPlayers, hasDuration as hasDurationField, hasCourt as hasCourtField, formatPlayersFromExercise, formatCourtFromExercise } from '../utils/exerciseFormat'
 
 const emit = defineEmits(['edit','duplicate','delete','toggle-fav'])
 
@@ -257,32 +258,16 @@ function toggleFav() {
   emit('toggle-fav', props.exercise.id)
 }
 
-const minPlayersVal = computed(() => (typeof props.exercise?.minPlayers === 'number') ? props.exercise.minPlayers : null)
-const maxPlayersVal = computed(() => (typeof props.exercise?.maxPlayers === 'number') ? props.exercise.maxPlayers : null)
-const showPlayers = computed(() => minPlayersVal.value !== null || maxPlayersVal.value !== null)
-const playersLabel = computed(() => {
-  const min = minPlayersVal.value
-  const max = maxPlayersVal.value
-  if (min !== null && max !== null) return `${min}-${max}`
-  if (min !== null) return `${min} min`
-  if (max !== null) return `${max} max`
-  return ''
-})
-const hasDuration = computed(() => typeof props.exercise?.duration === 'number' && props.exercise.duration > 0)
-const hasCourt = computed(() => typeof props.exercise?.court === 'string' && props.exercise.court.trim().length > 0)
-const courtLabel = computed(() => {
-  const v = (props.exercise?.court || '').toString().trim()
-  if (!v) return ''
-  const norm = v.toLowerCase()
-  if (norm === 'halfcourt' || norm === 'half court') return 'Half'
-  if (norm === 'fullcourt' || norm === 'full court') return 'Full'
-  return v
-})
+const showPlayers = computed(() => hasPlayers(props.exercise?.minPlayers, props.exercise?.maxPlayers))
+const playersLabel = computed(() => formatPlayersFromExercise(props.exercise, { variant: 'compact' }))
+const hasDuration = computed(() => hasDurationField(props.exercise?.duration))
+const hasCourt = computed(() => hasCourtField(props.exercise?.court))
+const courtLabel = computed(() => formatCourtFromExercise(props.exercise, { variant: 'compact' }))
 
 // Tooltip texts
 const playersTooltip = computed(() => {
-  const min = minPlayersVal.value
-  const max = maxPlayersVal.value
+  const min = isNum(props.exercise?.minPlayers) ? props.exercise.minPlayers : null
+  const max = isNum(props.exercise?.maxPlayers) ? props.exercise.maxPlayers : null
   let body = ''
   if (min !== null && max !== null) {
     body = `Geschikt voor ${min} tot ${max} spelers`
