@@ -63,7 +63,7 @@ function deleteExercise(id, options = {}) {
 function duplicateExercise(id, options = {}) {
     const orig = state.exercises.find(x => x.id === id)
     if (!orig) return
-    const copy = { ...orig, id: state.nextId++, name: orig.name + ' (copy)', favorite: false, dateCreated: new Date().toISOString() }
+    const copy = { ...orig, id: state.nextId++, name: orig.name + ' (kopie)', favorite: false, dateCreated: new Date().toISOString() }
     state.exercises.unshift(copy)
     if (!options.silent) notify('Oefening gedupliceerd', 'info', 2500)
 }

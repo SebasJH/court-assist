@@ -3,7 +3,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <!-- Category select -->
       <select :value="category" @change="$emit('update:category', $event.target.value)" class="form-input">
-        <option value="">Alle oefening-categorieën</option>
+        <option value="">Alle categorieën</option>
         <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
       </select>
 

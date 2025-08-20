@@ -47,18 +47,42 @@
       />
     </div>
 
-    <!-- Cards -->
-    <transition-group name="exercise-list" tag="div" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-      <exercise-card
-          v-for="ex in sorted"
-          :key="ex.id"
-          :exercise="ex"
-          @edit="openForm(ex)"
-          @delete="onDelete"
-          @duplicate="onDuplicate"
-          @toggle-fav="onToggleFav"
-      />
-    </transition-group>
+    <!-- Cards or Empty state -->
+    <template v-if="sorted.length > 0">
+      <transition-group name="exercise-list" tag="div" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        <exercise-card
+            v-for="ex in sorted"
+            :key="ex.id"
+            :exercise="ex"
+            @edit="openForm(ex)"
+            @delete="onDelete"
+            @duplicate="onDuplicate"
+            @toggle-fav="onToggleFav"
+        />
+      </transition-group>
+    </template>
+    <div v-else class="py-20">
+      <div class="bg-white border border-dashed border-gray-300 rounded-xl p-10 text-center max-w-xl mx-auto">
+        <div class="text-lg font-semibold text-gray-800 mb-2">
+          {{ hasAny ? 'Er zijn geen oefeningen gevonden met dit filter' : 'Er zijn momenteel geen oefeningen' }}
+        </div>
+        <div class="text-sm text-gray-600 mb-6" v-if="hasAny && isFilterActive">
+          Pas je zoekopdracht of filters aan, of verwijder de filters.
+        </div>
+        <div class="flex justify-center gap-3">
+          <button
+            v-if="hasAny && isFilterActive"
+            class="btn-secondary"
+            @click="resetFilters"
+          >Verwijder filters</button>
+          <button
+            v-else
+            class="btn-primary"
+            @click="openForm()"
+          >Maak een oefening aan</button>
+        </div>
+      </div>
+    </div>
 
     <!-- Modal -->
     <modal v-if="showForm" @close="closeForm">
@@ -210,6 +234,28 @@ export default {
       })
     })
 
+    // Empty-state helpers
+    const hasAny = computed(() => Array.isArray(store.state.exercises) && store.state.exercises.length > 0)
+
+    const DEFAULT_PLAYERS = [1, 20]
+    const DEFAULT_INTENSITY = [1, 5]
+
+    const isFilterActive = computed(() => {
+      const f = filter.value
+      const playersActive = f.players[0] !== DEFAULT_PLAYERS[0] || f.players[1] !== DEFAULT_PLAYERS[1]
+      const intensityActive = f.intensity[0] !== DEFAULT_INTENSITY[0] || f.intensity[1] !== DEFAULT_INTENSITY[1]
+      return (q.value && q.value.trim().length > 0) || (f.category && f.category.length > 0) || playersActive || intensityActive
+    })
+
+    function resetFilters() {
+      q.value = ''
+      filter.value = {
+        category: '',
+        players: [...DEFAULT_PLAYERS],
+        intensity: [...DEFAULT_INTENSITY],
+      }
+    }
+
     // Sample data als store leeg is (categorieën als array) — verplaatst naar aparte module
     ensureSampleExercises(store)
 
@@ -219,6 +265,9 @@ export default {
       categories,
       filtered,
       sorted,
+      hasAny,
+      isFilterActive,
+      resetFilters,
       // sort UI
       sortBy,
       sortDir,
