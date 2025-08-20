@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+  <div class="bg-white rounded-xl shadow-md border border-[#E2E8F0] p-6 mb-6">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <!-- Category select -->
       <select :value="category" @change="$emit('update:category', $event.target.value)" class="form-input">
