@@ -1,5 +1,5 @@
 <template>
-  <div class="exercise-card relative cursor-pointer hover:z-[10000] focus-within:z-[10000]" role="link" :aria-label="`Open ${exercise.name}`" @click="goToDetail" tabindex="0" @keydown.enter.prevent="goToDetail" :class="menuOpen ? 'z-[10000]' : ''">
+  <div class="exercise-card relative cursor-pointer" role="link" :aria-label="`Open ${exercise.name}`" @click="goToDetail" tabindex="0" @keydown.enter.prevent="goToDetail" :class="zClass">
     <div class="flex flex-col h-full">
       <div class="flex items-start gap-3">
 
@@ -32,7 +32,7 @@
         </div>
 
         <!-- Controls back in corner -->
-        <div class="absolute top-4 right-4 flex items-start gap-2" ref="controlsRef">
+        <div class="absolute top-4 right-4 flex items-start gap-2" ref="controlsRef" @mouseenter="liftEnter" @mouseleave="liftLeave">
           <button
             class="star flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors duration-200 w-9 h-9 cursor-pointer"
             :aria-pressed="exercise.favorite ? 'true' : 'false'"
@@ -56,7 +56,7 @@
               v-if="menuOpen"
               ref="menuRef"
               @click.stop
-              :class="['absolute top-full mt-2 w-40 bg-white border border-gray-200 rounded shadow-lg flex flex-col z-50', alignRight ? 'right-0' : 'left-0']"
+              :class="['absolute top-full mt-2 w-40 bg-white border border-gray-200 rounded shadow-lg flex flex-col z-[3000]', alignRight ? 'right-0' : 'left-0']"
             >
               <button @click="onEdit" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 py-2 hover:bg-gray-100">
                 <Pencil class="w-fit h-4" />
@@ -84,39 +84,39 @@
         <div class="flex items-center justify-between gap-2 flex-wrap">
           <div class="flex flex-wrap items-center gap-y-1 gap-x-1.5">
             <!-- Players with tooltip -->
-            <div v-if="showPlayers" class="relative group">
+            <div v-if="showPlayers" class="relative" ref="playersRef" @mouseenter="onEnterPlayers" @mouseleave="onLeavePlayers">
               <div class="exercise-players bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:bg-gray-300 hover:shadow-sm transition-colors transition-shadow duration-150">
                 <Users class="h-4 w-fit" />
                 <div>{{ playersLabel }}</div>
               </div>
-              <Tooltip :title="playersTooltip.title" :body="playersTooltip.body" />
+              <Tooltip :title="playersTooltip.title" :body="playersTooltip.body" :open="playersOpen" :anchor="playersRef" />
             </div>
 
             <!-- Duration with tooltip -->
-            <div v-if="hasDuration" class="relative group">
+            <div v-if="hasDuration" class="relative" ref="durationRef" @mouseenter="onEnterDuration" @mouseleave="onLeaveDuration">
               <div class="exercise-duration bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:bg-gray-300 hover:shadow-sm transition-colors transition-shadow duration-150">
                 <TimerReset class="h-4 w-fit" />
                 <div>{{ exercise.duration }} min</div>
               </div>
-              <Tooltip :title="durationTooltip.title" :body="durationTooltip.body" />
+              <Tooltip :title="durationTooltip.title" :body="durationTooltip.body" :open="durationOpen" :anchor="durationRef" />
             </div>
 
             <!-- Intensity with tooltip -->
-            <div class="relative group">
+            <div class="relative" ref="intensityRef" @mouseenter="onEnterIntensity" @mouseleave="onLeaveIntensity">
               <div class="exercise-intensity bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:bg-gray-300 hover:shadow-sm transition-colors transition-shadow duration-150">
                 <Zap class="h-4 w-fit" />
                 <div>{{ exercise.intensity }}/5</div>
               </div>
-              <Tooltip :title="intensityTooltip.title" :body="intensityTooltip.body" />
+              <Tooltip :title="intensityTooltip.title" :body="intensityTooltip.body" :open="intensityOpen" :anchor="intensityRef" />
             </div>
 
             <!-- Court with tooltip -->
-            <div v-if="hasCourt" class="relative group">
+            <div v-if="hasCourt" class="relative" ref="courtRef" @mouseenter="onEnterCourt" @mouseleave="onLeaveCourt">
               <div class="exercise-court bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:bg-gray-300 hover:shadow-sm transition-colors transition-shadow duration-150">
                 <Dribbble class="h-4 w-fit" />
                 <div>{{ courtLabel }}</div>
               </div>
-              <Tooltip :title="courtTooltip.title" :body="courtTooltip.body" />
+              <Tooltip :title="courtTooltip.title" :body="courtTooltip.body" :open="courtOpen" :anchor="courtRef" />
             </div>
           </div>
           <router-link :to="`/oefening/${slug}`" class="text-blue-600 hover:text-blue-700 hover:underline text-sm font-medium" @click.stop>Lees meer →</router-link>
@@ -141,6 +141,32 @@ const menuOpen = ref(false)
 const menuRef = ref(null)  // Ref naar de dropdown-container
 const menuButtonRef = ref(null)
 const alignRight = ref(false)
+
+// Lift the card when interacting so its menus/tooltips stack above neighbors
+const hoverCount = ref(0)
+function liftEnter() { hoverCount.value++ }
+function liftLeave() { hoverCount.value = Math.max(0, hoverCount.value - 1) }
+const zClass = computed(() => (menuOpen.value ? 'z-[2000]' : (hoverCount.value > 0 ? 'z-[1000]' : '')))
+
+// Tooltip anchors and visibility (teleported tooltips)
+const playersRef = ref(null)
+const durationRef = ref(null)
+const intensityRef = ref(null)
+const courtRef = ref(null)
+
+const playersOpen = ref(false)
+const durationOpen = ref(false)
+const intensityOpen = ref(false)
+const courtOpen = ref(false)
+
+function onEnterPlayers(){ playersOpen.value = true; liftEnter() }
+function onLeavePlayers(){ playersOpen.value = false; liftLeave() }
+function onEnterDuration(){ durationOpen.value = true; liftEnter() }
+function onLeaveDuration(){ durationOpen.value = false; liftLeave() }
+function onEnterIntensity(){ intensityOpen.value = true; liftEnter() }
+function onLeaveIntensity(){ intensityOpen.value = false; liftLeave() }
+function onEnterCourt(){ courtOpen.value = true; liftEnter() }
+function onLeaveCourt(){ courtOpen.value = false; liftLeave() }
 
 function computeMenuAlignment() {
   try {

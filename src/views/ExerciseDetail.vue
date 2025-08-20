@@ -39,7 +39,7 @@
           <div class="menu w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors duration-200 cursor-pointer" @click="toggleMenu" ref="menuButtonRef">
             <Ellipsis />
           </div>
-          <div v-if="menuOpen" ref="menuRef" class="absolute top-full right-0 mt-2 w-44 bg-white border border-gray-200 rounded shadow-lg flex flex-col z-50">
+          <div v-if="menuOpen" ref="menuRef" class="absolute top-full right-0 mt-2 w-44 bg-white border border-gray-200 rounded shadow-lg flex flex-col z-[4000]">
             <button @click="onEdit" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 py-2 hover:bg-gray-100">
               <Pencil class="w-fit h-4" />
               Wijzigen

@@ -1,113 +1,107 @@
 <template>
-  <!-- Tooltip wrapper: visibility controlled by parent .group hover -->
-  <div
-    ref="wrapRef"
-    class="pointer-events-none absolute opacity-0 group-hover:opacity-100 transition-opacity z-[9999]"
-    :style="wrapperStyle"
-  >
-    <div ref="boxRef" class="relative drop-shadow-xl">
-      <div class="bg-white border border-gray-200 rounded-lg p-3 break-words">
-        <div class="text-sm font-semibold text-gray-800">{{ title }}</div>
-        <div v-if="body" class="mt-1 text-xs text-gray-600">{{ body }}</div>
-        <slot />
+  <teleport to="body">
+    <div
+      v-if="open && anchorEl"
+      ref="wrapRef"
+      class="pointer-events-none fixed z-[4000]"
+      :style="wrapperStyle"
+    >
+      <div ref="boxRef" class="relative drop-shadow-xl">
+        <div class="bg-white border border-gray-200 rounded-lg p-3 break-words">
+          <div class="text-sm font-semibold text-gray-800">{{ title }}</div>
+          <div v-if="body" class="mt-1 text-xs text-gray-600">{{ body }}</div>
+          <slot />
+        </div>
       </div>
     </div>
-  </div>
+  </teleport>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
 
-// Simple, reusable tooltip used on hover of a parent with class `group`.
-// Now includes smart positioning that ensures the tooltip never leaves the viewport.
-// Props: title (string), body (optional string). You can also pass extra content via default slot.
+// Tooltip rendered to document.body via Teleport so it escapes card stacking contexts.
+// Props: title (string), body (string), open (boolean), anchor (HTMLElement or ref-unwrapped element)
 const props = defineProps({
   title: { type: String, required: true },
-  body: { type: String, default: '' }
+  body: { type: String, default: '' },
+  open: { type: Boolean, default: false },
+  anchor: { type: Object, default: null }
 })
 
-const wrapRef = ref(null)   // absolute wrapper (positioned relative to parent container)
-const boxRef = ref(null)    // the visible tooltip box
+const wrapRef = ref(null)
+const boxRef = ref(null)
 
-const shiftX = ref(0)
-const placeBelow = ref(false)
+const anchorEl = computed(() => {
+  const a = props.anchor
+  if (!a) return null
+  // Support passing a Vue ref or a raw element
+  if (typeof a === 'object' && a !== null && 'value' in a) return a.value
+  return a
+})
+
 const baseWidthPx = 256 // desired tooltip width (~16rem)
 const widthPx = ref(baseWidthPx)
+
+const leftPx = ref(0)
+const topPx = ref(0)
+const placeBelow = ref(false)
 
 function clamp(val, min, max) { return Math.min(Math.max(val, min), max) }
 
 function measureAndPosition() {
   try {
-    const wrap = wrapRef.value
     const box = boxRef.value
-    if (!wrap || !box) return
+    const anchor = anchorEl.value
+    if (!box || !anchor) return
 
     const viewportW = window.innerWidth || document.documentElement.clientWidth
     const viewportH = window.innerHeight || document.documentElement.clientHeight
 
     const margin = 8   // margin to viewport edges
-    const gap = 8      // space between parent and tooltip
+    const gap = 8      // space between anchor and tooltip
 
     // Clamp width to viewport (keep preferred baseWidthPx unless it doesn't fit)
     const allowed = Math.max(120, viewportW - margin * 2)
     widthPx.value = clamp(baseWidthPx, 120, allowed)
 
-    // Parent area (the positioned ancestor, i.e., the badge container)
-    const parentEl = wrap.offsetParent || wrap.parentElement || document.body
-    const parentRect = parentEl.getBoundingClientRect()
+    const rect = anchor.getBoundingClientRect()
 
-    // Use preferred width for computations
+    // Use preferred width for horizontal positioning
     const boxW = widthPx.value
+
+    // Temporarily ensure content renders to measure height
     const boxH = box.offsetHeight || 0
 
-    // Horizontal: center on parent, then shift to keep in viewport
-    const centerX = parentRect.left + parentRect.width / 2
-    const leftIfCentered = centerX - boxW / 2
-    const rightIfCentered = centerX + boxW / 2
+    // Horizontal: center on anchor, clamp to viewport
+    const centeredLeft = rect.left + rect.width / 2 - boxW / 2
+    leftPx.value = clamp(centeredLeft, margin, viewportW - margin - boxW)
 
-    let dx = 0
-    if (leftIfCentered < margin) dx = margin - leftIfCentered
-    else if (rightIfCentered > viewportW - margin) dx = (viewportW - margin) - rightIfCentered
-    shiftX.value = dx
-
-    // Vertical placement: prefer above; flip to bottom if not enough space
-    const spaceAbove = parentRect.top
-    const spaceBelow = viewportH - parentRect.bottom
+    // Vertical placement: prefer above, flip to bottom if insufficient space
+    const spaceAbove = rect.top
+    const spaceBelow = viewportH - rect.bottom
     placeBelow.value = boxH + gap > spaceAbove && spaceBelow >= spaceAbove
+
+    topPx.value = placeBelow.value
+      ? (rect.bottom + gap)
+      : Math.max(margin, rect.top - gap - boxH)
   } catch (_) {
-    // best-effort: fall back to defaults
-    shiftX.value = 0
-    placeBelow.value = false
+    // noop
   }
 }
 
-const wrapperStyle = computed(() => {
-  const gap = 8
-  // Base: anchor horizontally at 50% of parent; vertical is dynamic (top 0 for above, top 100% for below)
-  const base = {
-    left: '50%',
-    width: widthPx.value + 'px'
-  }
-  if (placeBelow.value) {
-    return {
-      ...base,
-      top: '100%',
-      transform: `translateX(calc(-50% + ${shiftX.value}px)) translateY(${gap}px)`
-    }
-  }
-  return {
-    ...base,
-    top: '0px',
-    transform: `translateX(calc(-50% + ${shiftX.value}px)) translateY(calc(-100% - ${gap}px))`
-  }
-})
+const wrapperStyle = computed(() => ({
+  left: leftPx.value + 'px',
+  top: topPx.value + 'px',
+  width: widthPx.value + 'px'
+}))
 
 function onResizeOrScroll() {
-  measureAndPosition()
+  if (props.open) measureAndPosition()
 }
 
 onMounted(() => {
-  nextTick(() => measureAndPosition())
+  if (props.open) nextTick(() => measureAndPosition())
   window.addEventListener('resize', onResizeOrScroll)
   window.addEventListener('scroll', onResizeOrScroll, true)
 })
@@ -117,7 +111,9 @@ onBeforeUnmount(() => {
   window.removeEventListener('scroll', onResizeOrScroll, true)
 })
 
-watch(() => [props.title, props.body], () => nextTick(() => measureAndPosition()))
+watch(() => [props.title, props.body], () => props.open && nextTick(() => measureAndPosition()))
+watch(() => props.open, (v) => { if (v) nextTick(() => measureAndPosition()) })
+watch(() => props.anchor, () => props.open && nextTick(() => measureAndPosition()))
 </script>
 
 <style scoped>
