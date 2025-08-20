@@ -1,5 +1,5 @@
 <template>
-  <form class="training-form" @submit.prevent="save">
+  <form class="training-form" @submit.prevent="save" novalidate>
 
     <h3 class="text-xl font-bold text-gray-800 mb-4">
       {{ initial ? 'Wijzig oefening' : 'Nieuwe oefening' }}
@@ -8,11 +8,20 @@
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
       
       <!-- Name -->
-      <div class="form-group col-span-1 md:col-span-3">
+      <div class="form-group col-span-1 md:col-span-3" ref="nameGroupRef">
         <label class="block text-sm font-medium text-gray-700 mb-1">
           Naam <span class="text-red-500" aria-hidden="true">*</span>
+          <span v-if="errors.name" class="ml-2 text-xs font-semibold text-red-600">{{ errors.name }}</span>
         </label>
-        <input v-model="form.name" placeholder="Naam" class="form-input" required aria-required="true"/>
+        <input
+          ref="nameInputRef"
+          v-model="form.name"
+          placeholder="Naam"
+          class="form-input"
+          :class="errors.name ? '!border-red-500 focus:!border-red-500 !ring-1 !ring-red-500 focus:!ring-red-500' : ''"
+          aria-required="true"
+          :aria-invalid="errors.name ? 'true' : 'false'"
+        />
       </div>
 
       <!-- Icon -->
@@ -53,10 +62,11 @@
       <div class="col-span-4 border-t pt-3 mt-1 text-xs uppercase tracking-wide text-gray-500">Details</div>
 
       <!-- Amount of players -->
-      <div class="form-group col-span-4 md:col-span-2">
+      <div class="form-group col-span-4 md:col-span-2" ref="playersGroupRef">
         <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
           <Users class="w-4 h-4"/>
           Aantal spelers
+          <span v-if="errors.players" class="ml-2 text-xs font-semibold text-red-600">{{ errors.players }}</span>
         </label>
         <div class="flex gap-x-2">
 
@@ -66,7 +76,9 @@
                 type="number"
                 v-model.number="form.minPlayers"
                 min="1"
-                class="form-input !rounded-r-none border-r-0"
+                :max="20"
+                :class="['form-input !rounded-r-none border-r-0', errors.players ? '!border-red-500 focus:!border-red-500 !ring-1 !ring-red-500 focus:!ring-red-500' : '']"
+                :aria-invalid="errors.players ? 'true' : 'false'"
             />
             <div
                 class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
@@ -75,16 +87,27 @@
           </div>
 
           <!-- Max players -->
-          <div class="flex w-full ml-2">
+          <div class="relative flex w-full ml-2">
             <input
+                ref="maxPlayersInputRef"
                 type="number"
                 v-model.number="form.maxPlayers"
                 :min="(typeof form.minPlayers === 'number') ? form.minPlayers : null"
-                class="form-input !rounded-r-none border-r-0"
+                :max="20"
+                :class="['form-input !rounded-r-none border-r-0', errors.players ? '!border-red-500 focus:!border-red-500 !ring-1 !ring-red-500 focus:!ring-red-500' : '']"
+                :aria-invalid="errors.players ? 'true' : 'false'"
             />
             <div
                 class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
               max
+            </div>
+            <!-- Ephemeral tip for max cap -->
+            <div v-if="showMaxCapTip" class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-3 -translate-y-full z-10 w-64 max-w-[18rem]">
+              <div class="relative drop-shadow-xl">
+                <div class="bg-white border border-gray-200 rounded-lg p-2">
+                  <div class="text-xs text-gray-700">Je kunt maximaal 20 invullen. Laat het veld leeg als je geen limiet wilt.</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -206,7 +229,7 @@
 </template>
 
 <script>
-import {ref, reactive, watch, computed} from 'vue'
+import {ref, reactive, watch, computed, nextTick, onBeforeUnmount} from 'vue'
 import store from '../store'
 import RichTextEditor from './RichTextEditor.vue'
 import IconPicker from './IconPicker.vue'
@@ -235,6 +258,18 @@ export default {
     })
 
     const form = reactive(emptyForm())
+
+    // Validation state and refs
+    const errors = reactive({
+      name: '',
+      players: ''
+    })
+    const nameInputRef = ref(null)
+    const nameGroupRef = ref(null)
+    const playersGroupRef = ref(null)
+    const maxPlayersInputRef = ref(null)
+    const showMaxCapTip = ref(false)
+    let maxCapTimer = null
 
     // Normalize court for reliable UI comparisons (e.g., 'Full court' vs 'fullcourt')
     const normalizedCourt = computed(() => {
@@ -285,7 +320,7 @@ export default {
           coachingPoints: v.coachingPoints || v.fullDescription || v.full || '',
           category: Array.isArray(v.category) ? [...v.category] : (v.category ? [v.category] : []),
           minPlayers: (typeof v.minPlayers === 'number') ? v.minPlayers : null,
-          maxPlayers: (typeof v.maxPlayers === 'number') ? v.maxPlayers : null,
+          maxPlayers: (typeof v.maxPlayers === 'number') ? Math.min(20, v.maxPlayers) : null,
           intensity: v.intensity || 3,
           court: v.court || '',
           materials: Array.isArray(v.materials) ? [...v.materials] : (v.materials ? [v.materials].flat().filter(Boolean) : []),
@@ -299,6 +334,41 @@ export default {
       }
     }, { immediate: true })
 
+    // Clear errors as user types and clamp inputs to valid bounds
+    watch(() => form.name, (v) => { if (v && errors.name) errors.name = '' })
+    // Clamp minPlayers to [1..20] while allowing null
+    watch(() => form.minPlayers, (v) => {
+      if (typeof v === 'number') {
+        if (v > 20) form.minPlayers = 20
+        else if (v < 1) form.minPlayers = 1
+      }
+    })
+    // Clamp maxPlayers to [1..20] while allowing null and show ephemeral tip if user tries > 20
+    watch(() => form.maxPlayers, (v) => {
+      if (typeof v === 'number') {
+        if (v > 20) {
+          const el = maxPlayersInputRef.value
+          // Only show the tip when the user is actively editing this field
+          if (el && document.activeElement === el) {
+            if (maxCapTimer) clearTimeout(maxCapTimer)
+            showMaxCapTip.value = true
+            maxCapTimer = setTimeout(() => { showMaxCapTip.value = false }, 2000)
+          }
+          form.maxPlayers = 20
+        } else if (v < 1) {
+          form.maxPlayers = 1
+        }
+      }
+    })
+    // Clear players relation error when no longer invalid
+    watch(() => [form.minPlayers, form.maxPlayers], () => {
+      const min = (typeof form.minPlayers === 'number') ? form.minPlayers : null
+      const max = (typeof form.maxPlayers === 'number') ? form.maxPlayers : null
+      const cappedMax = (typeof max === 'number') ? Math.min(20, max) : null
+      if (!(min !== null && cappedMax !== null && cappedMax < min)) {
+        if (errors.players) errors.players = ''
+      }
+    })
 
     // Toggle categorie aan/uit
     function toggleCategory(c) {
@@ -332,24 +402,56 @@ export default {
       }
     }
 
+    function validate() {
+      // reset
+      errors.name = ''
+      errors.players = ''
+
+      // Name required
+      if (!form.name || String(form.name).trim().length === 0) {
+        errors.name = 'Naam is verplicht'
+      }
+
+      // Players min/max relation
+      const min = (typeof form.minPlayers === 'number') ? form.minPlayers : null
+      const max = (typeof form.maxPlayers === 'number') ? form.maxPlayers : null
+      const cappedMax = (typeof max === 'number') ? Math.min(20, max) : null
+      if (min !== null && cappedMax !== null && cappedMax < min) {
+        errors.players = 'Maximaal aantal mag niet lager zijn dan minimaal aantal'
+      }
+
+      return !errors.name && !errors.players
+    }
+
+    async function scrollToFirstError() {
+      await nextTick()
+      let target = null
+      if (errors.name && nameGroupRef.value) target = nameGroupRef.value
+      else if (errors.players && playersGroupRef.value) target = playersGroupRef.value
+      if (target && typeof target.scrollIntoView === 'function') {
+        try { target.scrollIntoView({ behavior: 'smooth', block: 'center' }) } catch(_) { target.scrollIntoView() }
+      }
+      if (errors.name && nameInputRef.value && typeof nameInputRef.value.focus === 'function') {
+        nameInputRef.value.focus()
+      }
+    }
+
     function save() {
-      if (!form.name) {
-        alert('Naam is verplicht')
+      if (!validate()) {
+        scrollToFirstError()
         return
       }
 
       const min = (typeof form.minPlayers === 'number') ? form.minPlayers : null
       const max = (typeof form.maxPlayers === 'number') ? form.maxPlayers : null
-      if (min !== null && max !== null && max < min) {
-        alert('Max spelers mag niet kleiner zijn dan minimale spelers')
-        return
-      }
+      const cappedMin = (typeof min === 'number') ? Math.max(1, Math.min(20, min)) : null
+      const cappedMax = (typeof max === 'number') ? Math.min(20, max) : null
 
       // Zorg ervoor dat de id correct wordt meegestuurd
       const saveData = { ...form }
       // Normaliseer spelers en duur waarden
-      saveData.minPlayers = (typeof min === 'number') ? min : null
-      saveData.maxPlayers = (typeof max === 'number') ? max : null
+      saveData.minPlayers = cappedMin
+      saveData.maxPlayers = cappedMax
       const dur = parseInt(form.duration, 10)
       saveData.duration = (Number.isFinite(dur) && dur > 0) ? dur : null
 
@@ -365,6 +467,10 @@ export default {
 
     const isEdit = computed(() => !!(props.initial && props.initial.id))
 
+    onBeforeUnmount(() => {
+      if (maxCapTimer) clearTimeout(maxCapTimer)
+    })
+
     return {
       form,
       materialOptions,
@@ -375,7 +481,14 @@ export default {
       toggleCourt,
       placeholderIcons,
       isEdit,
-      normalizedCourt
+      normalizedCourt,
+      // validation state and refs
+      errors,
+      nameInputRef,
+      nameGroupRef,
+      playersGroupRef,
+      maxPlayersInputRef,
+      showMaxCapTip
     }
   }
 }
