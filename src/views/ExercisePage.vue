@@ -29,6 +29,11 @@
           <Star :class="filter.favorites ? 'w-4 h-4' : 'w-4 h-4'" :fill="filter.favorites ? 'currentColor' : 'none'" :stroke="'currentColor'" />
           <span>Favorieten</span>
         </button>
+        <!-- View toggle -->
+        <div class="inline-flex rounded-md overflow-hidden border border-gray-300">
+          <button type="button" class="inline-flex items-center justify-center px-3 h-[42px] text-sm font-medium focus:outline-none" :class="viewMode === 'card' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'" @click="setViewMode('card')" :aria-pressed="viewMode === 'card' ? 'true' : 'false'" aria-label="Kaartweergave" title="Kaartweergave"><LayoutGrid class="w-4 h-4" /></button>
+          <button type="button" class="inline-flex items-center justify-center px-3 h-[42px] text-sm font-medium border-l border-gray-300 focus:outline-none" :class="viewMode === 'list' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'" @click="setViewMode('list')" :aria-pressed="viewMode === 'list' ? 'true' : 'false'" aria-label="Lijstweergave" title="Lijstweergave"><List class="w-4 h-4" /></button>
+        </div>
       </div>
       <div>
         <div class="relative">
@@ -64,17 +69,47 @@
 
     <!-- Cards or Empty state -->
     <template v-if="sorted.length > 0">
-      <transition-group name="exercise-list" tag="div" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6" :css="!pageSwitching">
-        <exercise-card
-            v-for="ex in pageItems"
-            :key="ex.id"
-            :exercise="ex"
-            @edit="openForm(ex)"
-            @delete="onDelete"
-            @duplicate="onDuplicate"
-            @toggle-fav="onToggleFav"
-        />
-      </transition-group>
+      <template v-if="viewMode === 'card'">
+        <transition-group name="exercise-list" tag="div" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6" :css="!pageSwitching">
+          <exercise-card
+              v-for="ex in pageItems"
+              :key="ex.id"
+              :exercise="ex"
+              @edit="openForm(ex)"
+              @delete="onDelete"
+              @duplicate="onDuplicate"
+              @toggle-fav="onToggleFav"
+          />
+        </transition-group>
+      </template>
+      <template v-else>
+        <div class="bg-white rounded-lg shadow-md">
+          <div class="overflow-x-auto" role="region" aria-label="Lijstweergave, horizontaal scrollen indien nodig">
+            <div class="min-w-[48rem]">
+              <div class="hidden md:flex items-center gap-4 px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-b bg-gray-50">
+                <div class="w-12"></div>
+                <div class="flex-1">Oefening</div>
+                <div class="w-28">Spelers</div>
+                <div class="w-28">Duur</div>
+                <div class="w-28">Veld</div>
+                <div class="w-28">Intensiteit</div>
+                <div class="w-20"></div>
+              </div>
+              <div>
+                <ExerciseListItem
+                  v-for="ex in pageItems"
+                  :key="ex.id"
+                  :exercise="ex"
+                  @edit="openForm(ex)"
+                  @delete="onDelete"
+                  @duplicate="onDuplicate"
+                  @toggle-fav="onToggleFav"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
 
       <Pagination
         v-if="pageCount > 1"
@@ -126,6 +161,7 @@
 
 <script>
 import ExerciseCard from '../components/ExerciseCard.vue'
+import ExerciseListItem from '../components/ExerciseListItem.vue'
 import ExerciseForm from '../components/ExerciseForm.vue'
 import Modal from '../components/Modal.vue'
 import PageHeader from '../components/PageHeader.vue'
@@ -139,7 +175,7 @@ import { ref, computed, watch, nextTick } from 'vue'
 import { ensureSampleExercises } from '../data/sampleExercises'
 
 export default {
-  components: { ExerciseCard, ExerciseForm, Modal, PageHeader, FiltersBar, SortButton, DeleteConfirm, Pagination },
+  components: { ExerciseCard, ExerciseListItem, ExerciseForm, Modal, PageHeader, FiltersBar, SortButton, DeleteConfirm, Pagination },
   setup() {
     // Sort state
     const sortBy = ref('dateCreated') // 'dateCreated' | 'name'
@@ -159,6 +195,16 @@ export default {
     const editItem = ref(null)
     const showFilters = ref(false)
     const showDeleteModal = ref(false)
+
+    // View mode: 'card' (default) or 'list', persisted in localStorage
+    const viewMode = ref((() => {
+      try { return localStorage.getItem('exerciseView') === 'list' ? 'list' : 'card' } catch(_) { return 'card' }
+    })())
+    function setViewMode(mode){
+      if (mode !== 'card' && mode !== 'list') return
+      viewMode.value = mode
+      try { localStorage.setItem('exerciseView', mode) } catch(_) {}
+    }
     const pendingDeleteId = ref(null)
     const deleteName = computed(() => {
       const id = pendingDeleteId.value
@@ -379,6 +425,9 @@ export default {
       // sort UI
       sortBy,
       sortDir,
+      // view mode
+      viewMode,
+      setViewMode,
       openForm,
       showForm,
       editItem,
