@@ -88,6 +88,7 @@ import DeleteConfirm from '../components/DeleteConfirm.vue'
 import { EXERCISE_CATEGORIES } from '../constants'
 import store from '../store'
 import { ref, computed } from 'vue'
+import { ensureSampleExercises } from '../data/sampleExercises'
 
 export default {
   components: { ExerciseCard, ExerciseForm, Modal, PageHeader, FiltersBar, SortButton, DeleteConfirm },
@@ -169,8 +170,8 @@ export default {
       const selIntMax = filter.value.intensity[1]
 
       return store.state.exercises.filter(e => {
-        // zoek op naam/beschrijving (met fallback voor oude data)
-        const searchable = `${e.name ?? ''} ${e.description ?? e.shortDescription ?? ''}`.toLowerCase()
+        // zoek op titel en beschrijving (geen fallback naar shortDescription)
+        const searchable = `${e.name ?? ''} ${e.description ?? ''}`.toLowerCase()
         if (q.value && !searchable.includes(q.value.toLowerCase()))
           return false
 
@@ -209,57 +210,8 @@ export default {
       })
     })
 
-    // Sample data als store leeg is (category als array)
-    if (store.state.exercises.length === 0) {
-      store.addExercise({
-        name: 'Spot shooting 45',
-        icon: 'Target',
-        description: 'Dribbel door 6 pylonen en schiet daarna op de basket vanaf 45 graden.',
-        coachingPoints: 'Dribbel door 6 pylonen en schiet daarna op de basket vanaf 45 graden.',
-        category: ['Schieten'],
-        minPlayers: 4,
-        maxPlayers: 10,
-        duration: 5,
-        intensity: 2,
-        court: '',
-        materials: [],
-        video: '',
-        dateCreated: '2025-08-16T20:00:00.000Z',
-        favorite: true
-      }, { silent: true })
-      store.addExercise({
-        name: '1v1 verdediging',
-        icon: 'Shield',
-        description: '1 tegen 1 oefening waarbij de aanvaller probeert te scoren en de verdediger probeert te voorkomen dat er wordt gescoord.',
-        coachingPoints: '1 tegen 1 oefening waarbij de aanvaller probeert te scoren en de verdediger probeert te voorkomen dat er wordt gescoord.',
-        category: ['Verdedigen', 'Conditie'],
-        minPlayers: 2,
-        maxPlayers: null,
-        duration: 8,
-        intensity: 4,
-        court: 'Half Court',
-        materials: [],
-        video: '',
-        dateCreated: '2025-08-16T21:00:00.000Z',
-        favorite: false
-      }, { silent: true })
-      store.addExercise({
-        name: 'Sheridan Drill',
-        icon: 'Gauge',
-        description: 'Dribbel door 6 pylonen en schiet daarna op de basket vanaf 45 graden.',
-        coachingPoints: 'Dribbel door 6 pylonen en schiet daarna op de basket vanaf 45 graden.',
-        category: ['Conditie', 'Warm up'],
-        minPlayers: 8,
-        maxPlayers: 15,
-        duration: 10,
-        intensity: 4,
-        court: 'Full Court',
-        materials: [],
-        video: '',
-        dateCreated: '2025-08-16T22:00:00.000Z',
-        favorite: false
-      }, { silent: true })
-    }
+    // Sample data als store leeg is (categorieën als array) — verplaatst naar aparte module
+    ensureSampleExercises(store)
 
     return {
       q,

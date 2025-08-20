@@ -75,11 +75,13 @@
 import store from '../store'
 import { ref, computed } from 'vue'
 import PageHeader from '../components/PageHeader.vue'
+import { ensureSampleExercises } from '../data/sampleExercises'
 
 export default {
   components: { PageHeader },
   setup(){
     // Ensure sample data exists even if user lands here first
+    ensureSampleExercises(store)
     const exercises = store.state.exercises
     const program = ref([])
     const programName = ref('Nieuwe training')
