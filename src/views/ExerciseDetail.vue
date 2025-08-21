@@ -237,8 +237,8 @@ import Modal from '../components/Modal.vue'
 import ExerciseForm from '../components/ExerciseForm.vue'
 import DeleteConfirm from '../components/DeleteConfirm.vue'
 import ExerciseBadge from '../components/ExerciseBadge.vue'
-import IntensitySelector from '../components/IntensitySelector.vue'
-import RangeNumber from '../components/RangeNumber.vue'
+import IntensitySelector from '../components/form/IntensitySelector.vue'
+import RangeNumber from '../components/form/RangeNumber.vue'
 import { EXERCISE_CATEGORIES, EXERCISE_MATERIALS } from '../constants'
 
 function slugify(str) {

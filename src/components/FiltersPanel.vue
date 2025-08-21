@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import RangeNumber from './RangeNumber.vue'
+import RangeNumber from './form/RangeNumber.vue'
 import { normalizeCourt } from '../constants'
 export default {
   name: 'FiltersPanel',
