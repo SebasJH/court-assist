@@ -1,20 +1,22 @@
 <!-- components/Modal.vue -->
 <template>
-  <div
-      class="fixed inset-0 z-[5000] flex bg-black/50"
-      :class="overlayClass"
-      @mousedown="onOverlayMouseDown"
-      @click="onOverlayClick"
-  >
-    <!-- Scrollbare content -->
+  <transition name="modal-overlay-fade" appear>
     <div
-        ref="modalContent"
-        class="relative bg-white shadow-xl overflow-y-auto"
-        :class="contentClass"
-        role="dialog"
-        aria-modal="true"
+        class="fixed inset-0 z-[5000] flex bg-black/50"
+        :class="overlayClass"
+        @mousedown="onOverlayMouseDown"
+        @click="onOverlayClick"
     >
-      <button
+      <!-- Scrollbare content -->
+      <transition :name="drawer ? (side === 'left' ? 'drawer-left' : 'drawer-right') : 'modal-zoom'" appear>
+        <div
+            ref="modalContent"
+            class="relative bg-white shadow-xl overflow-y-auto modal-panel"
+            :class="contentClass"
+            role="dialog"
+            aria-modal="true"
+        >
+          <button
           class="absolute top-3 right-3 text-gray-500 hover:text-black"
           aria-label="Sluiten"
           @click="$emit('close')"
@@ -23,8 +25,10 @@
       </button>
 
       <slot />
+        </div>
+      </transition>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script>
@@ -81,3 +85,60 @@ export default {
 }
 </script>
 
+
+
+<style scoped>
+/* Overlay fade */
+.modal-overlay-fade-enter-active,
+.modal-overlay-fade-leave-active {
+  transition: opacity 200ms ease;
+}
+.modal-overlay-fade-enter-from,
+.modal-overlay-fade-leave-to {
+  opacity: 0;
+}
+
+/* Drawer slide (right/left) */
+.drawer-right-enter-active,
+.drawer-right-leave-active,
+.drawer-left-enter-active,
+.drawer-left-leave-active {
+  transition: transform 260ms ease, opacity 260ms ease;
+}
+.drawer-right-enter-from,
+.drawer-right-leave-to {
+  transform: translateX(100%);
+  opacity: 0.9;
+}
+.drawer-right-enter-to,
+.drawer-right-leave-from {
+  transform: translateX(0);
+  opacity: 1;
+}
+.drawer-left-enter-from,
+.drawer-left-leave-to {
+  transform: translateX(-100%);
+  opacity: 0.9;
+}
+.drawer-left-enter-to,
+.drawer-left-leave-from {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* Centered modal subtle zoom */
+.modal-zoom-enter-active,
+.modal-zoom-leave-active {
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+.modal-zoom-enter-from,
+.modal-zoom-leave-to {
+  transform: translateY(-8px) scale(0.98);
+  opacity: 0;
+}
+.modal-zoom-enter-to,
+.modal-zoom-leave-from {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+</style>

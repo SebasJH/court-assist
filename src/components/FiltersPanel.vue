@@ -30,16 +30,17 @@
 
       <!-- Aantal spelers -->
       <div>
-        <fieldset class="flex flex-col gap-2">
-          <legend class="text-sm text-gray-600">Aantal spelers</legend>
+        <fieldset>
+          <legend class="block text-sm text-gray-600 mb-2">Aantal spelers</legend>
           <RangeNumber
             idPrefix="players"
             :modelValue="players"
             :min="1"
             :max="20"
             :step="1"
-            minLabel="Min"
-            maxLabel="Max"
+            :attachedLabels="true"
+            minLabel="min"
+            maxLabel="max"
             @update:modelValue="$emit('update:players', $event)"
           />
         </fieldset>
@@ -47,16 +48,17 @@
 
       <!-- Intensiteit -->
       <div>
-        <fieldset class="flex flex-col gap-2">
-          <legend class="text-sm text-gray-600">Intensiteit</legend>
+        <fieldset>
+          <legend class="block text-sm text-gray-600 mb-2">Intensiteit</legend>
           <RangeNumber
             idPrefix="intensity"
             :modelValue="intensity"
             :min="1"
             :max="5"
             :step="1"
-            minLabel="Min"
-            maxLabel="Max"
+            :attachedLabels="true"
+            minLabel="min"
+            maxLabel="max"
             @update:modelValue="$emit('update:intensity', $event)"
           />
         </fieldset>

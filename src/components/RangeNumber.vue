@@ -1,6 +1,7 @@
 <template>
   <div class="grid grid-cols-2 gap-2">
-    <div class="flex flex-col gap-1">
+    <!-- Min -->
+    <div v-if="!attachedLabels" class="flex flex-col gap-1">
       <label class="text-xs text-gray-500" :for="`${idPrefix}-min`">{{ minLabel }}</label>
       <input
         :id="`${idPrefix}-min`"
@@ -13,7 +14,24 @@
         @input="onMin($event.target.value)"
       />
     </div>
-    <div class="flex flex-col gap-1">
+    <div v-else class="flex">
+      <input
+        :id="`${idPrefix}-min`"
+        type="number"
+        class="form-input !rounded-r-none border-r-0"
+        :value="currentMin"
+        :min="min"
+        :max="max"
+        :step="step"
+        :aria-label="minLabel"
+        @input="onMin($event.target.value)"
+      />
+      <div class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
+        {{ minLabel }}
+      </div>
+    </div>
+    <!-- Max -->
+    <div v-if="!attachedLabels" class="flex flex-col gap-1">
       <label class="text-xs text-gray-500" :for="`${idPrefix}-max`">{{ maxLabel }}</label>
       <input
         :id="`${idPrefix}-max`"
@@ -25,6 +43,22 @@
         :step="step"
         @input="onMax($event.target.value)"
       />
+    </div>
+    <div v-else class="flex">
+      <input
+        :id="`${idPrefix}-max`"
+        type="number"
+        class="form-input !rounded-r-none border-r-0"
+        :value="currentMax"
+        :min="min"
+        :max="max"
+        :step="step"
+        :aria-label="maxLabel"
+        @input="onMax($event.target.value)"
+      />
+      <div class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
+        {{ maxLabel }}
+      </div>
     </div>
   </div>
 </template>
@@ -40,7 +74,8 @@ export default {
     step: { type: Number, default: 1 },
     idPrefix: { type: String, default: 'range' },
     minLabel: { type: String, default: 'Min' },
-    maxLabel: { type: String, default: 'Max' }
+    maxLabel: { type: String, default: 'Max' },
+    attachedLabels: { type: Boolean, default: false }
   },
   emits: ['update:modelValue'],
   setup(props, { emit }){
