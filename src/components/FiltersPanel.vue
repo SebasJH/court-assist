@@ -82,7 +82,7 @@
 import RangeNumber from './RangeNumber.vue'
 import { normalizeCourt } from '../constants'
 export default {
-  name: 'FiltersBar',
+  name: 'FiltersPanel',
   components: { RangeNumber },
   props: {
     categories: { type: Array, default: () => [] },

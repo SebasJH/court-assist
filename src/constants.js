@@ -2,12 +2,16 @@ export const EXERCISE_CATEGORIES = [
   'Dribbelen',
   'Schieten',
   'Finishing',
+  'Aanval',
   'Verdedigen',
   'Passen',
   'Rebounden',
   'Transition',
   'Conditie',
-  'Warm up'
+  'Warm up',
+  "Teamspel",
+  "Mentaal",
+  "Voetenwerk"
 ]
 
 // Shared materials list for exercises

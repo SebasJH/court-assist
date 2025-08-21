@@ -49,7 +49,71 @@ export const SAMPLE_EXERCISES = [
     video: '',
     dateCreated: '2025-08-16T22:00:00.000Z',
     favorite: false
-  }
+  },
+  {
+    name: 'Lay-up lijnen',
+    icon: 'Medal',
+    description: 'Klassieke warming-up waarbij spelers lay-ups doen vanaf beide kanten.',
+    coachingPoints: 'Gebruik het bord, juiste hand, en goede pasrichting.',
+    category: ['Warm up'],
+    minPlayers: 6,
+    maxPlayers: null,
+    duration: 6,
+    intensity: 2,
+    court: 'Half Court',
+    materials: [''],
+    video: '',
+    dateCreated: '2025-08-17T09:00:00.000Z',
+    favorite: false
+  },
+  {
+    name: 'Pick and Roll basis',
+    icon: 'Eye',
+    description: 'Aanvaller en screener oefenen de pick and roll situatie tegen verdedigers.',
+    coachingPoints: 'Goede screen angle, roll naar de basket, spacing behouden.',
+    category: [],
+    minPlayers: 4,
+    maxPlayers: 8,
+    duration: 12,
+    intensity: 3,
+    court: 'Half Court',
+    materials: [],
+    video: '',
+    dateCreated: '2025-08-17T10:00:00.000Z',
+    favorite: true
+  },
+  {
+    name: 'Close-out drill',
+    icon: 'Zap',
+    description: 'Verdediger sprint naar de aanvaller en sluit uit met hand omhoog.',
+    coachingPoints: 'Goede houding, controleer het tempo en blijf voor de aanvaller.',
+    category: ['Verdedigen'],
+    minPlayers: 2,
+    maxPlayers: 10,
+    duration: 7,
+    intensity: 3,
+    court: 'Half Court',
+    materials: [],
+    video: '',
+    dateCreated: '2025-08-17T11:00:00.000Z',
+    favorite: false
+  },
+  {
+    name: 'Transition 3v2 / 2v1',
+    icon: 'Activity',
+    description: 'Snelle omschakel oefening waarbij teams in overtal en later ondertal aanvallen en verdedigen.',
+    coachingPoints: 'Maak de juiste beslissing: passen of afmaken.',
+    category: ['Transition', 'Conditie'],
+    minPlayers: 5,
+    maxPlayers: 10,
+    duration: 12,
+    intensity: 5,
+    court: 'Full Court',
+    materials: [],
+    video: '',
+    dateCreated: '2025-08-17T12:00:00.000Z',
+    favorite: false
+  },
 ]
 
 export function ensureSampleExercises(store) {

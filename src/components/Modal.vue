@@ -1,14 +1,16 @@
 <!-- components/Modal.vue -->
 <template>
   <div
-      class="fixed inset-0 z-[5000] flex items-center justify-center bg-black/50"
+      class="fixed inset-0 z-[5000] flex bg-black/50"
+      :class="overlayClass"
       @mousedown="onOverlayMouseDown"
       @click="onOverlayClick"
   >
     <!-- Scrollbare content -->
     <div
         ref="modalContent"
-        class="relative bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6"
+        class="relative bg-white shadow-xl overflow-y-auto"
+        :class="contentClass"
         role="dialog"
         aria-modal="true"
     >
@@ -27,10 +29,30 @@
 
 <script>
 export default {
+  props: {
+    maxWidthClass: { type: String, default: 'max-w-3xl' },
+    // Drawer mode (right/left side panel)
+    drawer: { type: Boolean, default: false },
+    side: { type: String, default: 'right' },
+    drawerWidthClass: { type: String, default: 'max-w-md' }
+  },
   emits: ['close'],
   data() {
     return {
       mouseStartedOnOverlay: false
+    }
+  },
+  computed: {
+    overlayClass() {
+      if (!this.drawer) return 'items-center justify-center'
+      // stretch vertically and align to side
+      return this.side === 'left' ? 'items-stretch justify-start' : 'items-stretch justify-end'
+    },
+    contentClass() {
+      if (!this.drawer) {
+        return `rounded-2xl w-full ${this.maxWidthClass} max-h-[90vh] p-6`
+      }
+      return `h-full w-full ${this.drawerWidthClass} p-6`
     }
   },
   methods: {
