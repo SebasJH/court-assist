@@ -20,7 +20,7 @@ const icon = computed(() => {
     case 'players': return 'Users'
     case 'duration': return 'TimerReset'
     case 'intensity': return 'Zap'
-    case 'court': return 'Dribbble'
+    case 'court': return 'RectangleCircle'
     default: return 'span'
   }
 })

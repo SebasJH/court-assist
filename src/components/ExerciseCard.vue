@@ -113,7 +113,7 @@
             <!-- Court with tooltip -->
             <div v-if="hasCourt" class="relative" ref="courtRef" @mouseenter="onEnterCourt" @mouseleave="onLeaveCourt">
               <div class="exercise-court bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:bg-gray-300 hover:shadow-sm transition-colors transition-shadow duration-150">
-                <Dribbble class="h-4 w-fit" />
+                <RectangleCircle class="h-4 w-fit" />
                 <div>{{ courtLabel }}</div>
               </div>
               <Tooltip :title="courtTooltip.title" :body="courtTooltip.body" :open="courtOpen" :anchor="courtRef" />

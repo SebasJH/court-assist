@@ -103,7 +103,7 @@ export const SAMPLE_EXERCISES = [
     icon: 'Activity',
     description: 'Snelle omschakel oefening waarbij teams in overtal en later ondertal aanvallen en verdedigen.',
     coachingPoints: 'Maak de juiste beslissing: passen of afmaken.',
-    category: ['Transition', 'Conditie'],
+    category: ['Transitie', 'Conditie'],
     minPlayers: 5,
     maxPlayers: 10,
     duration: 12,

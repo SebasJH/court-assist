@@ -142,61 +142,11 @@
           <Zap class="w-4 h-4"/>
           Intensiteit
         </label>
-        <div class="flex">
-          <div class="inline-flex rounded-md overflow-hidden border border-gray-300">
-            <button
-                type="button"
-                class="px-3 py-2 text-sm font-medium focus:outline-none"
-                :class="typeof form.intensity === 'number' && form.intensity === 1 ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
-                @click="toggleIntensity(1)"
-                :aria-pressed="typeof form.intensity === 'number' && form.intensity === 1 ? 'true' : 'false'"
-            >1
-            </button>
-            <button
-                type="button"
-                class="px-3 py-2 text-sm font-medium border-l border-gray-300 focus:outline-none"
-                :class="typeof form.intensity === 'number' && form.intensity === 2 ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
-                @click="toggleIntensity(2)"
-                :aria-pressed="typeof form.intensity === 'number' && form.intensity === 2 ? 'true' : 'false'"
-            >2
-            </button>
-            <button
-                type="button"
-                class="px-3 py-2 text-sm font-medium border-l border-gray-300 focus:outline-none"
-                :class="typeof form.intensity === 'number' && form.intensity === 3 ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
-                @click="toggleIntensity(3)"
-                :aria-pressed="typeof form.intensity === 'number' && form.intensity === 3 ? 'true' : 'false'"
-            >3
-            </button>
-            <button
-                type="button"
-                class="px-3 py-2 text-sm font-medium border-l border-gray-300 focus:outline-none"
-                :class="typeof form.intensity === 'number' && form.intensity === 4 ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
-                @click="toggleIntensity(4)"
-                :aria-pressed="typeof form.intensity === 'number' && form.intensity === 4 ? 'true' : 'false'"
-            >4
-            </button>
-            <button
-                type="button"
-                class="px-3 py-2 text-sm font-medium border-l border-gray-300 focus:outline-none"
-                :class="typeof form.intensity === 'number' && form.intensity === 5 ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
-                @click="toggleIntensity(5)"
-                :aria-pressed="typeof form.intensity === 'number' && form.intensity === 5 ? 'true' : 'false'"
-            >5
-            </button>
-          </div>
-          <button
-              type="button"
-              class="ml-3 text-sm text-gray-600 hover:text-gray-800 underline"
-              @click="form.intensity = null"
-              v-if="typeof form.intensity === 'number'"
-          >Wissen
-          </button>
-        </div>
+        <IntensitySelector v-model="form.intensity" />
       </div>
       <!-- Court -->
       <div class="form-group col-span-4 md:col-span-2">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Veld</label>
+        <label class="block text-sm font-medium text-gray-700 mb-1"><span class="inline-flex items-center gap-1"><RectangleCircle class="w-4 h-4" /> Veld</span></label>
         <div class="inline-flex rounded-md overflow-hidden border border-gray-300">
           <button
               type="button"
@@ -226,7 +176,8 @@
 
       <!-- Materials -->
       <div class="form-group col-span-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1">
+        <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+          <TrafficCone class="w-4 h-4" />
           Materialen
         </label>
         <div class="flex flex-wrap gap-2">
@@ -251,6 +202,18 @@
         <RichTextEditor v-model="form.coachingPoints" placeholder="Coaching punten"/>
       </div>
 
+      <!-- How it works -->
+      <div class="form-group col-span-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">How it works</label>
+        <RichTextEditor v-model="form.howItWorks" placeholder="Uitleg van de uitvoering"/>
+      </div>
+
+      <!-- Purpose -->
+      <div class="form-group col-span-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Purpose</label>
+        <RichTextEditor v-model="form.purpose" placeholder="Doel van de oefening"/>
+      </div>
+
       <!-- Section: Media -->
       <div class="col-span-4 border-t pt-3 mt-1 text-xs uppercase tracking-wide text-gray-500">Media</div>
 
@@ -258,6 +221,44 @@
       <div class="form-group col-span-4 md:col-span-4">
         <label class="block text-sm font-medium text-gray-700 mb-1">Video link</label>
         <input v-model="form.video" placeholder="Video link" class="form-input"/>
+      </div>
+
+      <!-- Diagrams repeater -->
+      <div class="form-group col-span-4">
+        <div class="flex items-center justify-between mb-1">
+          <label class="block text-sm font-medium text-gray-700">Diagrams</label>
+          <button type="button" class="btn-secondary !py-1 !px-2" @click="addDiagram">+ Voeg diagram toe</button>
+        </div>
+        <div v-if="!form.diagrams || form.diagrams.length === 0" class="text-sm text-gray-500 border border-dashed border-gray-300 rounded-md p-4">
+          Nog geen diagrams. Klik op “Voeg diagram toe”.
+        </div>
+        <div v-else class="flex flex-col gap-3">
+          <div v-for="(d, idx) in form.diagrams" :key="idx" class="border rounded-md p-3 bg-gray-50">
+            <div class="flex flex-col md:flex-row gap-3">
+              <div class="w-full md:w-48">
+                <div class="aspect-video bg-white border rounded flex items-center justify-center overflow-hidden">
+                  <img v-if="d.src" :src="d.src" alt="Diagram preview" class="w-full h-full object-contain"/>
+                  <div v-else class="text-gray-400 text-sm">Geen afbeelding</div>
+                </div>
+                <div class="mt-2 flex items-center gap-2">
+                  <label class="btn-secondary !py-1 !px-2 cursor-pointer">
+                    Kies afbeelding
+                    <input type="file" accept="image/*" class="hidden" @change="onPickDiagram($event, idx)"/>
+                  </label>
+                  <button type="button" class="text-sm text-red-600 hover:underline" @click="removeDiagram(idx)">Verwijderen</button>
+                </div>
+              </div>
+              <div class="flex-1">
+                <label class="block text-sm text-gray-700 mb-1">Bijschrift</label>
+                <input v-model="d.caption" class="form-input" placeholder="Beschrijf dit diagram"/>
+                <div class="mt-3 flex gap-2">
+                  <button type="button" class="btn-secondary !py-1 !px-2" @click="moveDiagram(idx, -1)" :disabled="idx === 0">Omhoog</button>
+                  <button type="button" class="btn-secondary !py-1 !px-2" @click="moveDiagram(idx, 1)" :disabled="idx === form.diagrams.length - 1">Omlaag</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -278,10 +279,11 @@ import {ref, reactive, watch, computed, nextTick, onBeforeUnmount} from 'vue'
 import store from '../store'
 import RichTextEditor from './RichTextEditor.vue'
 import IconPicker from './IconPicker.vue'
+import IntensitySelector from './IntensitySelector.vue'
 import {EXERCISE_MATERIALS} from '../constants'
 
 export default {
-  components: {RichTextEditor, IconPicker},
+  components: {RichTextEditor, IconPicker, IntensitySelector},
   props: {
     initial: {type: Object, default: null},
     categories: {type: Array, default: () => []}
@@ -292,6 +294,9 @@ export default {
       name: '',
       description: '',
       coachingPoints: '',
+      howItWorks: '',
+      purpose: '',
+      diagrams: [],
       category: [],
       minPlayers: null,
       maxPlayers: null,
@@ -362,7 +367,10 @@ export default {
           materials: Array.isArray(v.materials) ? [...v.materials] : (v.materials ? [v.materials].flat().filter(Boolean) : []),
           duration: (typeof v.duration === 'number' ? v.duration : (typeof v.minutes === 'number' ? v.minutes : null)),
           icon: v.icon || v.imageIcon || 'TrafficCone',
-          video: v.video || ''
+          video: v.video || '',
+          howItWorks: v.howItWorks || '',
+          purpose: v.purpose || '',
+          diagrams: Array.isArray(v.diagrams) ? v.diagrams.map(d => ({ src: d.src || '', caption: d.caption || '' })) : []
         }
         Object.assign(form, formData)
       } else {
@@ -449,6 +457,39 @@ export default {
       }
     }
 
+    // Diagrams helpers
+    function addDiagram() {
+      if (!Array.isArray(form.diagrams)) form.diagrams = []
+      form.diagrams.push({ src: '', caption: '' })
+    }
+    function removeDiagram(idx) {
+      if (!Array.isArray(form.diagrams)) return
+      if (idx < 0 || idx >= form.diagrams.length) return
+      form.diagrams.splice(idx, 1)
+    }
+    function moveDiagram(idx, delta) {
+      if (!Array.isArray(form.diagrams)) return
+      const to = idx + delta
+      if (to < 0 || to >= form.diagrams.length) return
+      const item = form.diagrams[idx]
+      form.diagrams.splice(idx, 1)
+      form.diagrams.splice(to, 0, item)
+    }
+    function onPickDiagram(event, idx) {
+      const files = event?.target?.files
+      if (!files || !files[0]) return
+      const file = files[0]
+      if (!file.type.startsWith('image/')) return
+      const reader = new FileReader()
+      reader.onload = () => {
+        const url = String(reader.result || '')
+        if (!Array.isArray(form.diagrams)) form.diagrams = []
+        if (!form.diagrams[idx]) form.diagrams[idx] = { src: '', caption: '' }
+        form.diagrams[idx].src = url
+      }
+      reader.readAsDataURL(file)
+    }
+
     function validate() {
       // reset
       errors.name = ''
@@ -500,6 +541,10 @@ export default {
 
       // Zorg ervoor dat de id correct wordt meegestuurd
       const saveData = {...form}
+      // Shallow clone diagrams to avoid reactive refs leakage
+      if (Array.isArray(saveData.diagrams)) {
+        saveData.diagrams = saveData.diagrams.map(d => ({ src: d.src || '', caption: d.caption || '' }))
+      }
       // Normaliseer spelers en duur waarden
       saveData.minPlayers = cappedMin
       saveData.maxPlayers = cappedMax
@@ -531,6 +576,11 @@ export default {
       toggleMaterial,
       toggleIntensity,
       toggleCourt,
+      // diagrams
+      addDiagram,
+      removeDiagram,
+      moveDiagram,
+      onPickDiagram,
       placeholderIcons,
       isEdit,
       normalizedCourt,

@@ -379,7 +379,7 @@ export default {
       })
     })
 
-    // Pagination (page size = 2 for testing)
+    // Pagination
     const pageSize = 6
     const pageSwitching = ref(false)
     const page = ref(1)

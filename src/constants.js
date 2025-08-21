@@ -6,12 +6,12 @@ export const EXERCISE_CATEGORIES = [
   'Verdedigen',
   'Passen',
   'Rebounden',
-  'Transition',
+  'Transitie',
   'Conditie',
   'Warm up',
   "Teamspel",
-  "Mentaal",
-  "Voetenwerk"
+  "Voetenwerk",
+  "Mentaal"
 ]
 
 // Shared materials list for exercises

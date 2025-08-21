@@ -36,9 +36,9 @@ import {
     Hourglass,
     Filter,
     Search,
-    Dribbble,
     LayoutGrid,
-    List
+    List,
+    RectangleCircle
    }
     from 'lucide-vue-next'
 
@@ -80,8 +80,11 @@ export function registerIcons(app) {
     app.component('Hourglass', Hourglass)
     app.component('Filter', Filter)
     app.component('Search', Search)
-    app.component('Dribbble', Dribbble)
     app.component('LayoutGrid', LayoutGrid)
     app.component('List', List)
+    
+    // Custom local icons
+    app.component('RectangleCircle', RectangleCircle)
+    app.component('rectangleCircle', RectangleCircle)
 
 }
