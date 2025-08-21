@@ -71,7 +71,7 @@ export const SAMPLE_EXERCISES = [
     icon: 'Eye',
     description: 'Aanvaller en screener oefenen de pick and roll situatie tegen verdedigers.',
     coachingPoints: 'Goede screen angle, roll naar de basket, spacing behouden.',
-    category: [],
+    category: ['Teamspel'],
     minPlayers: 4,
     maxPlayers: 8,
     duration: 12,
