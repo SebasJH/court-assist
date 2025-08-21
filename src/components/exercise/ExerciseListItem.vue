@@ -86,7 +86,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
-import { formatPlayersFromExercise, formatDurationFromExercise, formatCourtFromExercise, formatIntensityFromExercise } from '../utils/exerciseFormat'
+import { formatPlayersFromExercise, formatDurationFromExercise, formatCourtFromExercise, formatIntensityFromExercise } from '../../utils/exerciseFormat'
 
 const emit = defineEmits(['edit','duplicate','delete','toggle-fav'])
 const props = defineProps({ exercise: { type: Object, required: true } })

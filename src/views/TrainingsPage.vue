@@ -63,7 +63,7 @@
 import store from '../store'
 import { ref, computed } from 'vue'
 import PageHeader from '../components/PageHeader.vue'
-import ExerciseBadge from '../components/ExerciseBadge.vue'
+import ExerciseBadge from '../components/exercise/ExerciseBadge.vue'
 import { ensureSampleExercises } from '../data/sampleExercises'
 import { hasPlayers, formatPlayersFromExercise, hasDuration as hasDurationField, hasCourt as hasCourtField, formatCourtFromExercise } from '../utils/exerciseFormat'
 

@@ -114,7 +114,7 @@
     <template v-if="sorted.length > 0">
       <template v-if="viewMode === 'card'">
         <transition-group name="exercise-list" tag="div" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6" :css="!pageSwitching">
-          <exercise-card
+          <ExerciseCardItem
               v-for="ex in pageItems"
               :key="ex.id"
               :exercise="ex"
@@ -203,9 +203,9 @@
 </template>
 
 <script>
-import ExerciseCard from '../components/ExerciseCard.vue'
-import ExerciseListItem from '../components/ExerciseListItem.vue'
-import ExerciseForm from '../components/ExerciseForm.vue'
+import ExerciseCardItem from '../components/exercise/ExerciseCardItem.vue'
+import ExerciseListItem from '../components/exercise/ExerciseListItem.vue'
+import ExerciseForm from '../components/exercise/ExerciseForm.vue'
 import Modal from '../components/Modal.vue'
 import PageHeader from '../components/PageHeader.vue'
 import FiltersPanel from '../components/FiltersPanel.vue'
@@ -219,7 +219,7 @@ import { ref, computed, watch, nextTick } from 'vue'
 import { ensureSampleExercises } from '../data/sampleExercises'
 
 export default {
-  components: { ExerciseCard, ExerciseListItem, ExerciseForm, Modal, PageHeader, FiltersPanel, SortButton, DeleteConfirm, Pagination, FiltersChips },
+  components: { ExerciseCardItem, ExerciseListItem, ExerciseForm, Modal, PageHeader, FiltersPanel, SortButton, DeleteConfirm, Pagination, FiltersChips },
   setup() {
     // Sort state
     const sortBy = ref('dateCreated') // 'dateCreated' | 'name'

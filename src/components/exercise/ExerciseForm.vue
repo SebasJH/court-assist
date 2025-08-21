@@ -276,11 +276,11 @@
 
 <script>
 import {ref, reactive, watch, computed, nextTick, onBeforeUnmount} from 'vue'
-import store from '../store'
-import RichTextEditor from './RichTextEditor.vue'
-import IconPicker from './IconPicker.vue'
-import IntensitySelector from './form/IntensitySelector.vue'
-import {EXERCISE_MATERIALS} from '../constants'
+import store from '../../store'
+import RichTextEditor from '../form/RichTextEditor.vue'
+import IconPicker from '../form/IconPicker.vue'
+import IntensitySelector from '../form/IntensitySelector.vue'
+import {EXERCISE_MATERIALS} from '../../constants'
 
 export default {
   components: {RichTextEditor, IconPicker, IntensitySelector},
@@ -596,7 +596,5 @@ export default {
 }
 </script>
 
-
 <style scoped>
-
 </style>

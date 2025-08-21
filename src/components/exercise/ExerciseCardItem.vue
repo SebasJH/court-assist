@@ -129,8 +129,8 @@
 <script setup>
 import {ref, onMounted, onBeforeUnmount, nextTick, computed} from 'vue'
 import { useRouter } from 'vue-router'
-import Tooltip from './Tooltip.vue'
-import { isNum, hasPlayers, hasDuration as hasDurationField, hasCourt as hasCourtField, formatPlayersFromExercise, formatCourtFromExercise } from '../utils/exerciseFormat'
+import Tooltip from '../Tooltip.vue'
+import { isNum, hasPlayers, hasDuration as hasDurationField, hasCourt as hasCourtField, formatPlayersFromExercise, formatCourtFromExercise } from '../../utils/exerciseFormat'
 
 const emit = defineEmits(['edit','duplicate','delete','toggle-fav'])
 

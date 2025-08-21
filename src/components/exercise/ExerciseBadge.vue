@@ -7,7 +7,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { isNum, hasPlayers, hasDuration as hasDurationField, hasCourt as hasCourtField, formatPlayersFromExercise, formatDurationFromExercise, formatIntensityFromExercise, formatCourtFromExercise } from '../utils/exerciseFormat'
+import { isNum, hasPlayers, hasDuration as hasDurationField, hasCourt as hasCourtField, formatPlayersFromExercise, formatDurationFromExercise, formatIntensityFromExercise, formatCourtFromExercise } from '../../utils/exerciseFormat'
 
 const props = defineProps({
   exercise: { type: Object, required: true },
