@@ -156,7 +156,7 @@
     </div>
 
     <!-- Modal -->
-    <modal :open="showForm" @close="closeForm">
+    <modal :open="showForm" @close="closeForm" contentPaddingClass="p-0">
       <exercise-form
           :initial="editItem"
           :categories="categories"

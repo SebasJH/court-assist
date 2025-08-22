@@ -1,11 +1,14 @@
 <template>
-  <form class="training-form" @submit.prevent="save" novalidate>
+  <form class="flex h-full flex-col" @submit.prevent="save" novalidate>
 
-    <h3 class="text-xl font-bold text-gray-800 mb-4">
-      {{ initial ? 'Wijzig oefening' : 'Nieuwe oefening' }}
-    </h3>
+    <div class="sticky top-0 z-[1] bg-white px-5 pt-5 pb-4 border-b">
+      <h3 class="text-xl font-bold text-gray-800">
+        {{ initial ? 'Wijzig oefening' : 'Nieuwe oefening' }}
+      </h3>
+    </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+    <div class="p-5 flex-1 overflow-y-auto">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
 
       <!-- Name -->
       <div class="form-group col-span-4 md:col-span-3" ref="nameGroupRef">
@@ -261,9 +264,10 @@
         </div>
       </div>
     </div>
+    </div>
 
     <!-- Buttons -->
-    <div class="flex gap-3 mt-6 justify-end">
+    <div class="px-5 py-4 border-t flex justify-end gap-3">
       <UiButton color="secondary" @click="$emit('close')">Annuleren</UiButton>
       <UiButton :color="isEdit ? 'primary' : 'accent'" type="submit" class="btn-submit">{{ isEdit ? 'Opslaan' : 'Aanmaken' }}</UiButton>
     </div>
