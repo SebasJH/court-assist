@@ -51,8 +51,8 @@
         </div>
 
         <div class="flex gap-3 mt-6">
-          <button class="btn-primary" @click="saveProgram">Opslaan</button>
-          <button class="btn-secondary" @click="program.splice(0)">Leegmaken</button>
+          <UiButton color="primary" @click="saveProgram">Opslaan</UiButton>
+          <UiButton color="secondary" @click="program.splice(0)">Leegmaken</UiButton>
         </div>
       </div>
     </div>
@@ -64,11 +64,12 @@ import store from '../store'
 import { ref, computed } from 'vue'
 import PageHeader from '../components/PageHeader.vue'
 import ExerciseBadge from '../components/exercise/ExerciseBadge.vue'
+import UiButton from '../components/ui/Button.vue'
 import { ensureSampleExercises } from '../data/sampleExercises'
 import { hasPlayers, formatPlayersFromExercise, hasDuration as hasDurationField, hasCourt as hasCourtField, formatCourtFromExercise } from '../utils/exerciseFormat'
 
 export default {
-  components: { PageHeader, ExerciseBadge },
+  components: { PageHeader, ExerciseBadge, UiButton },
   setup(){
     // Ensure sample data exists even if user lands here first
     ensureSampleExercises(store)

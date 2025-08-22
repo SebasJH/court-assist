@@ -1,7 +1,7 @@
 <template>
   <PageHeader title="Oefeningen">
       <template #actions>
-        <button class="btn-primary" @click="openForm()">+ Nieuwe oefening</button>
+        <UiButton color="primary" icon="Plus" @click="openForm()">Nieuwe oefening</UiButton>
       </template>
     </PageHeader>
 
@@ -51,10 +51,10 @@
           />
         </div>
         <div class="px-5 py-4 border-t  flex items-center justify-between">
-          <button class="btn-secondary" @click="resetFilters">Alles wissen</button>
+          <UiButton color="secondary" @click="resetFilters">Alles wissen</UiButton>
           <div class="flex gap-2">
-            <button class="btn-secondary" @click="showFilters = false">Sluiten</button>
-            <button class="btn-primary" @click="showFilters = false">Toepassen</button>
+            <UiButton color="secondary" @click="showFilters = false">Sluiten</UiButton>
+            <UiButton color="primary" @click="showFilters = false">Toepassen</UiButton>
           </div>
         </div>
       </div>
@@ -144,16 +144,16 @@
           Pas je zoekopdracht of filters aan, of verwijder de filters.
         </div>
         <div class="flex justify-center gap-3">
-          <button
+          <UiButton
             v-if="hasAny && isFilterActive"
-            class="btn-secondary"
+            color="secondary"
             @click="resetFilters"
-          >Verwijder filters</button>
-          <button
+          >Verwijder filters</UiButton>
+          <UiButton
             v-else
-            class="btn-primary"
+            color="primary"
             @click="openForm()"
-          >Maak een oefening aan</button>
+          >Maak een oefening aan</UiButton>
         </div>
       </div>
     </div>
@@ -190,9 +190,10 @@ import { EXERCISE_CATEGORIES, EXERCISE_MATERIALS, normalizeCourt } from '../cons
 import store from '../store'
 import { ref, computed, watch, nextTick } from 'vue'
 import { ensureSampleExercises } from '../data/sampleExercises'
+import UiButton from '../components/ui/Button.vue'
 
 export default {
-  components: { ExerciseCardItem, ExerciseListItem, ExerciseForm, Modal, PageHeader, FiltersPanel, ExercisesTopControls, DeleteConfirm, Pagination, FiltersChips },
+  components: { ExerciseCardItem, ExerciseListItem, ExerciseForm, Modal, PageHeader, FiltersPanel, ExercisesTopControls, DeleteConfirm, Pagination, FiltersChips, UiButton },
   setup() {
     // Sort state
     const sortBy = ref('dateCreated') // 'dateCreated' | 'name'

@@ -227,7 +227,7 @@
       <div class="form-group col-span-4">
         <div class="flex items-center justify-between mb-1">
           <label class="block text-sm font-medium text-gray-700">Diagrams</label>
-          <button type="button" class="btn-secondary !py-1 !px-2" @click="addDiagram">+ Voeg diagram toe</button>
+          <UiButton color="secondary" class="!py-1 !px-2" @click="addDiagram">+ Voeg diagram toe</UiButton>
         </div>
         <div v-if="!form.diagrams || form.diagrams.length === 0" class="text-sm text-gray-500 border border-dashed border-gray-300 rounded-md p-4">
           Nog geen diagrams. Klik op “Voeg diagram toe”.
@@ -252,8 +252,8 @@
                 <label class="block text-sm text-gray-700 mb-1">Bijschrift</label>
                 <input v-model="d.caption" class="form-input" placeholder="Beschrijf dit diagram"/>
                 <div class="mt-3 flex gap-2">
-                  <button type="button" class="btn-secondary !py-1 !px-2" @click="moveDiagram(idx, -1)" :disabled="idx === 0">Omhoog</button>
-                  <button type="button" class="btn-secondary !py-1 !px-2" @click="moveDiagram(idx, 1)" :disabled="idx === form.diagrams.length - 1">Omlaag</button>
+                  <UiButton color="secondary" class="!py-1 !px-2" @click="moveDiagram(idx, -1)" :disabled="idx === 0">Omhoog</UiButton>
+                  <UiButton color="secondary" class="!py-1 !px-2" @click="moveDiagram(idx, 1)" :disabled="idx === form.diagrams.length - 1">Omlaag</UiButton>
                 </div>
               </div>
             </div>
@@ -264,12 +264,8 @@
 
     <!-- Buttons -->
     <div class="flex gap-3 mt-6 justify-end">
-      <button type="button" class="btn-secondary" @click="$emit('close')">Annuleren</button>
-      <button
-          type="submit"
-          :class="isEdit ? 'btn-primary btn-submit' : 'btn-accent btn-submit'"
-      >{{ isEdit ? 'Opslaan' : 'Aanmaken' }}
-      </button>
+      <UiButton color="secondary" @click="$emit('close')">Annuleren</UiButton>
+      <UiButton :color="isEdit ? 'primary' : 'accent'" type="submit" class="btn-submit">{{ isEdit ? 'Opslaan' : 'Aanmaken' }}</UiButton>
     </div>
   </form>
 </template>
@@ -281,9 +277,10 @@ import RichTextEditor from '../form/RichTextEditor.vue'
 import IconPicker from '../form/IconPicker.vue'
 import IntensitySelector from '../form/IntensitySelector.vue'
 import {EXERCISE_MATERIALS} from '../../constants'
+import UiButton from '../ui/Button.vue'
 
 export default {
-  components: {RichTextEditor, IconPicker, IntensitySelector},
+  components: {RichTextEditor, IconPicker, IntensitySelector, UiButton},
   props: {
     initial: {type: Object, default: null},
     categories: {type: Array, default: () => []}

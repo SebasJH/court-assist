@@ -83,9 +83,9 @@
         <label class="block text-sm font-medium text-gray-700 mb-1">Beschrijving</label>
         <textarea v-model="descDraft" class="form-input h-40 w-full resize-none" placeholder="Beschrijving"></textarea>
       </div>
-      <div class="px-5 py-4 border-t  flex justify-end gap-2">
-        <button class="btn-secondary" @click="closeEditDescription">Annuleren</button>
-        <button class="btn-primary" @click="saveEditDescription">Opslaan</button>
+      <div class="px-5 py-4 border-t  flex justify-end gap-3">
+        <UiButton color="secondary" @click="closeEditDescription">Annuleren</UiButton>
+        <UiButton color="primary" @click="saveEditDescription">Opslaan</UiButton>
       </div>
     </modal>
 
@@ -142,9 +142,9 @@
           </div>
         </div>
       </div>
-      <div class="px-5 py-4 border-t  flex justify-end gap-2">
-        <button class="btn-secondary" @click="closeEditDetails">Annuleren</button>
-        <button class="btn-primary" @click="saveEditDetails">Opslaan</button>
+      <div class="px-5 py-4 border-t  flex justify-end gap-3">
+        <UiButton color="secondary" @click="closeEditDetails">Annuleren</UiButton>
+        <UiButton color="primary" @click="saveEditDetails">Opslaan</UiButton>
       </div>
     </modal>
 
@@ -229,6 +229,7 @@
 </template>
 
 <script setup>
+import UiButton from '../components/ui/Button.vue'
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import store from '../store'

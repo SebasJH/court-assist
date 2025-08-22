@@ -66,7 +66,7 @@
 
     <!-- Footer -->
     <div class="p-4 border-t border-gray-200">
-      <button v-if="!collapsed" class="w-full mb-3 btn-secondary text-sm">Switch sport</button>
+      <UiButton v-if="!collapsed" color="secondary" class="w-full mb-3 text-sm">Switch sport</UiButton>
 
       <!-- Profile -->
       <div class="flex items-center justify-center" :class="collapsed ? '' : 'gap-3'">
@@ -85,8 +85,10 @@
 </template>
 
 <script>
+import UiButton from './ui/Button.vue'
 export default {
   name: 'Sidebar',
+  components: { UiButton },
   data() {
     return {
       collapsed: false,
