@@ -2,14 +2,16 @@
 <template>
   <transition name="modal-overlay-fade" appear>
     <div
+        v-show="open"
         class="fixed inset-0 z-[5000] flex bg-black/50"
         :class="overlayClass"
         @mousedown="onOverlayMouseDown"
         @click="onOverlayClick"
     >
       <!-- Scrollbare content -->
-      <transition :name="drawer ? (side === 'left' ? 'drawer-left' : 'drawer-right') : 'modal-zoom'" appear>
+      <transition :name="drawer ? (side === 'left' ? 'drawer-left' : 'drawer-right') : 'modal-bottom'" appear>
         <div
+            v-show="open"
             ref="modalContent"
             class="relative bg-white shadow-xl overflow-y-auto modal-panel"
             :class="contentClass"
@@ -34,6 +36,7 @@
 <script>
 export default {
   props: {
+    open: { type: Boolean, default: false },
     maxWidthClass: { type: String, default: 'max-w-3xl' },
     // Drawer mode (right/left side panel)
     drawer: { type: Boolean, default: false },
@@ -49,13 +52,13 @@ export default {
   },
   computed: {
     overlayClass() {
-      if (!this.drawer) return 'items-end xl:items-center justify-center'
+      if (!this.drawer) return 'items-end md:items-center justify-center'
       // stretch vertically and align to side
       return this.side === 'left' ? 'items-stretch justify-start' : 'items-stretch justify-end'
     },
     contentClass() {
       if (!this.drawer) {
-        return `rounded-none xl:rounded-2xl w-full ${this.maxWidthClass} max-h-[90vh] ${this.contentPaddingClass}`
+        return `rounded-none md:rounded-2xl w-full ${this.maxWidthClass} max-h-[90vh] ${this.contentPaddingClass}`
       }
       return `h-full w-full ${this.drawerWidthClass} ${this.contentPaddingClass}`
     }
@@ -141,5 +144,39 @@ export default {
 .modal-zoom-leave-from {
   transform: translateY(0) scale(1);
   opacity: 1;
+}
+
+/* Mobile-first bottom slide for non-drawer modals */
+.modal-bottom-enter-active,
+.modal-bottom-leave-active {
+  transition: transform 260ms ease, opacity 260ms ease;
+}
+.modal-bottom-enter-from,
+.modal-bottom-leave-to {
+  transform: translateY(100%);
+  opacity: 0.9;
+}
+.modal-bottom-enter-to,
+.modal-bottom-leave-from {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Desktop (md+) override: keep centered subtle zoom like before */
+@media (min-width: 768px) {
+  .modal-bottom-enter-active,
+  .modal-bottom-leave-active {
+    transition: transform 220ms ease, opacity 220ms ease;
+  }
+  .modal-bottom-enter-from,
+  .modal-bottom-leave-to {
+    transform: translateY(-8px) scale(0.98);
+    opacity: 0;
+  }
+  .modal-bottom-enter-to,
+  .modal-bottom-leave-from {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
 }
 </style>

@@ -14,7 +14,7 @@
 
     <!-- Mobile sidebar drawer -->
     <Modal
-      v-if="mobileSidebarOpen"
+      :open="mobileSidebarOpen"
       @close="mobileSidebarOpen = false"
       :drawer="true"
       side="left"

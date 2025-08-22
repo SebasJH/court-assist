@@ -8,7 +8,7 @@
         </router-link>
         <span class="text-gray-300 select-none" aria-hidden="true">/</span>
         <div class="flex items-center gap-3 min-w-0">
-          <div class="bg-gray-100 w-12 h-12 rounded-lg flex items-center justify-center">
+          <div class="bg-gray-100 w-10 h-10 lg:w-12 lg:h-12 rounded-lg flex items-center justify-center">
             <component :is="exercise?.icon || exercise?.imageIcon || 'TrafficCone'" class="w-6 h-6 text-gray-700" />
           </div>
           <div class="min-w-0">
@@ -64,7 +64,7 @@
 
   <div class="container mx-auto px-4 py-6" v-if="exercise">
     <!-- Edit modal -->
-    <modal v-if="showForm" @close="closeForm">
+    <modal :open="showForm" @close="closeForm">
       <exercise-form
         :initial="exercise"
         :categories="categories"
@@ -74,12 +74,12 @@
     </modal>
 
     <!-- Delete confirm modal -->
-    <modal v-if="showDeleteModal" @close="cancelDelete">
+    <modal :open="showDeleteModal" @close="cancelDelete">
       <DeleteConfirm :name="exercise.name" @cancel="cancelDelete" @confirm="confirmDelete" />
     </modal>
 
     <!-- Edit description modal -->
-    <modal v-if="showEditDescription" @close="closeEditDescription">
+    <modal :open="showEditDescription" @close="closeEditDescription">
       <div class="px-5 pt-5 pb-3 border-b">
         <h3 class="text-lg font-semibold text-gray-800">Beschrijving bewerken</h3>
       </div>
@@ -94,7 +94,7 @@
     </modal>
 
     <!-- Edit details modal -->
-    <modal v-if="showEditDetails" @close="closeEditDetails">
+    <modal :open="showEditDetails" @close="closeEditDetails">
       <div class="px-5 pt-5 pb-3 border-b">
         <h3 class="text-lg font-semibold text-gray-800">Details bewerken</h3>
       </div>

@@ -24,7 +24,7 @@
     />
 
     <!-- Filters drawer (right side panel with overlay) -->
-    <modal v-if="showFilters" @close="showFilters = false" :drawer="true" side="right" drawerWidthClass="max-w-lg">
+    <modal :open="showFilters" @close="showFilters = false" :drawer="true" side="right" drawerWidthClass="max-w-lg">
       <div class="flex h-full flex-col">
         <div class="px-5 pt-5 pb-4 border-b">
           <div class="flex items-center justify-between">
@@ -83,7 +83,7 @@
     <!-- Cards or Empty state -->
     <template v-if="sorted.length > 0">
       <template v-if="viewMode === 'card'">
-        <transition-group name="exercise-list" tag="div" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6" :css="!pageSwitching">
+        <transition-group name="exercise-list" tag="div" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-6" :css="!pageSwitching">
           <ExerciseCardItem
               v-for="ex in pageItems"
               :key="ex.id"
@@ -156,7 +156,7 @@
     </div>
 
     <!-- Modal -->
-    <modal v-if="showForm" @close="closeForm">
+    <modal :open="showForm" @close="closeForm">
       <exercise-form
           :initial="editItem"
           :categories="categories"
@@ -166,7 +166,7 @@
     </modal>
 
     <!-- Delete confirm modal -->
-    <modal v-if="showDeleteModal" @close="cancelDelete">
+    <modal :open="showDeleteModal" @close="cancelDelete">
       <DeleteConfirm :name="deleteName" @cancel="cancelDelete" @confirm="confirmDelete" />
     </modal>
   </div>
@@ -363,7 +363,7 @@ export default {
     })
 
     // Pagination
-    const pageSize = 6
+    const pageSize = 12
     const pageSwitching = ref(false)
     const page = ref(1)
     const pageCount = computed(() => {
