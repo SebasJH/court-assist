@@ -38,7 +38,8 @@ export default {
     // Drawer mode (right/left side panel)
     drawer: { type: Boolean, default: false },
     side: { type: String, default: 'right' },
-    drawerWidthClass: { type: String, default: 'max-w-md' }
+    drawerWidthClass: { type: String, default: 'max-w-md' },
+    contentPaddingClass: { type: String, default: 'p-6' }
   },
   emits: ['close'],
   data() {
@@ -54,9 +55,9 @@ export default {
     },
     contentClass() {
       if (!this.drawer) {
-        return `rounded-2xl w-full ${this.maxWidthClass} max-h-[90vh] p-6`
+        return `rounded-2xl w-full ${this.maxWidthClass} max-h-[90vh] ${this.contentPaddingClass}`
       }
-      return `h-full w-full ${this.drawerWidthClass} p-6`
+      return `h-full w-full ${this.drawerWidthClass} ${this.contentPaddingClass}`
     }
   },
   methods: {

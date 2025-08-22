@@ -1,5 +1,5 @@
 <template>
-  <aside :class="['bg-white shadow-lg border-r border-gray-200 flex flex-col transition-all duration-300 ease-in-out', collapsed ? 'w-20' : 'w-64']">
+  <aside :class="['bg-white shadow-lg border-r border-gray-200 flex flex-col h-full md:h-screen transition-all duration-300 ease-in-out', collapsed ? 'w-full md:w-20' : 'w-full md:w-64']">
     <!-- Header -->
     <div class="p-4 border-b border-gray-200">
       <div class="flex items-center justify-between">
@@ -12,7 +12,7 @@
           COURT ASSIST
         </div>
         <button
-          class="ml-auto rounded-md p-2 hover:bg-gray-100 text-gray-600 transition-colors duration-200"
+          class="ml-auto hidden md:inline-flex rounded-md p-2 hover:bg-gray-100 text-gray-600 transition-colors duration-200"
           :title="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
           @click="toggleSidebar"
         >

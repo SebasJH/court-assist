@@ -38,7 +38,8 @@ import {
     Search,
     LayoutGrid,
     List,
-    RectangleCircle
+    RectangleCircle,
+    Menu
    }
     from 'lucide-vue-next'
 
@@ -82,6 +83,7 @@ export function registerIcons(app) {
     app.component('Search', Search)
     app.component('LayoutGrid', LayoutGrid)
     app.component('List', List)
+    app.component('Menu', Menu)
     
     // Custom local icons
     app.component('RectangleCircle', RectangleCircle)

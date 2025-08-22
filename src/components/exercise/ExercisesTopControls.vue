@@ -1,7 +1,7 @@
 <template>
   <!-- Top controls: Favorites, Filters, Sort, View toggle, Search -->
-  <div class="mb-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-end items-end">
-    <div class="flex items-center gap-2">
+  <div class="mb-4 flex flex-col md:flex-row md:flex-wrap items-stretch md:items-center gap-3 md:justify-end">
+    <div class="flex items-center gap-2 md:flex-wrap order-2 md:order-1">
       <!-- Favorites toggle -->
       <button
         class="inline-flex items-center gap-2 px-3 h-[42px] rounded-md border text-sm focus:outline-none"
@@ -60,11 +60,11 @@
     </div>
 
     <!-- Search -->
-    <div>
+    <div class="order-1 md:order-2 w-full md:w-auto">
       <div class="relative">
         <Search class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
         <input
-          class="form-input w-64 md:w-72 !pl-9 pr-3"
+          class="form-input w-full md:w-72 !pl-9 pr-3"
           :value="q"
           @input="$emit('update:q', $event.target && $event.target.value)"
           placeholder="Zoek oefeningen..."
