@@ -58,7 +58,7 @@ export default {
     },
     contentClass() {
       if (!this.drawer) {
-        return `rounded-none md:rounded-2xl w-full ${this.maxWidthClass} max-h-[90vh] ${this.contentPaddingClass}`
+        return `rounded-t-2xl md:rounded-2xl w-full ${this.maxWidthClass} max-h-[90vh] ${this.contentPaddingClass}`
       }
       return `h-full w-full ${this.drawerWidthClass} ${this.contentPaddingClass}`
     }

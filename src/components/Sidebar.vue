@@ -11,14 +11,24 @@
         >
           COURT ASSIST
         </div>
-        <button
-          class="ml-auto hidden xl:inline-flex rounded-md p-2 hover:bg-gray-100 text-gray-600 transition-colors duration-200"
-          :title="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
-          @click="toggleSidebar"
-        >
-          <ArrowRightToLine v-if="collapsed" :class="iconSizeClass" />
-          <ArrowLeftToLine v-else :class="iconSizeClass" />
-        </button>
+        <div class="ml-auto flex items-center gap-2">
+          <button
+            class="xl:hidden inline-flex rounded-md p-2 hover:bg-gray-100 text-gray-600 transition-colors duration-200"
+            title="Sluit menu"
+            aria-label="Sluit menu"
+            @click="closeMobileSidebar"
+          >
+            <X :class="iconSizeClass" />
+          </button>
+          <button
+            class="hidden xl:inline-flex rounded-md p-2 hover:bg-gray-100 text-gray-600 transition-colors duration-200"
+            :title="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+            @click="toggleSidebar"
+          >
+            <ArrowRightToLine v-if="collapsed" :class="iconSizeClass" />
+            <ArrowLeftToLine v-else :class="iconSizeClass" />
+          </button>
+        </div>
       </div>
     </div>
 
@@ -115,6 +125,10 @@ export default {
     },
     onNavClick() {
       // Close the mobile drawer when a navigation item is tapped
+      window.dispatchEvent(new CustomEvent('close-mobile-sidebar'))
+    },
+    closeMobileSidebar() {
+      // Explicit close button for mobile drawer
       window.dispatchEvent(new CustomEvent('close-mobile-sidebar'))
     }
   }

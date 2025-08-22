@@ -8,7 +8,7 @@
     @keydown.enter.prevent="goToDetail"
   >
     <!-- Icon -->
-    <div class="bg-gray-100 w-12 h-12 rounded-lg flex justify-center items-center shrink-0">
+    <div class="bg-gray-100 w-10 h-10 md:w-12 md:h-12 rounded-lg flex justify-center items-center shrink-0">
       <component
         v-if="exercise.icon || exercise.imageIcon"
         :is="exercise.icon || exercise.imageIcon"

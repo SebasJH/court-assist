@@ -2,11 +2,11 @@
   <PageHeader :title="exercise ? exercise.name : 'Oefening'" back-to="/oefeningen" back-label="Oefeningen" tall>
     <template #lead>
       <div class="flex items-center gap-3 min-w-0">
-        <router-link to="/oefeningen" class="inline-flex items-center text-sm text-gray-600 hover:text-blue-600">
+        <router-link to="/oefeningen" class="hidden md:inline-flex items-center text-sm text-gray-600 hover:text-blue-600">
           <ArrowLeft class="w-4 h-4 mr-1" />
           Oefeningen
         </router-link>
-        <span class="text-gray-300 select-none" aria-hidden="true">/</span>
+        <span class="hidden md:inline-block text-gray-300 select-none" aria-hidden="true">/</span>
         <div class="flex items-center gap-3 min-w-0">
           <div class="bg-gray-100 w-10 h-10 lg:w-12 lg:h-12 rounded-lg flex items-center justify-center">
             <component :is="exercise?.icon || exercise?.imageIcon || 'TrafficCone'" class="w-6 h-6 text-gray-700" />
@@ -61,6 +61,18 @@
       </div>
     </template>
   </PageHeader>
+
+  <!-- Mobile-only compact breadcrumbs under header -->
+  <div class="md:hidden bg-white">
+    <div class="container mx-auto px-4 py-2 text-sm text-gray-600 flex items-center gap-1 overflow-hidden">
+      <router-link to="/oefeningen" class="inline-flex items-center hover:text-blue-600">
+        <ArrowLeft class="w-4 h-4 mr-1" />
+        Oefeningen
+      </router-link>
+      <span class="text-gray-300" aria-hidden="true">/</span>
+      <span class="truncate font-medium text-gray-800">{{ exercise ? exercise.name : 'Oefening' }}</span>
+    </div>
+  </div>
 
   <div class="container mx-auto px-4 py-6" v-if="exercise">
     <!-- Edit modal -->

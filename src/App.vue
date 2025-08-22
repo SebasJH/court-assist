@@ -13,27 +13,26 @@
     </main>
 
     <!-- Mobile sidebar drawer -->
-    <Modal
+    <MobileSidebarDrawer
       :open="mobileSidebarOpen"
       @close="mobileSidebarOpen = false"
-      :drawer="true"
       side="left"
       drawerWidthClass="max-w-xs"
       contentPaddingClass="p-0"
     >
       <Sidebar />
-    </Modal>
+    </MobileSidebarDrawer>
   </div>
 </template>
 
 <script>
 import Sidebar from './components/Sidebar.vue'
 import NotificationBar from './components/NotificationBar.vue'
-import Modal from './components/Modal.vue'
+import MobileSidebarDrawer from './components/MobileSidebarDrawer.vue'
 
 export default {
   name: 'App',
-  components: { Sidebar, NotificationBar, Modal },
+  components: { Sidebar, NotificationBar, MobileSidebarDrawer },
   data() {
     return {
       mobileSidebarOpen: false
