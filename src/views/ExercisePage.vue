@@ -174,7 +174,7 @@
 
   <!-- Mobile FAB: create exercise -->
   <UiButton
-    class="md:hidden fixed safe-bottom-5 right-5 z-[3000] !p-0 w-14 h-14 shadow-xl"
+    :class="['md:hidden fixed safe-bottom-5 right-5 z-[3000] !p-0 w-14 h-14 shadow-xl', 'transition-opacity duration-300', { 'opacity-0 pointer-events-none': fabHidden }]"
     color="primary"
     icon="Plus"
     iconClass="w-7 h-7"
@@ -198,7 +198,7 @@ import Pagination from '../components/Pagination.vue'
 import FiltersChips from '../components/FiltersChips.vue'
 import { EXERCISE_CATEGORIES, EXERCISE_MATERIALS, normalizeCourt } from '../constants'
 import store from '../store'
-import { ref, computed, watch, nextTick } from 'vue'
+import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { ensureSampleExercises } from '../data/sampleExercises'
 import UiButton from '../components/ui/Button.vue'
 
@@ -450,6 +450,58 @@ export default {
     // Sample data als store leeg is (categorieën als array) — verplaatst naar aparte module
     ensureSampleExercises(store)
 
+    // Mobile FAB visibility control on scroll (hide on scroll down, show on scroll up or after 2s idle)
+    const fabHidden = ref(false)
+    const scrollEl = ref(null)
+    const lastScrollY = ref(0)
+    let idleTimer = null
+    let scrollTarget = null
+    const IDLE_SHOW_MS = 1200
+    const DELTA_THRESHOLD = 3
+
+    function getScrollY() {
+      if (scrollEl.value && scrollEl.value !== window) {
+        return scrollEl.value.scrollTop || 0
+      }
+      return window.pageYOffset || document.documentElement.scrollTop || 0
+    }
+
+    function scheduleShowOnIdle() {
+      if (idleTimer) { clearTimeout(idleTimer); idleTimer = null }
+      idleTimer = setTimeout(() => { fabHidden.value = false; idleTimer = null }, IDLE_SHOW_MS)
+    }
+
+    function onScrollFab() {
+      const y = getScrollY()
+      const delta = y - lastScrollY.value
+      if (Math.abs(delta) >= DELTA_THRESHOLD) {
+        if (delta > 0) {
+          // Scrolling down -> hide
+          fabHidden.value = true
+        } else if (delta < 0) {
+          // Scrolling up -> show immediately
+          fabHidden.value = false
+        }
+        lastScrollY.value = y
+      } else {
+        lastScrollY.value = y
+      }
+      scheduleShowOnIdle()
+    }
+
+    onMounted(() => {
+      // Detect the scroll container used by the app shell (App.vue uses main.flex-1.overflow-auto)
+      const el = document.querySelector('main.flex-1.overflow-auto')
+      scrollEl.value = el || window
+      scrollTarget = scrollEl.value === window ? window : scrollEl.value
+      lastScrollY.value = getScrollY()
+      scrollTarget.addEventListener('scroll', onScrollFab, { passive: true })
+    })
+    onBeforeUnmount(() => {
+      if (scrollTarget) scrollTarget.removeEventListener('scroll', onScrollFab)
+      if (idleTimer) { clearTimeout(idleTimer); idleTimer = null }
+    })
+
     return {
       q,
       filter,
@@ -499,7 +551,9 @@ export default {
       confirmDelete,
       // constants for chips
       DEFAULT_PLAYERS,
-      DEFAULT_INTENSITY
+      DEFAULT_INTENSITY,
+      // mobile FAB state
+      fabHidden
     }
   }
 }
