@@ -19,7 +19,7 @@
             aria-modal="true"
         >
           <button
-          class="absolute top-3 right-3 text-gray-500 hover:text-black"
+          class="absolute top-5 right-5 text-gray-500 hover:text-black"
           aria-label="Sluiten"
           @click="$emit('close')"
       >

@@ -4,7 +4,7 @@
       <div class="flex items-start gap-3">
 
         <!-- Icon -->
-        <div class="bg-gray-100 w-16 h-16 rounded-lg flex justify-center items-center">
+        <div class="bg-gray-100 w-12 h-12 md:w-16 md:h-16 rounded-lg flex justify-center items-center">
           <component
             v-if="exercise.icon || exercise.imageIcon"
             :is="exercise.icon || exercise.imageIcon"
