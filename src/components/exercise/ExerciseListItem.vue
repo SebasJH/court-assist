@@ -50,13 +50,33 @@
     </div>
 
     <!-- Players -->
-    <div class="hidden lg:block w-28 text-sm text-gray-700 tabular-nums truncate" :title="playersLabel">{{ playersLabel }}</div>
+    <div class="hidden lg:block w-28">
+      <div v-if="showPlayers" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-100 text-sm text-gray-700 whitespace-nowrap truncate" :title="playersLabel">
+        <Users class="w-4 h-4" />
+        <span class="truncate">{{ playersLabel }}</span>
+      </div>
+    </div>
     <!-- Duration -->
-    <div class="hidden lg:block w-28 text-sm text-gray-700 tabular-nums truncate">{{ durationLabel }}</div>
+    <div class="hidden lg:block w-28">
+      <div v-if="hasDuration" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-100 text-sm text-gray-700 whitespace-nowrap truncate" :title="durationLabel">
+        <TimerReset class="w-4 h-4" />
+        <span class="truncate">{{ durationLabel }}</span>
+      </div>
+    </div>
     <!-- Court -->
-    <div class="hidden lg:block w-28 text-sm text-gray-700 truncate">{{ courtLabel }}</div>
+    <div class="hidden lg:block w-28">
+      <div v-if="hasCourt" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-100 text-sm text-gray-700 whitespace-nowrap truncate" :title="courtLabel">
+        <RectangleCircle class="w-4 h-4" />
+        <span class="truncate">{{ courtLabel }}</span>
+      </div>
+    </div>
     <!-- Intensity -->
-    <div class="hidden lg:block w-28 text-sm text-gray-700 tabular-nums truncate">{{ intensityLabel }}</div>
+    <div class="hidden lg:block w-28">
+      <div v-if="showIntensity" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-100 text-sm text-gray-700 whitespace-nowrap truncate" :title="intensityLabel">
+        <Zap class="w-4 h-4" />
+        <span class="truncate">{{ intensityLabel }}</span>
+      </div>
+    </div>
 
     <!-- Actions -->
     <div class="flex md:w-16 md:w-20 items-center justify-end gap-2 shrink-0" ref="actionsRef" @mouseenter="liftEnter" @mouseleave="liftLeave" @click.stop>
