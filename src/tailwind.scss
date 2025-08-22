@@ -90,3 +90,11 @@ $error-color: #ef4444;
 .modal-actions {
     @apply px-5 py-4 border-t flex justify-end gap-3;
 }
+
+// Safe-area utilities for iOS bottom inset
+.safe-bottom-5 {
+    bottom: calc(1.25rem + env(safe-area-inset-bottom, 0));
+}
+.pb-safe-6 {
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0));
+}

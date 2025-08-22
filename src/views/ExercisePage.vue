@@ -173,7 +173,7 @@
 
   <!-- Mobile FAB: create exercise -->
   <UiButton
-    class="md:hidden fixed bottom-5 right-5 z-[3000] !p-0 w-14 h-14 shadow-xl"
+    class="md:hidden fixed safe-bottom-5 right-5 z-[3000] !p-0 w-14 h-14 shadow-xl"
     color="primary"
     icon="Plus"
     iconClass="w-7 h-7"

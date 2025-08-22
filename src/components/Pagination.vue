@@ -9,7 +9,13 @@
       Vorige
     </button>
 
-    <div class="flex items-center gap-1">
+    <!-- Mobile: compact indicator -->
+    <div class="md:hidden text-sm text-gray-600 px-2">
+      Pagina {{ page }} / {{ pageCount }}
+    </div>
+
+    <!-- Desktop (md+): numeric buttons -->
+    <div class="hidden md:flex items-center gap-1">
       <button
         v-for="p in pageCount"
         :key="p"
