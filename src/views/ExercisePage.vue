@@ -50,12 +50,9 @@
             :materialOptions="materialOptions"
           />
         </div>
-        <div class="px-5 py-4 border-t  flex items-center justify-between">
+        <div class="px-5 py-4 border-t flex items-center justify-end gap-2">
           <UiButton color="secondary" @click="resetFilters">Alles wissen</UiButton>
-          <div class="flex gap-2">
-            <UiButton color="secondary" @click="showFilters = false">Sluiten</UiButton>
-            <UiButton color="primary" @click="showFilters = false">Toepassen</UiButton>
-          </div>
+          <UiButton color="primary" @click="showFilters = false">Toepassen</UiButton>
         </div>
       </div>
     </modal>

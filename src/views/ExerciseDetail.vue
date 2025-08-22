@@ -83,7 +83,7 @@
         <label class="block text-sm font-medium text-gray-700 mb-1">Beschrijving</label>
         <textarea v-model="descDraft" class="form-input h-40 w-full resize-none" placeholder="Beschrijving"></textarea>
       </div>
-      <div class="px-5 py-4 border-t  flex justify-end gap-3">
+      <div class="modal-actions">
         <UiButton color="secondary" @click="closeEditDescription">Annuleren</UiButton>
         <UiButton color="primary" @click="saveEditDescription">Opslaan</UiButton>
       </div>
@@ -142,7 +142,7 @@
           </div>
         </div>
       </div>
-      <div class="px-5 py-4 border-t  flex justify-end gap-3">
+      <div class="modal-actions">
         <UiButton color="secondary" @click="closeEditDetails">Annuleren</UiButton>
         <UiButton color="primary" @click="saveEditDetails">Opslaan</UiButton>
       </div>
@@ -240,7 +240,7 @@ import DeleteConfirm from '../components/DeleteConfirm.vue'
 import ExerciseBadge from '../components/exercise/ExerciseBadge.vue'
 import IntensitySelector from '../components/form/IntensitySelector.vue'
 import RangeNumber from '../components/form/RangeNumber.vue'
-import { EXERCISE_CATEGORIES, EXERCISE_MATERIALS } from '../constants'
+import { EXERCISE_CATEGORIES, EXERCISE_MATERIALS, normalizeCourt } from '../constants'
 
 function slugify(str) {
   return String(str || '')
@@ -262,28 +262,6 @@ const exercise = computed(() => {
   return list.find(e => slugify(e.name) === target)
 })
 
-// Players and duration display logic
-const minPlayersVal = computed(() => (typeof exercise.value?.minPlayers === 'number') ? exercise.value.minPlayers : null)
-const maxPlayersVal = computed(() => (typeof exercise.value?.maxPlayers === 'number') ? exercise.value.maxPlayers : null)
-const showPlayers = computed(() => minPlayersVal.value !== null || maxPlayersVal.value !== null)
-const playersLabel = computed(() => {
-  const min = minPlayersVal.value
-  const max = maxPlayersVal.value
-  if (min !== null && max !== null) return `${min} - ${max}`
-  if (min !== null) return `${min} minimaal`
-  if (max !== null) return `${max} maximaal`
-  return ''
-})
-const hasDuration = computed(() => typeof exercise.value?.duration === 'number' && exercise.value.duration > 0)
-const hasCourt = computed(() => typeof exercise.value?.court === 'string' && exercise.value.court.trim().length > 0)
-const courtLabel = computed(() => {
-  const v = (exercise.value?.court || '').toString().trim()
-  if (!v) return ''
-  const norm = v.toLowerCase()
-  if (norm === 'halfcourt' || norm === 'half court') return 'Half court'
-  if (norm === 'fullcourt' || norm === 'full court') return 'Full court'
-  return v
-})
 
 // Edit modal state
 const showForm = ref(false)
@@ -318,12 +296,6 @@ const detailsDraft = ref({
   materials: []
 })
 
-function normalizeCourtLocal(val){
-  const v = (val || '').toString().toLowerCase().trim().replace(/\s+/g, '')
-  if (v === 'halfcourt') return 'halfcourt'
-  if (v === 'fullcourt') return 'fullcourt'
-  return ''
-}
 
 function openEditDetails(){
   const cur = exercise.value || {}
@@ -332,7 +304,7 @@ function openEditDetails(){
     maxPlayers: (typeof cur.maxPlayers === 'number') ? cur.maxPlayers : null,
     duration: (typeof cur.duration === 'number') ? cur.duration : null,
     intensity: (typeof cur.intensity === 'number') ? cur.intensity : null,
-    courtNorm: normalizeCourtLocal(cur.court || ''),
+    courtNorm: normalizeCourt(cur.court || ''),
     materials: Array.isArray(cur.materials) ? [...cur.materials] : []
   }
   showEditDetails.value = true
