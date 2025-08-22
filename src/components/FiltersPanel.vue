@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <!-- Row 1: Category + Court -->
+    <!-- Category -->
     <div class="grid grid-cols-1 gap-4">
       <!-- Categorie -->
       <div class="flex flex-col gap-2">
@@ -11,7 +11,7 @@
         </select>
       </div>
 
-      <!-- Veldtype -->
+      <!-- Court -->
       <div>
         <fieldset>
           <legend class="block text-sm text-gray-600 mb-2">Veldtype</legend>
@@ -28,7 +28,7 @@
         </fieldset>
       </div>
 
-      <!-- Aantal spelers -->
+      <!-- Players -->
       <div>
         <fieldset>
           <legend class="block text-sm text-gray-600 mb-2">Aantal spelers</legend>
@@ -46,7 +46,7 @@
         </fieldset>
       </div>
 
-      <!-- Intensiteit -->
+      <!-- Intensity -->
       <div>
         <fieldset>
           <legend class="block text-sm text-gray-600 mb-2">Intensiteit</legend>
@@ -64,7 +64,7 @@
         </fieldset>
       </div>
 
-      <!-- Materialen (full width) -->
+      <!-- Materials -->
       <div>
         <fieldset>
           <legend class="block text-sm text-gray-600 mb-2">Materialen</legend>

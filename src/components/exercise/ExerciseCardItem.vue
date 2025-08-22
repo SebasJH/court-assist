@@ -14,7 +14,7 @@
           <TrafficCone v-else class="w-8 h-8 text-gray-400" aria-label="Default icon" />
         </div>
 
-        <!-- Content: title -->
+        <!-- Title -->
         <div class="flex-1 min-w-0 pr-18">
           <div class="text-lg font-bold text-gray-800 break-words">{{ exercise.name }}</div>
 
@@ -31,7 +31,7 @@
 
         </div>
 
-        <!-- Controls back in corner -->
+        <!-- Actions -->
         <div class="absolute top-4 right-4 flex items-start gap-2" ref="controlsRef" @mouseenter="liftEnter" @mouseleave="liftLeave">
           <button
             class="star flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors duration-200 w-9 h-9 cursor-pointer"
