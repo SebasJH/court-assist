@@ -29,7 +29,7 @@
         >{{ cat }}</span>
       </div>
       <!-- Mobile-only compact details -->
-      <div class="md:hidden mt-1 flex flex-wrap items-center gap-1.5 text-xs text-gray-700">
+      <div class="lg:hidden mt-1 flex flex-wrap items-center gap-1.5 text-xs text-gray-700">
         <div v-if="showPlayers" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-100">
           <Users class="w-3.5 h-3.5" />
           <span>{{ playersLabel }}</span>
@@ -50,18 +50,18 @@
     </div>
 
     <!-- Players -->
-    <div class="hidden md:block w-28 text-sm text-gray-700 tabular-nums truncate" :title="playersLabel">{{ playersLabel }}</div>
+    <div class="hidden lg:block w-28 text-sm text-gray-700 tabular-nums truncate" :title="playersLabel">{{ playersLabel }}</div>
     <!-- Duration -->
-    <div class="hidden md:block w-28 text-sm text-gray-700 tabular-nums truncate">{{ durationLabel }}</div>
+    <div class="hidden lg:block w-28 text-sm text-gray-700 tabular-nums truncate">{{ durationLabel }}</div>
     <!-- Court -->
-    <div class="hidden md:block w-28 text-sm text-gray-700 truncate">{{ courtLabel }}</div>
+    <div class="hidden lg:block w-28 text-sm text-gray-700 truncate">{{ courtLabel }}</div>
     <!-- Intensity -->
-    <div class="hidden md:block w-28 text-sm text-gray-700 tabular-nums truncate">{{ intensityLabel }}</div>
+    <div class="hidden lg:block w-28 text-sm text-gray-700 tabular-nums truncate">{{ intensityLabel }}</div>
 
     <!-- Actions -->
     <div class="flex md:w-16 md:w-20 items-center justify-end gap-2 shrink-0" ref="actionsRef" @mouseenter="liftEnter" @mouseleave="liftLeave" @click.stop>
       <button
-        class="hidden md:inline-flex items-center justify-center rounded-md bg-gray-100 hover:bg-gray-200 transition-colors duration-200 w-8 h-8 cursor-pointer"
+        class="hidden lg:inline-flex items-center justify-center rounded-md bg-gray-100 hover:bg-gray-200 transition-colors duration-200 w-8 h-8 cursor-pointer"
         :aria-pressed="exercise.favorite ? 'true' : 'false'"
         :title="exercise.favorite ? 'Verwijder uit favorieten' : 'Markeer als favoriet'"
         @click.stop="toggleFav"
@@ -81,7 +81,7 @@
           v-if="menuOpen"
           ref="menuRef"
           @click.stop
-          :class="['fixed w-64 md:w-40 whitespace-nowrap bg-white border border-gray-200 rounded shadow-lg flex flex-col z-[3000]']"
+          :class="['fixed w-64 lg:w-40 whitespace-nowrap bg-white border border-gray-200 rounded shadow-lg flex flex-col z-[3000]']"
           :style="menuStyle"
         >
           <button @click="onEdit" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 py-2 hover:bg-gray-100">
@@ -92,7 +92,7 @@
             <Copy class="w-fit h-4" />
             Dupliceren
           </button>
-          <button @click="onToggleFavFromMenu" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 py-2 hover:bg-gray-100 md:hidden">
+          <button @click="onToggleFavFromMenu" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 py-2 hover:bg-gray-100 lg:hidden">
             <Star class="w-fit h-4" :class="exercise && exercise.favorite ? 'text-yellow-500' : ''" :fill="exercise && exercise.favorite ? 'currentColor' : 'none'" :stroke="'currentColor'" />
             <span>{{ (exercise && exercise.favorite) ? 'Verwijder uit favorieten' : 'Markeer als favoriet' }}</span>
           </button>

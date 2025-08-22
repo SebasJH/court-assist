@@ -97,9 +97,9 @@
       </template>
       <template v-else>
         <div class="bg-white rounded-lg shadow-md">
-          <div class="overflow-x-hidden md:overflow-x-auto overflow-y-visible" role="region" aria-label="Lijstweergave, horizontaal scrollen indien nodig">
-            <div class="md:min-w-[48rem]">
-              <div class="hidden md:flex items-center gap-4 px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-b bg-gray-0">
+          <div class="overflow-x-hidden lg:overflow-x-auto overflow-y-visible" role="region" aria-label="Lijstweergave, horizontaal scrollen indien nodig">
+            <div class="lg:min-w-[48rem]">
+              <div class="hidden lg:flex items-center gap-4 px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-b bg-gray-0">
                 <div class="w-12"></div>
                 <div class="flex-1">Oefening</div>
                 <div class="w-28">Spelers</div>
