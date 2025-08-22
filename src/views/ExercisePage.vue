@@ -7,48 +7,21 @@
 
     <div class="container mx-auto px-4 py-6">
 
-    <!-- Top controls: Filter toggle, Sort button, Search -->
-    <div class="mb-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-end items-end">
-      <div class="flex items-center gap-2">
-        <button
-            class="inline-flex items-center gap-2 px-3 h-[42px] rounded-md border text-sm focus:outline-none"
-            :class="filter.favorites ? 'bg-blue-500 border-blue-500 text-white' : 'bg-white border-gray-300 text-gray-800 hover:bg-gray-50'"
-            @click="filter.favorites = !filter.favorites"
-            :aria-pressed="filter.favorites ? 'true' : 'false'"
-            title="Toon alleen favorieten"
-        >
-          <Star :class="filter.favorites ? 'w-4 h-4' : 'w-4 h-4'" :fill="filter.favorites ? 'currentColor' : 'none'" :stroke="'currentColor'" />
-
-        </button>
-        <button
-          class="inline-flex items-center gap-2 px-3 h-[42px] rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-sm text-gray-800 focus:outline-none"
-          :aria-pressed="showFilters ? 'true' : 'false'"
-          @click="showFilters = !showFilters"
-        >
-          <Filter class="w-4 h-4" />
-          <span>Filters</span>
-        </button>
-        <SortButton :sortBy="sortBy" :sortDir="sortDir" @update:sortBy="val => sortBy = val" @update:sortDir="val => sortDir = val" />
-
-        <!-- View toggle -->
-        <div class="inline-flex rounded-md overflow-hidden border border-gray-300">
-          <button type="button" class="inline-flex items-center justify-center px-3 h-[42px] text-sm font-medium focus:outline-none" :class="viewMode === 'card' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'" @click="setViewMode('card')" :aria-pressed="viewMode === 'card' ? 'true' : 'false'" aria-label="Kaartweergave" title="Kaartweergave"><LayoutGrid class="w-4 h-4" /></button>
-          <button type="button" class="inline-flex items-center justify-center px-3 h-[42px] text-sm font-medium border-l border-gray-300 focus:outline-none" :class="viewMode === 'list' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'" @click="setViewMode('list')" :aria-pressed="viewMode === 'list' ? 'true' : 'false'" aria-label="Lijstweergave" title="Lijstweergave"><List class="w-4 h-4" /></button>
-        </div>
-      </div>
-      <div>
-        <div class="relative">
-          <Search class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-          <input
-            class="form-input w-64 md:w-72 !pl-9 pr-3"
-            :value="q"
-            @input="q = $event.target.value"
-            placeholder="Zoek oefeningen..."
-            aria-label="Zoek oefeningen"
-          />
-        </div>
-      </div>
-    </div>
+    <!-- Top controls component -->
+    <ExercisesTopControls
+      :q="q"
+      :favorites="filter.favorites"
+      :showFilters="showFilters"
+      :sortBy="sortBy"
+      :sortDir="sortDir"
+      :viewMode="viewMode"
+      @update:q="val => q = val"
+      @update:favorites="val => filter.favorites = val"
+      @toggle-filters="showFilters = !showFilters"
+      @update:sortBy="val => sortBy = val"
+      @update:sortDir="val => sortDir = val"
+      @update:viewMode="setViewMode"
+    />
 
     <!-- Filters drawer (right side panel with overlay) -->
     <modal v-if="showFilters" @close="showFilters = false" :drawer="true" side="right" drawerWidthClass="max-w-lg">
@@ -209,7 +182,7 @@ import ExerciseForm from '../components/exercise/ExerciseForm.vue'
 import Modal from '../components/Modal.vue'
 import PageHeader from '../components/PageHeader.vue'
 import FiltersPanel from '../components/FiltersPanel.vue'
-import SortButton from '../components/SortButton.vue'
+import ExercisesTopControls from '../components/exercise/ExercisesTopControls.vue'
 import DeleteConfirm from '../components/DeleteConfirm.vue'
 import Pagination from '../components/Pagination.vue'
 import FiltersChips from '../components/FiltersChips.vue'
@@ -219,7 +192,7 @@ import { ref, computed, watch, nextTick } from 'vue'
 import { ensureSampleExercises } from '../data/sampleExercises'
 
 export default {
-  components: { ExerciseCardItem, ExerciseListItem, ExerciseForm, Modal, PageHeader, FiltersPanel, SortButton, DeleteConfirm, Pagination, FiltersChips },
+  components: { ExerciseCardItem, ExerciseListItem, ExerciseForm, Modal, PageHeader, FiltersPanel, ExercisesTopControls, DeleteConfirm, Pagination, FiltersChips },
   setup() {
     // Sort state
     const sortBy = ref('dateCreated') // 'dateCreated' | 'name'
