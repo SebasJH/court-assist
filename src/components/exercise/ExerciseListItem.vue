@@ -18,31 +18,50 @@
       <TrafficCone v-else class="w-6 h-6 text-gray-400" aria-label="Default icon" />
     </div>
 
-    <!-- Main: name + categories -->
+    <!-- Main: name + categories + mobile details -->
     <div class="flex-1 min-w-0">
-      <div class="font-semibold text-gray-800 truncate">{{ exercise.name }}</div>
+      <div class="text-base font-semibold text-gray-800 leading-tight title-2line md:truncate">{{ exercise.name }}</div>
       <div class="flex flex-wrap gap-1 mt-0.5">
         <span
           v-for="cat in exercise.category"
           :key="cat"
-          class="badge small bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-xs"
+          class="badge small bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-xs whitespace-nowrap"
         >{{ cat }}</span>
+      </div>
+      <!-- Mobile-only compact details -->
+      <div class="md:hidden mt-1 flex flex-wrap items-center gap-1.5 text-xs text-gray-700">
+        <div v-if="showPlayers" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-100">
+          <Users class="w-3.5 h-3.5" />
+          <span>{{ playersLabel }}</span>
+        </div>
+        <div v-if="hasDuration" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-100">
+          <TimerReset class="w-3.5 h-3.5" />
+          <span>{{ durationLabel }}</span>
+        </div>
+        <div v-if="hasCourt" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-100">
+          <RectangleCircle class="w-3.5 h-3.5" />
+          <span>{{ courtLabel }}</span>
+        </div>
+        <div v-if="showIntensity" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-100">
+          <Zap class="w-3.5 h-3.5" />
+          <span>{{ intensityLabel }}</span>
+        </div>
       </div>
     </div>
 
     <!-- Players -->
-    <div class="w-28 text-sm text-gray-700 tabular-nums truncate" :title="playersLabel">{{ playersLabel }}</div>
+    <div class="hidden md:block w-28 text-sm text-gray-700 tabular-nums truncate" :title="playersLabel">{{ playersLabel }}</div>
     <!-- Duration -->
-    <div class="w-28 text-sm text-gray-700 tabular-nums truncate">{{ durationLabel }}</div>
+    <div class="hidden md:block w-28 text-sm text-gray-700 tabular-nums truncate">{{ durationLabel }}</div>
     <!-- Court -->
-    <div class="w-28 text-sm text-gray-700 truncate">{{ courtLabel }}</div>
+    <div class="hidden md:block w-28 text-sm text-gray-700 truncate">{{ courtLabel }}</div>
     <!-- Intensity -->
-    <div class="w-28 text-sm text-gray-700 tabular-nums truncate">{{ intensityLabel }}</div>
+    <div class="hidden md:block w-28 text-sm text-gray-700 tabular-nums truncate">{{ intensityLabel }}</div>
 
     <!-- Actions -->
-    <div class="w-20 flex items-center justify-end gap-2 shrink-0" ref="actionsRef" @mouseenter="liftEnter" @mouseleave="liftLeave" @click.stop>
+    <div class="flex md:w-16 md:w-20 items-center justify-end gap-2 shrink-0" ref="actionsRef" @mouseenter="liftEnter" @mouseleave="liftLeave" @click.stop>
       <button
-        class="flex items-center justify-center rounded-md bg-gray-100 hover:bg-gray-200 transition-colors duration-200 w-8 h-8 cursor-pointer"
+        class="hidden md:inline-flex items-center justify-center rounded-md bg-gray-100 hover:bg-gray-200 transition-colors duration-200 w-8 h-8 cursor-pointer"
         :aria-pressed="exercise.favorite ? 'true' : 'false'"
         :title="exercise.favorite ? 'Verwijder uit favorieten' : 'Markeer als favoriet'"
         @click.stop="toggleFav"
@@ -62,7 +81,7 @@
           v-if="menuOpen"
           ref="menuRef"
           @click.stop
-          :class="['fixed w-40 bg-white border border-gray-200 rounded shadow-lg flex flex-col z-[3000]']"
+          :class="['fixed w-64 md:w-40 whitespace-nowrap bg-white border border-gray-200 rounded shadow-lg flex flex-col z-[3000]']"
           :style="menuStyle"
         >
           <button @click="onEdit" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 py-2 hover:bg-gray-100">
@@ -72,6 +91,10 @@
           <button @click="onDuplicate" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 py-2 hover:bg-gray-100">
             <Copy class="w-fit h-4" />
             Dupliceren
+          </button>
+          <button @click="onToggleFavFromMenu" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 py-2 hover:bg-gray-100 md:hidden">
+            <Star class="w-fit h-4" :class="exercise && exercise.favorite ? 'text-yellow-500' : ''" :fill="exercise && exercise.favorite ? 'currentColor' : 'none'" :stroke="'currentColor'" />
+            <span>{{ (exercise && exercise.favorite) ? 'Verwijder uit favorieten' : 'Markeer als favoriet' }}</span>
           </button>
           <button @click="onDelete" class="cursor-pointer border-t border-gray-200 text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 py-2 hover:bg-gray-100 text-red-500">
             <Trash class="w-fit h-4" />
@@ -86,7 +109,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
-import { formatPlayersFromExercise, formatDurationFromExercise, formatCourtFromExercise, formatIntensityFromExercise } from '../../utils/exerciseFormat'
+import { formatPlayersFromExercise, formatDurationFromExercise, formatCourtFromExercise, formatIntensityFromExercise, hasPlayers as hasPlayersField, hasDuration as hasDurationField, hasCourt as hasCourtField } from '../../utils/exerciseFormat'
 
 const emit = defineEmits(['edit','duplicate','delete','toggle-fav'])
 const props = defineProps({ exercise: { type: Object, required: true } })
@@ -108,6 +131,12 @@ const playersLabel = computed(() => formatPlayersFromExercise(props.exercise, { 
 const durationLabel = computed(() => formatDurationFromExercise(props.exercise, { variant: 'compact' }))
 const courtLabel = computed(() => formatCourtFromExercise(props.exercise, { variant: 'compact' }))
 const intensityLabel = computed(() => formatIntensityFromExercise(props.exercise))
+
+// Mobile chips visibility
+const showPlayers = computed(() => hasPlayersField(props.exercise?.minPlayers, props.exercise?.maxPlayers))
+const hasDuration = computed(() => hasDurationField(props.exercise?.duration))
+const hasCourt = computed(() => hasCourtField(props.exercise?.court))
+const showIntensity = computed(() => typeof props.exercise?.intensity === 'number')
 
 function toggleFav(){ emit('toggle-fav', props.exercise.id) }
 
@@ -185,7 +214,15 @@ onBeforeUnmount(() => {
 function onEdit(){ closeMenu(); emit('edit', props.exercise) }
 function onDuplicate(){ closeMenu(); emit('duplicate', props.exercise.id) }
 function onDelete(){ closeMenu(); emit('delete', props.exercise.id) }
+function onToggleFavFromMenu(){ toggleFav(); closeMenu() }
 </script>
 
 <style scoped>
+/* 2-line clamp for the exercise title on small screens; md+ uses single-line truncate via utility */
+.title-2line {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 </style>
