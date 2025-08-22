@@ -1,10 +1,12 @@
 <template>
   <div class="">
-    <!-- Category -->
     <div class="grid grid-cols-1 gap-4">
-      <!-- Categorie -->
+
+      <!-- Category -->
       <div class="flex flex-col gap-2">
-        <label class="text-sm text-gray-600" for="filter-category">Categorie</label>
+        <label class="text-sm text-gray-700" for="filter-category">
+          Categorie
+        </label>
         <select id="filter-category" :value="category" @change="$emit('update:category', $event.target.value)" class="form-input">
           <option value="">Alle categorieën</option>
           <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
@@ -14,7 +16,7 @@
       <!-- Court -->
       <div>
         <fieldset>
-          <legend class="block text-sm text-gray-600 mb-2">Veldtype</legend>
+          <legend class="block text-sm text-gray-700 mb-2">Veldtype</legend>
           <div class="flex flex-col gap-2">
             <label class="inline-flex items-center gap-2 text-sm text-gray-800 select-none">
               <input type="checkbox" class="form-checkbox w-4 h-4" :checked="isCourtSelected('halfcourt')" @change="onToggleCourt('halfcourt', $event.target.checked)" />
@@ -31,7 +33,7 @@
       <!-- Players -->
       <div>
         <fieldset>
-          <legend class="block text-sm text-gray-600 mb-2">Aantal spelers</legend>
+          <legend class="block text-sm text-gray-700 mb-2">Aantal spelers</legend>
           <RangeNumber
             idPrefix="players"
             :modelValue="players"
@@ -49,7 +51,7 @@
       <!-- Intensity -->
       <div>
         <fieldset>
-          <legend class="block text-sm text-gray-600 mb-2">Intensiteit</legend>
+          <legend class="block text-sm text-gray-700 mb-2">Intensiteit</legend>
           <RangeNumber
             idPrefix="intensity"
             :modelValue="intensity"
@@ -67,7 +69,7 @@
       <!-- Materials -->
       <div>
         <fieldset>
-          <legend class="block text-sm text-gray-600 mb-2">Materialen</legend>
+          <legend class="block text-sm text-gray-700 mb-2">Materialen</legend>
           <div class="flex flex-wrap gap-2">
             <label v-for="m in materialOptions" :key="m" class="inline-flex items-center gap-2 bg-gray-100 hover:bg-blue-50 text-gray-800 rounded px-2 py-1 cursor-pointer select-none">
               <input type="checkbox" class="form-checkbox w-4 h-4" :checked="materials.includes(m)" @change="onToggleMaterial(m, $event.target.checked)" />

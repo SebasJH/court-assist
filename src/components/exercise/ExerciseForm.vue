@@ -1,7 +1,7 @@
 <template>
   <form class="flex h-full flex-col" @submit.prevent="save" novalidate>
 
-    <div class="sticky top-0 z-[1] bg-white px-5 pt-5 pb-0 border-b">
+    <div class="sticky top-0 z-[1] bg-white px-10 pt-5 pb-0 border-b">
       <h3 class="text-xl font-bold text-gray-800">
         {{ initial ? 'Wijzig oefening' : 'Nieuwe oefening' }}
       </h3>
@@ -37,7 +37,7 @@
       </div>
     </div>
 
-    <div class="p-5 flex-1 overflow-y-auto">
+    <div class="px-10 py-5 flex-1 overflow-y-auto">
       <!-- Basis -->
       <div v-show="currentTab==='basis'" class="grid grid-cols-1 md:grid-cols-4 gap-4">
 
@@ -142,7 +142,7 @@
               </div>
               <!-- Ephemeral tip for max cap -->
               <div v-if="showMaxCapTip"
-                   class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-3 -translate-y-full z-10 w-64 max-w-[18rem]">
+                   class="pointer-events-none absolute left-1/2 -translate-x-1/2 top-full mt-2 z-20 w-64 max-w-[18rem]">
                 <div class="relative drop-shadow-xl">
                   <div class="bg-white border border-gray-200 rounded-lg p-2">
                     <div class="text-xs text-gray-700">
@@ -157,7 +157,7 @@
 
         <!-- Intensity -->
         <div class="form-group col-span-4 md:col-span-2">
-          <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+          <label class="flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
             <Zap class="w-4 h-4"/>
             Intensiteit
           </label>
@@ -183,19 +183,17 @@
           </div>
         </div>
 
-
-
         <!-- Court -->
         <div class="form-group col-span-4 md:col-span-2">
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="flex text-sm font-medium text-gray-700 mb-1">
             <span class="inline-flex items-center gap-1">
-              <RectangleCircle class="w-4 h-4"/> Veld
+              <RectangleCircle class="w-4 h-4"/> Veldtype
             </span>
           </label>
-          <div class="inline-flex rounded-md overflow-hidden border border-gray-300">
+          <div class="inline-flex rounded-md overflow-hidden border border-gray-300 h-[42px]">
             <button
                 type="button"
-                class="px-3 py-2 text-sm font-medium focus:outline-none"
+                class="px-3 h-[42px] text-sm font-medium focus:outline-none"
                 :class="normalizedCourt === 'halfcourt' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
                 @click="toggleCourt('halfcourt')"
                 :aria-pressed="normalizedCourt === 'halfcourt' ? 'true' : 'false'"
@@ -203,7 +201,7 @@
             </button>
             <button
                 type="button"
-                class="px-3 py-2 text-sm font-medium border-l border-gray-300 focus:outline-none"
+                class="px-3 h-[42px] text-sm font-medium border-l border-gray-300 focus:outline-none"
                 :class="normalizedCourt === 'fullcourt' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
                 @click="toggleCourt('fullcourt')"
                 :aria-pressed="normalizedCourt === 'fullcourt' ? 'true' : 'false'"
@@ -322,7 +320,7 @@
     </div>
 
     <!-- Buttons -->
-    <div class="px-5 py-4 border-t flex justify-end gap-3">
+    <div class="px-10 pt-5 border-t flex justify-end gap-3">
       <UiButton color="secondary" @click="$emit('close')">Annuleren</UiButton>
       <UiButton :color="isEdit ? 'primary' : 'accent'" type="submit" class="btn-submit">
         {{ isEdit ? 'Opslaan' : 'Aanmaken' }}

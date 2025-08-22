@@ -42,7 +42,7 @@ export default {
     drawer: { type: Boolean, default: false },
     side: { type: String, default: 'right' },
     drawerWidthClass: { type: String, default: 'max-w-md' },
-    contentPaddingClass: { type: String, default: 'p-6' }
+    contentPaddingClass: { type: String, default: 'p-8' }
   },
   emits: ['close'],
   data() {

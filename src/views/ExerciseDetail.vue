@@ -135,17 +135,19 @@
             <div class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-2 flex items-center text-gray-600 text-sm">minuten</div>
           </div>
         </div>
+
         <!-- Intensity -->
         <div class="form-group col-span-4 md:col-span-2">
           <label class="block text-sm font-medium text-gray-700 mb-1"><span class="inline-flex items-center gap-1"><Zap class="w-4 h-4" /> Intensiteit</span></label>
           <IntensitySelector v-model="detailsDraft.intensity" />
         </div>
+
         <!-- Court -->
         <div class="form-group col-span-4 md:col-span-2">
           <label class="block text-sm font-medium text-gray-700 mb-1"><span class="inline-flex items-center gap-1"><RectangleCircle class="w-4 h-4" /> Veld</span></label>
-          <div class="inline-flex rounded-md overflow-hidden border border-gray-300">
-            <button type="button" class="px-3 py-2 text-sm font-medium focus:outline-none" :class="detailsDraft.courtNorm === 'halfcourt' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'" @click="toggleCourt('halfcourt')">Half court</button>
-            <button type="button" class="px-3 py-2 text-sm font-medium border-l border-gray-300 focus:outline-none" :class="detailsDraft.courtNorm === 'fullcourt' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'" @click="toggleCourt('fullcourt')">Full court</button>
+          <div class="inline-flex rounded-md overflow-hidden border border-gray-300 h-[42px]">
+            <button type="button" class="px-3 h-[42px] text-sm font-medium focus:outline-none" :class="detailsDraft.courtNorm === 'halfcourt' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'" @click="toggleCourt('halfcourt')">Half court</button>
+            <button type="button" class="px-3 h-[42px] text-sm font-medium border-l border-gray-300 focus:outline-none" :class="detailsDraft.courtNorm === 'fullcourt' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'" @click="toggleCourt('fullcourt')">Full court</button>
           </div>
           <button v-if="detailsDraft.courtNorm" type="button" class="ml-3 text-sm text-gray-600 hover:text-gray-800 underline" @click="toggleCourt('')">Wissen</button>
         </div>

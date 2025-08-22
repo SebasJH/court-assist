@@ -1,5 +1,5 @@
 <template>
-  <div class="p-2">
+  <div>
     <h3 class="text-lg font-semibold text-gray-800 mb-2">Bevestig verwijderen</h3>
     <p class="text-gray-700 mb-6">Je staat op het punt "{{ name }}" te verwijderen, weet je dit zeker?</p>
     <div class="flex justify-end gap-3">
