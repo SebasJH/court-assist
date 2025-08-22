@@ -80,13 +80,13 @@
       </div>
 
       <!-- Details -->
-      <div class="exercise-details mt-6 h-full flex flex-col gap-y-4">
+      <div class="exercise-details mt-6 flex-1 flex flex-col gap-y-4">
 
         <!-- Description -->
         <div class="flex-1 text-sm leading-relaxed text-gray-600">{{ exercise.description || exercise.shortDescription }}</div>
 
-        <div class="flex items-center justify-between gap-2 flex-wrap">
-          <div class="flex flex-wrap items-center gap-y-1 gap-x-1.5">
+        <div class="mt-0 flex items-end justify-between gap-2">
+          <div class="flex-1 min-w-0 flex flex-wrap items-center gap-y-1 gap-x-1.5">
             <!-- Players with tooltip -->
             <div v-if="showPlayers" class="relative" ref="playersRef" @mouseenter="onEnterPlayers" @mouseleave="onLeavePlayers">
               <div class="exercise-players bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:bg-gray-300 hover:shadow-sm transition-colors transition-shadow duration-150">
@@ -123,7 +123,7 @@
               <Tooltip :title="courtTooltip.title" :body="courtTooltip.body" :open="courtOpen" :anchor="courtRef" />
             </div>
           </div>
-          <router-link :to="`/oefening/${slug}`" class="text-blue-600 hover:text-blue-700 hover:underline text-sm font-medium" @click.stop>Lees meer →</router-link>
+          <router-link :to="`/oefening/${slug}`" class="shrink-0 self-end whitespace-nowrap text-blue-600 hover:text-blue-700 hover:underline text-sm font-medium" @click.stop>Lees meer →</router-link>
         </div>
       </div>
     </div>
