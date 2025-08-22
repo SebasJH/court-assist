@@ -158,6 +158,7 @@
     <!-- Modal -->
     <modal :open="showForm" @close="closeForm" contentPaddingClass="p-0">
       <exercise-form
+          :key="formKey"
           :initial="editItem"
           :categories="categories"
           @close="closeForm"
@@ -220,6 +221,7 @@ export default {
     })
     const showForm = ref(false)
     const editItem = ref(null)
+    const formKey = ref(0)
     const showFilters = ref(false)
     const showDeleteModal = ref(false)
 
@@ -244,6 +246,7 @@ export default {
 
     function openForm(item = null) {
       editItem.value = item
+      formKey.value++
       showForm.value = true
     }
     function closeForm() {
@@ -474,6 +477,7 @@ export default {
       openForm,
       showForm,
       editItem,
+      formKey,
       closeForm,
       onSave,
       onDelete,

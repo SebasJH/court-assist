@@ -78,6 +78,7 @@
     <!-- Edit modal -->
     <modal :open="showForm" @close="closeForm">
       <exercise-form
+        :key="formKey"
         :initial="exercise"
         :categories="categories"
         @close="closeForm"
@@ -281,6 +282,7 @@ const exercise = computed(() => {
 
 // Edit modal state
 const showForm = ref(false)
+const formKey = ref(0)
 const showDeleteModal = ref(false)
 const categories = EXERCISE_CATEGORIES
 const materialOptions = EXERCISE_MATERIALS
@@ -369,6 +371,7 @@ function saveEditDetails(){
 }
 
 function openForm() {
+  formKey.value++
   showForm.value = true
 }
 function closeForm() {

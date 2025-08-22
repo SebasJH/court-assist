@@ -1,116 +1,317 @@
 <template>
   <form class="flex h-full flex-col" @submit.prevent="save" novalidate>
 
-    <div class="sticky top-0 z-[1] bg-white px-5 pt-5 pb-4 border-b">
+    <div class="sticky top-0 z-[1] bg-white px-5 pt-5 pb-0 border-b">
       <h3 class="text-xl font-bold text-gray-800">
         {{ initial ? 'Wijzig oefening' : 'Nieuwe oefening' }}
       </h3>
-    </div>
 
-    <div class="p-5 flex-1 overflow-y-auto">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-
-      <!-- Name -->
-      <div class="form-group col-span-4 md:col-span-3" ref="nameGroupRef">
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          Naam <span class="text-red-500" aria-hidden="true">*</span>
-          <span v-if="errors.name" class="ml-2 text-xs font-semibold text-red-600">{{ errors.name }}</span>
-        </label>
-        <input
-            ref="nameInputRef"
-            v-model="form.name"
-            placeholder="Naam"
-            class="form-input"
-            :class="errors.name ? '!border-red-500 focus:!border-red-500 !ring-1 !ring-red-500 focus:!ring-red-500' : ''"
-            aria-required="true"
-            :aria-invalid="errors.name ? 'true' : 'false'"
-        />
-      </div>
-
-      <!-- Icon -->
-      <div class="form-group col-span-4 md:col-span-1">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Icoon</label>
-        <IconPicker v-model="form.icon" :icons="placeholderIcons"/>
-      </div>
-
-      <!-- Description -->
-      <div class="form-group col-span-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Beschrijving</label>
-        <textarea v-model="form.description" placeholder="Beschrijving" class="form-input h-24 resize-none"></textarea>
-      </div>
-
-      <!-- Exercise Categories -->
-      <div class="form-group col-span-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          Categorieën
-        </label>
-
-        <div class="flex flex-wrap gap-2">
-          <button
-              v-for="c in categories"
-              :key="c"
-              type="button"
-              @click="toggleCategory(c)"
-              :class="form.category.includes(c)
-              ? 'bg-blue-500 text-white'
-              : 'bg-gray-100 hover:bg-blue-100 text-gray-800'"
-              class="px-2 py-1 rounded cursor-pointer"
-          >
-            {{ c }}
+      <!-- Tabs -->
+      <div class="mt-4 -mb-px overflow-x-auto">
+        <div role="tablist" class="inline-flex items-center gap-2 border-b border-gray-200">
+          <button type="button" role="tab" :aria-selected="currentTab==='basis' ? 'true' : 'false'"
+                  @click="currentTab='basis'"
+                  class="px-3 py-2 text-sm font-medium border-b-2"
+                  :class="currentTab==='basis' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-600 hover:text-gray-800'">
+            Basis
+          </button>
+          <button type="button" role="tab" :aria-selected="currentTab==='details' ? 'true' : 'false'"
+                  @click="currentTab='details'"
+                  class="px-3 py-2 text-sm font-medium border-b-2"
+                  :class="currentTab==='details' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-600 hover:text-gray-800'">
+            Details
+          </button>
+          <button type="button" role="tab" :aria-selected="currentTab==='tekst' ? 'true' : 'false'"
+                  @click="currentTab='tekst'"
+                  class="px-3 py-2 text-sm font-medium border-b-2"
+                  :class="currentTab==='tekst' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-600 hover:text-gray-800'">
+            Tekst
+          </button>
+          <button type="button" role="tab" :aria-selected="currentTab==='media' ? 'true' : 'false'"
+                  @click="currentTab='media'"
+                  class="px-3 py-2 text-sm font-medium border-b-2"
+                  :class="currentTab==='media' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-600 hover:text-gray-800'">
+            Media
           </button>
         </div>
       </div>
+    </div>
 
-      <!-- Section: Details -->
-      <div class="col-span-4 border-t pt-3 mt-1 text-xs uppercase tracking-wide text-gray-500">Details</div>
+    <div class="p-5 flex-1 overflow-y-auto">
+      <!-- Basis -->
+      <div v-show="currentTab==='basis'" class="grid grid-cols-1 md:grid-cols-4 gap-4">
 
-      <!-- Amount of players -->
-      <div class="form-group col-span-4 md:col-span-2" ref="playersGroupRef">
-        <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
-          <Users class="w-4 h-4"/>
-          Aantal spelers
-          <span v-if="errors.players" class="ml-2 text-xs font-semibold text-red-600">{{ errors.players }}</span>
-        </label>
-        <div class="flex gap-x-2">
+        <!-- Name -->
+        <div class="form-group col-span-4 md:col-span-3" ref="nameGroupRef">
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Naam <span class="text-red-500" aria-hidden="true">*</span>
+            <span v-if="errors.name" class="ml-2 text-xs font-semibold text-red-600">{{ errors.name }}</span>
+          </label>
+          <input
+              ref="nameInputRef"
+              v-model="form.name"
+              placeholder="Naam"
+              class="form-input"
+              :class="errors.name ? '!border-red-500 focus:!border-red-500 !ring-1 !ring-red-500 focus:!ring-red-500' : ''"
+              aria-required="true"
+              :aria-invalid="errors.name ? 'true' : 'false'"
+          />
+        </div>
 
-          <!-- Min players -->
-          <div class="flex w-full">
-            <input
-                type="number"
-                v-model.number="form.minPlayers"
-                min="1"
-                :max="20"
-                :class="['form-input !rounded-r-none border-r-0', errors.players ? '!border-red-500 focus:!border-red-500 !ring-1 !ring-red-500 focus:!ring-red-500' : '']"
-                :aria-invalid="errors.players ? 'true' : 'false'"
-            />
-            <div
-                class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
-              min
+        <!-- Icon -->
+        <div class="form-group col-span-4 md:col-span-1">
+          <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+            <Shapes class="w-4 h-4"/> Icoon
+          </label>
+          <IconPicker v-model="form.icon" :icons="placeholderIcons"/>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group col-span-4">
+          <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+            <Text class="w-4 h-4"/> Beschrijving
+          </label>
+          <textarea v-model="form.description" placeholder="Beschrijving"
+                    class="form-input h-24 resize-none"></textarea>
+        </div>
+
+        <!-- Exercise Categories -->
+        <div class="form-group col-span-4">
+          <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+            <Tag class="w-4 h-4"/> Categorieën
+          </label>
+
+          <div class="flex flex-wrap gap-2">
+            <button
+                v-for="c in categories"
+                :key="c"
+                type="button"
+                @click="toggleCategory(c)"
+                :class="form.category.includes(c)
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-100 hover:bg-blue-100 text-gray-800'"
+                class="px-2 py-1 rounded cursor-pointer"
+            >
+              {{ c }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Details -->
+      <div v-show="currentTab==='details'" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+        <!-- Amount of players -->
+        <div class="form-group col-span-4 md:col-span-2" ref="playersGroupRef">
+          <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+            <Users class="w-4 h-4"/> Aantal spelers
+            <span v-if="errors.players" class="ml-2 text-xs font-semibold text-red-600">{{ errors.players }}</span>
+          </label>
+          <div class="flex gap-x-2">
+
+            <!-- Min players -->
+            <div class="flex w-full">
+              <input
+                  type="number"
+                  v-model.number="form.minPlayers"
+                  min="1"
+                  :max="20"
+                  :class="['form-input !rounded-r-none border-r-0', errors.players ? '!border-red-500 focus:!border-red-500 !ring-1 !ring-red-500 focus:!ring-red-500' : '']"
+                  :aria-invalid="errors.players ? 'true' : 'false'"
+              />
+              <div
+                  class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
+                min
+              </div>
+            </div>
+
+            <!-- Max players -->
+            <div class="relative flex w-full ml-2">
+              <input
+                  ref="maxPlayersInputRef"
+                  type="number"
+                  v-model.number="form.maxPlayers"
+                  :min="(typeof form.minPlayers === 'number') ? form.minPlayers : null"
+                  :max="20"
+                  :class="['form-input !rounded-r-none border-r-0', errors.players ? '!border-red-500 focus:!border-red-500 !ring-1 !ring-red-500 focus:!ring-red-500' : '']"
+                  :aria-invalid="errors.players ? 'true' : 'false'"
+              />
+              <div
+                  class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
+                max
+              </div>
+              <!-- Ephemeral tip for max cap -->
+              <div v-if="showMaxCapTip"
+                   class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-3 -translate-y-full z-10 w-64 max-w-[18rem]">
+                <div class="relative drop-shadow-xl">
+                  <div class="bg-white border border-gray-200 rounded-lg p-2">
+                    <div class="text-xs text-gray-700">
+                      Je kunt maximaal 20 invullen. Laat het veld leeg als je geen limiet wilt.
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
 
-          <!-- Max players -->
-          <div class="relative flex w-full ml-2">
+        <!-- Intensity -->
+        <div class="form-group col-span-4 md:col-span-2">
+          <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+            <Zap class="w-4 h-4"/>
+            Intensiteit
+          </label>
+          <IntensitySelector v-model="form.intensity"/>
+        </div>
+
+        <!-- Duration -->
+        <div class="form-group col-span-4 md:col-span-2">
+          <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+            <TimerReset class="w-4 h-4"/> Duur
+          </label>
+          <div class="flex">
             <input
-                ref="maxPlayersInputRef"
                 type="number"
-                v-model.number="form.maxPlayers"
-                :min="(typeof form.minPlayers === 'number') ? form.minPlayers : null"
-                :max="20"
-                :class="['form-input !rounded-r-none border-r-0', errors.players ? '!border-red-500 focus:!border-red-500 !ring-1 !ring-red-500 focus:!ring-red-500' : '']"
-                :aria-invalid="errors.players ? 'true' : 'false'"
+                v-model="form.duration"
+                min="1"
+                class="form-input !rounded-r-none !border-r-0"
             />
             <div
-                class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
-              max
+                class="bg-gray-100 border border-gray-300 border-l rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
+              minuten
             </div>
-            <!-- Ephemeral tip for max cap -->
-            <div v-if="showMaxCapTip"
-                 class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-3 -translate-y-full z-10 w-64 max-w-[18rem]">
-              <div class="relative drop-shadow-xl">
-                <div class="bg-white border border-gray-200 rounded-lg p-2">
-                  <div class="text-xs text-gray-700">Je kunt maximaal 20 invullen. Laat het veld leeg als je geen limiet
-                    wilt.
+          </div>
+        </div>
+
+
+
+        <!-- Court -->
+        <div class="form-group col-span-4 md:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            <span class="inline-flex items-center gap-1">
+              <RectangleCircle class="w-4 h-4"/> Veld
+            </span>
+          </label>
+          <div class="inline-flex rounded-md overflow-hidden border border-gray-300">
+            <button
+                type="button"
+                class="px-3 py-2 text-sm font-medium focus:outline-none"
+                :class="normalizedCourt === 'halfcourt' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
+                @click="toggleCourt('halfcourt')"
+                :aria-pressed="normalizedCourt === 'halfcourt' ? 'true' : 'false'"
+            >Half court
+            </button>
+            <button
+                type="button"
+                class="px-3 py-2 text-sm font-medium border-l border-gray-300 focus:outline-none"
+                :class="normalizedCourt === 'fullcourt' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
+                @click="toggleCourt('fullcourt')"
+                :aria-pressed="normalizedCourt === 'fullcourt' ? 'true' : 'false'"
+            >Full court
+            </button>
+          </div>
+          <button
+              type="button"
+              class="ml-3 text-sm text-gray-600 hover:text-gray-800 underline"
+              @click="form.court = ''"
+              v-if="form.court"
+          >Wissen
+          </button>
+        </div>
+
+        <!-- Materials -->
+        <div class="form-group col-span-4">
+          <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+            <TrafficCone class="w-4 h-4"/>
+            Materialen
+          </label>
+          <div class="flex flex-wrap gap-2">
+            <button
+                v-for="m in materialOptions"
+                :key="m"
+                type="button"
+                @click="toggleMaterial(m)"
+                :class="form.materials.includes(m)
+                ? 'bg-green-500 text-white'
+                : 'bg-gray-100 hover:bg-green-100 text-gray-800'"
+                class="px-2 py-1 rounded cursor-pointer"
+            >
+              {{ m }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tekst -->
+      <div v-show="currentTab==='tekst'" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+        <!-- Coaching points -->
+        <div class="form-group col-span-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Coaching punten</label>
+          <RichTextEditor v-model="form.coachingPoints" placeholder="Coaching punten"/>
+        </div>
+
+        <!-- How it works -->
+        <div class="form-group col-span-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">How it works</label>
+          <RichTextEditor v-model="form.howItWorks" placeholder="Uitleg van de uitvoering"/>
+        </div>
+
+        <!-- Purpose -->
+        <div class="form-group col-span-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Purpose</label>
+          <RichTextEditor v-model="form.purpose" placeholder="Doel van de oefening"/>
+        </div>
+
+      </div>
+
+      <!-- Media -->
+      <div v-show="currentTab==='media'" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+        <!-- Video -->
+        <div class="form-group col-span-4 md:col-span-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Video link</label>
+          <input v-model="form.video" placeholder="Video link" class="form-input"/>
+        </div>
+
+        <!-- Diagrams repeater -->
+        <div class="form-group col-span-4">
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-sm font-medium text-gray-700">Diagrams</label>
+            <UiButton color="secondary" class="!py-1 !px-2" @click="addDiagram">+ Voeg diagram toe</UiButton>
+          </div>
+          <div v-if="!form.diagrams || form.diagrams.length === 0"
+               class="text-sm text-gray-500 border border-dashed border-gray-300 rounded-md p-4">
+            Nog geen diagrams. Klik op “Voeg diagram toe”.
+          </div>
+          <div v-else class="flex flex-col gap-3">
+            <div v-for="(d, idx) in form.diagrams" :key="idx" class="border rounded-md p-3 bg-gray-50">
+              <div class="flex flex-col md:flex-row gap-3">
+                <div class="w-full md:w-48">
+                  <div class="aspect-video bg-white border rounded flex items-center justify-center overflow-hidden">
+                    <img v-if="d.src" :src="d.src" alt="Diagram preview" class="w-full h-full object-contain"/>
+                    <div v-else class="text-gray-400 text-sm">Geen afbeelding</div>
+                  </div>
+                  <div class="mt-2 flex items-center gap-2">
+                    <label class="btn-secondary !py-1 !px-2 cursor-pointer">
+                      Kies afbeelding
+                      <input type="file" accept="image/*" class="hidden" @change="onPickDiagram($event, idx)"/>
+                    </label>
+                    <button type="button" class="text-sm text-red-600 hover:underline" @click="removeDiagram(idx)">
+                      Verwijderen
+                    </button>
+                  </div>
+                </div>
+                <div class="flex-1">
+                  <label class="block text-sm text-gray-700 mb-1">Bijschrift</label>
+                  <input v-model="d.caption" class="form-input" placeholder="Beschrijf dit diagram"/>
+                  <div class="mt-3 flex gap-2">
+                    <UiButton color="secondary" class="!py-1 !px-2" @click="moveDiagram(idx, -1)" :disabled="idx === 0">
+                      Omhoog
+                    </UiButton>
+                    <UiButton color="secondary" class="!py-1 !px-2" @click="moveDiagram(idx, 1)"
+                              :disabled="idx === form.diagrams.length - 1">Omlaag
+                    </UiButton>
                   </div>
                 </div>
               </div>
@@ -118,158 +319,14 @@
           </div>
         </div>
       </div>
-
-      <!-- Duration -->
-      <div class="form-group col-span-4 md:col-span-2">
-        <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
-          <TimerReset class="w-4 h-4"/>
-          Duur
-        </label>
-        <div class="flex">
-          <input
-              type="number"
-              v-model="form.duration"
-              min="1"
-              class="form-input !rounded-r-none !border-r-0"
-          />
-          <div
-              class="bg-gray-100 border border-gray-300 border-l rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
-            minuten
-          </div>
-        </div>
-      </div>
-
-      <!-- Intensity -->
-      <div class="form-group col-span-4 md:col-span-2">
-        <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
-          <Zap class="w-4 h-4"/>
-          Intensiteit
-        </label>
-        <IntensitySelector v-model="form.intensity" />
-      </div>
-      <!-- Court -->
-      <div class="form-group col-span-4 md:col-span-2">
-        <label class="block text-sm font-medium text-gray-700 mb-1"><span class="inline-flex items-center gap-1"><RectangleCircle class="w-4 h-4" /> Veld</span></label>
-        <div class="inline-flex rounded-md overflow-hidden border border-gray-300">
-          <button
-              type="button"
-              class="px-3 py-2 text-sm font-medium focus:outline-none"
-              :class="normalizedCourt === 'halfcourt' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
-              @click="toggleCourt('halfcourt')"
-              :aria-pressed="normalizedCourt === 'halfcourt' ? 'true' : 'false'"
-          >Half court
-          </button>
-          <button
-              type="button"
-              class="px-3 py-2 text-sm font-medium border-l border-gray-300 focus:outline-none"
-              :class="normalizedCourt === 'fullcourt' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
-              @click="toggleCourt('fullcourt')"
-              :aria-pressed="normalizedCourt === 'fullcourt' ? 'true' : 'false'"
-          >Full court
-          </button>
-        </div>
-        <button
-            type="button"
-            class="ml-3 text-sm text-gray-600 hover:text-gray-800 underline"
-            @click="form.court = ''"
-            v-if="form.court"
-        >Wissen
-        </button>
-      </div>
-
-      <!-- Materials -->
-      <div class="form-group col-span-4">
-        <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
-          <TrafficCone class="w-4 h-4" />
-          Materialen
-        </label>
-        <div class="flex flex-wrap gap-2">
-          <button
-              v-for="m in materialOptions"
-              :key="m"
-              type="button"
-              @click="toggleMaterial(m)"
-              :class="form.materials.includes(m)
-                ? 'bg-green-500 text-white'
-                : 'bg-gray-100 hover:bg-green-100 text-gray-800'"
-              class="px-2 py-1 rounded cursor-pointer"
-          >
-            {{ m }}
-          </button>
-        </div>
-      </div>
-
-      <!-- Coaching points -->
-      <div class="form-group col-span-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Coaching punten</label>
-        <RichTextEditor v-model="form.coachingPoints" placeholder="Coaching punten"/>
-      </div>
-
-      <!-- How it works -->
-      <div class="form-group col-span-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1">How it works</label>
-        <RichTextEditor v-model="form.howItWorks" placeholder="Uitleg van de uitvoering"/>
-      </div>
-
-      <!-- Purpose -->
-      <div class="form-group col-span-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Purpose</label>
-        <RichTextEditor v-model="form.purpose" placeholder="Doel van de oefening"/>
-      </div>
-
-      <!-- Section: Media -->
-      <div class="col-span-4 border-t pt-3 mt-1 text-xs uppercase tracking-wide text-gray-500">Media</div>
-
-      <!-- Video -->
-      <div class="form-group col-span-4 md:col-span-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Video link</label>
-        <input v-model="form.video" placeholder="Video link" class="form-input"/>
-      </div>
-
-      <!-- Diagrams repeater -->
-      <div class="form-group col-span-4">
-        <div class="flex items-center justify-between mb-1">
-          <label class="block text-sm font-medium text-gray-700">Diagrams</label>
-          <UiButton color="secondary" class="!py-1 !px-2" @click="addDiagram">+ Voeg diagram toe</UiButton>
-        </div>
-        <div v-if="!form.diagrams || form.diagrams.length === 0" class="text-sm text-gray-500 border border-dashed border-gray-300 rounded-md p-4">
-          Nog geen diagrams. Klik op “Voeg diagram toe”.
-        </div>
-        <div v-else class="flex flex-col gap-3">
-          <div v-for="(d, idx) in form.diagrams" :key="idx" class="border rounded-md p-3 bg-gray-50">
-            <div class="flex flex-col md:flex-row gap-3">
-              <div class="w-full md:w-48">
-                <div class="aspect-video bg-white border rounded flex items-center justify-center overflow-hidden">
-                  <img v-if="d.src" :src="d.src" alt="Diagram preview" class="w-full h-full object-contain"/>
-                  <div v-else class="text-gray-400 text-sm">Geen afbeelding</div>
-                </div>
-                <div class="mt-2 flex items-center gap-2">
-                  <label class="btn-secondary !py-1 !px-2 cursor-pointer">
-                    Kies afbeelding
-                    <input type="file" accept="image/*" class="hidden" @change="onPickDiagram($event, idx)"/>
-                  </label>
-                  <button type="button" class="text-sm text-red-600 hover:underline" @click="removeDiagram(idx)">Verwijderen</button>
-                </div>
-              </div>
-              <div class="flex-1">
-                <label class="block text-sm text-gray-700 mb-1">Bijschrift</label>
-                <input v-model="d.caption" class="form-input" placeholder="Beschrijf dit diagram"/>
-                <div class="mt-3 flex gap-2">
-                  <UiButton color="secondary" class="!py-1 !px-2" @click="moveDiagram(idx, -1)" :disabled="idx === 0">Omhoog</UiButton>
-                  <UiButton color="secondary" class="!py-1 !px-2" @click="moveDiagram(idx, 1)" :disabled="idx === form.diagrams.length - 1">Omlaag</UiButton>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     </div>
 
     <!-- Buttons -->
     <div class="px-5 py-4 border-t flex justify-end gap-3">
       <UiButton color="secondary" @click="$emit('close')">Annuleren</UiButton>
-      <UiButton :color="isEdit ? 'primary' : 'accent'" type="submit" class="btn-submit">{{ isEdit ? 'Opslaan' : 'Aanmaken' }}</UiButton>
+      <UiButton :color="isEdit ? 'primary' : 'accent'" type="submit" class="btn-submit">
+        {{ isEdit ? 'Opslaan' : 'Aanmaken' }}
+      </UiButton>
     </div>
   </form>
 </template>
@@ -310,6 +367,9 @@ export default {
     })
 
     const form = reactive(emptyForm())
+
+    // Tabs state
+    const currentTab = ref('basis')
 
     // Validation state and refs
     const errors = reactive({
@@ -371,7 +431,7 @@ export default {
           video: v.video || '',
           howItWorks: v.howItWorks || '',
           purpose: v.purpose || '',
-          diagrams: Array.isArray(v.diagrams) ? v.diagrams.map(d => ({ src: d.src || '', caption: d.caption || '' })) : []
+          diagrams: Array.isArray(v.diagrams) ? v.diagrams.map(d => ({src: d.src || '', caption: d.caption || ''})) : []
         }
         Object.assign(form, formData)
       } else {
@@ -461,13 +521,15 @@ export default {
     // Diagrams helpers
     function addDiagram() {
       if (!Array.isArray(form.diagrams)) form.diagrams = []
-      form.diagrams.push({ src: '', caption: '' })
+      form.diagrams.push({src: '', caption: ''})
     }
+
     function removeDiagram(idx) {
       if (!Array.isArray(form.diagrams)) return
       if (idx < 0 || idx >= form.diagrams.length) return
       form.diagrams.splice(idx, 1)
     }
+
     function moveDiagram(idx, delta) {
       if (!Array.isArray(form.diagrams)) return
       const to = idx + delta
@@ -476,6 +538,7 @@ export default {
       form.diagrams.splice(idx, 1)
       form.diagrams.splice(to, 0, item)
     }
+
     function onPickDiagram(event, idx) {
       const files = event?.target?.files
       if (!files || !files[0]) return
@@ -485,7 +548,7 @@ export default {
       reader.onload = () => {
         const url = String(reader.result || '')
         if (!Array.isArray(form.diagrams)) form.diagrams = []
-        if (!form.diagrams[idx]) form.diagrams[idx] = { src: '', caption: '' }
+        if (!form.diagrams[idx]) form.diagrams[idx] = {src: '', caption: ''}
         form.diagrams[idx].src = url
       }
       reader.readAsDataURL(file)
@@ -531,7 +594,10 @@ export default {
 
     function save() {
       if (!validate()) {
-        scrollToFirstError()
+        // Switch to the relevant tab before scrolling to the first error
+        if (errors.name) currentTab.value = 'basis'
+        else if (errors.players) currentTab.value = 'details'
+        nextTick(() => scrollToFirstError())
         return
       }
 
@@ -544,7 +610,7 @@ export default {
       const saveData = {...form}
       // Shallow clone diagrams to avoid reactive refs leakage
       if (Array.isArray(saveData.diagrams)) {
-        saveData.diagrams = saveData.diagrams.map(d => ({ src: d.src || '', caption: d.caption || '' }))
+        saveData.diagrams = saveData.diagrams.map(d => ({src: d.src || '', caption: d.caption || ''}))
       }
       // Normaliseer spelers en duur waarden
       saveData.minPlayers = cappedMin
@@ -570,6 +636,7 @@ export default {
 
     return {
       form,
+      currentTab,
       materialOptions,
       save,
       categories: props.categories,

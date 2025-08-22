@@ -22,6 +22,9 @@ import {
     Users,
     TimerReset,
     Zap,
+    Tag,
+    Shapes,
+    Text,
 
     Shield,
     BicepsFlexed,
@@ -68,6 +71,9 @@ export function registerIcons(app) {
     app.component('Users', Users)
     app.component('TimerReset', TimerReset)
     app.component('Zap', Zap)
+    app.component('Tag', Tag)
+    app.component('Shapes', Shapes)
+    app.component('Text', Text)
 
     app.component('Shield', Shield)
     app.component('Target', Target)
