@@ -3,7 +3,7 @@
     <NotificationBar />
 
     <!-- Desktop sidebar -->
-    <div class="hidden md:block">
+    <div class="hidden xl:block">
       <Sidebar />
     </div>
 
@@ -42,13 +42,18 @@ export default {
   methods: {
     onOpenMobileSidebar() {
       this.mobileSidebarOpen = true
+    },
+    onCloseMobileSidebar() {
+      this.mobileSidebarOpen = false
     }
   },
   mounted() {
     window.addEventListener('open-mobile-sidebar', this.onOpenMobileSidebar)
+    window.addEventListener('close-mobile-sidebar', this.onCloseMobileSidebar)
   },
   unmounted() {
     window.removeEventListener('open-mobile-sidebar', this.onOpenMobileSidebar)
+    window.removeEventListener('close-mobile-sidebar', this.onCloseMobileSidebar)
   }
 }
 </script>

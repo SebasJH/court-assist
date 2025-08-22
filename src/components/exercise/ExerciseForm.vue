@@ -8,7 +8,7 @@
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
 
       <!-- Name -->
-      <div class="form-group col-span-1 md:col-span-3" ref="nameGroupRef">
+      <div class="form-group col-span-4 md:col-span-3" ref="nameGroupRef">
         <label class="block text-sm font-medium text-gray-700 mb-1">
           Naam <span class="text-red-500" aria-hidden="true">*</span>
           <span v-if="errors.name" class="ml-2 text-xs font-semibold text-red-600">{{ errors.name }}</span>
@@ -25,7 +25,7 @@
       </div>
 
       <!-- Icon -->
-      <div class="form-group col-span-1 md:col-span-1">
+      <div class="form-group col-span-4 md:col-span-1">
         <label class="block text-sm font-medium text-gray-700 mb-1">Icoon</label>
         <IconPicker v-model="form.icon" :icons="placeholderIcons"/>
       </div>

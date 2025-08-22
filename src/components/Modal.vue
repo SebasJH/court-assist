@@ -49,13 +49,13 @@ export default {
   },
   computed: {
     overlayClass() {
-      if (!this.drawer) return 'items-center justify-center'
+      if (!this.drawer) return 'items-end xl:items-center justify-center'
       // stretch vertically and align to side
       return this.side === 'left' ? 'items-stretch justify-start' : 'items-stretch justify-end'
     },
     contentClass() {
       if (!this.drawer) {
-        return `rounded-2xl w-full ${this.maxWidthClass} max-h-[90vh] ${this.contentPaddingClass}`
+        return `rounded-none xl:rounded-2xl w-full ${this.maxWidthClass} max-h-[90vh] ${this.contentPaddingClass}`
       }
       return `h-full w-full ${this.drawerWidthClass} ${this.contentPaddingClass}`
     }

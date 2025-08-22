@@ -1,7 +1,7 @@
 <template>
   <PageHeader title="Oefeningen">
       <template #actions>
-        <UiButton color="primary" icon="Plus" @click="openForm()">Nieuwe oefening</UiButton>
+        <UiButton class="hidden md:inline-flex" color="primary" icon="Plus" @click="openForm()">Nieuwe oefening</UiButton>
       </template>
     </PageHeader>
 
@@ -170,6 +170,18 @@
       <DeleteConfirm :name="deleteName" @cancel="cancelDelete" @confirm="confirmDelete" />
     </modal>
   </div>
+
+  <!-- Mobile FAB: create exercise -->
+  <UiButton
+    class="md:hidden fixed bottom-5 right-5 z-[3000] !p-0 w-14 h-14 shadow-xl"
+    color="primary"
+    icon="Plus"
+    iconClass="w-7 h-7"
+    aria-label="Nieuwe oefening"
+    title="Nieuwe oefening"
+    @click="openForm()"
+  />
+
 </template>
 
 <script>

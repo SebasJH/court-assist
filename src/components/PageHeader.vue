@@ -5,7 +5,7 @@
         <div class="flex items-center gap-3 min-w-0">
           <button
             type="button"
-            class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+            class="xl:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
             aria-label="Menu"
             @click="openMobileSidebar"
           >

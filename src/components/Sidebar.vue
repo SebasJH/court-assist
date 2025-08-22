@@ -1,5 +1,5 @@
 <template>
-  <aside :class="['bg-white shadow-lg border-r border-gray-200 flex flex-col h-full md:h-screen transition-all duration-300 ease-in-out', collapsed ? 'w-full md:w-20' : 'w-full md:w-64']">
+  <aside :class="['bg-white shadow-lg border-r border-gray-200 flex flex-col h-full xl:h-screen transition-all duration-300 ease-in-out', collapsed ? 'w-full xl:w-20' : 'w-full xl:w-64']">
     <!-- Header -->
     <div class="p-4 border-b border-gray-200">
       <div class="flex items-center justify-between">
@@ -12,7 +12,7 @@
           COURT ASSIST
         </div>
         <button
-          class="ml-auto hidden md:inline-flex rounded-md p-2 hover:bg-gray-100 text-gray-600 transition-colors duration-200"
+          class="ml-auto hidden xl:inline-flex rounded-md p-2 hover:bg-gray-100 text-gray-600 transition-colors duration-200"
           :title="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
           @click="toggleSidebar"
         >
@@ -31,6 +31,7 @@
             ($route.path.startsWith('/oefeningen') || $route.path.startsWith('/oefening')) ? 'active' : '',
             collapsed ? 'justify-center px-0 py-3 gap-0' : 'gap-2 px-4 py-3'
           ]"
+          @click="onNavClick"
       >
         <TrafficCone :class="iconSizeClass" />
         <span :class="textClass">Oefeningen</span>
@@ -42,6 +43,7 @@
             $route.path.startsWith('/trainingen') ? 'active' : '',
             collapsed ? 'justify-center px-0 py-3 gap-0' : 'gap-2 px-4 py-3'
           ]"
+          @click="onNavClick"
       >
         <Dumbbell :class="iconSizeClass" />
         <span :class="textClass">Trainingen</span>
@@ -110,6 +112,10 @@ export default {
   methods: {
     toggleSidebar() {
       this.collapsed = !this.collapsed
+    },
+    onNavClick() {
+      // Close the mobile drawer when a navigation item is tapped
+      window.dispatchEvent(new CustomEvent('close-mobile-sidebar'))
     }
   }
 }
