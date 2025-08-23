@@ -9,7 +9,7 @@
           aria-label="Terug"
           title="Terug naar oefeningen"
         >
-          <ArrowLeft class="w-5 h-5" />
+          <ChevronLeft class="w-5 h-5" />
         </router-link>
         <!-- Title only -->
         <h1 class="text-2xl md:text-3xl font-bold text-gray-800 leading-tight truncate">{{ exercise ? exercise.name : 'Oefening' }}</h1>

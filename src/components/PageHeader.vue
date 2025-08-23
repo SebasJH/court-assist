@@ -21,7 +21,7 @@
             title="Terug"
             @click="onMobileBack"
           >
-            <ArrowLeft class="w-5 h-5" />
+            <ChevronLeft class="w-5 h-5" />
           </button>
           <div class="min-w-0 flex-1">
             <slot name="lead">

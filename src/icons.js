@@ -8,8 +8,10 @@ import {
     ArrowLeft,
     ArrowLeftToLine,
     ArrowRightToLine,
+    ArrowUpToLine,
     ArrowUpDown,
     ArrowUp,
+    ChevronLeft,
 
     TrafficCone,
     Dumbbell,
@@ -59,8 +61,10 @@ export function registerIcons(app) {
     app.component('ArrowLeft', ArrowLeft)
     app.component('ArrowLeftToLine', ArrowLeftToLine)
     app.component('ArrowRightToLine', ArrowRightToLine)
+    app.component('ArrowUpToLine', ArrowUpToLine)
     app.component('ArrowUpDown', ArrowUpDown)
     app.component('ArrowUp', ArrowUp)
+    app.component('ChevronLeft', ChevronLeft)
 
     app.component('TrafficCone', TrafficCone)
     app.component('Dumbbell', Dumbbell)

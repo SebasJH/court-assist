@@ -4,7 +4,7 @@
       <div
         v-for="n in notifications"
         :key="n.id"
-        class="pointer-events-auto min-w-[280px] max-w-[90vw] rounded-xl px-4 py-3 shadow-glass glass-container border relative flex items-center justify-center"
+        class="pointer-events-auto min-w-[280px] max-w-[90vw] rounded-xl px-4 py-3 glass shadow-glass glass-container border relative flex items-center justify-center"
       >
         <span :class="['absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full', dotClass(n.type)]"></span>
         <span class="block w-full text-sm font-medium text-gray-800 text-center">{{ n.message }}</span>
