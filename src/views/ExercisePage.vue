@@ -317,7 +317,13 @@ export default {
     const sortDir = ref('desc') // 'asc' | 'desc'
     // Backfill dateCreated for any pre-existing exercises missing it (defensive, non-destructive)
     store.state.exercises.forEach(e => { if (!e.dateCreated) e.dateCreated = new Date().toISOString() })
-    const q = ref('')
+    const LS_FILTER_KEY = 'exerciseFilters'
+    const LS_Q_KEY = 'exerciseQ'
+
+    // Load persisted search query
+    const q = ref((() => {
+      try { return localStorage.getItem(LS_Q_KEY) || '' } catch (_) { return '' }
+    })())
     const isSearching = ref(false)
     const searchInputRef = ref(null)
     function openHeaderSearch(){
@@ -332,14 +338,26 @@ export default {
     function updateSmallScreen(){
       try { isSmallScreen.value = (window.innerWidth || document.documentElement.clientWidth) < 768 } catch(_) { isSmallScreen.value = false }
     }
-    const filter = ref({
-      category: '',
-      players: [1, 20],
-      intensity: [1, 5],
-      favorites: false,
-      court: [],
-      materials: []
-    })
+    const filter = ref((() => {
+      try {
+        const raw = localStorage.getItem(LS_FILTER_KEY)
+        if (!raw) return { category: '', players: [1, 20], intensity: [1, 5], favorites: false, court: [], materials: [] }
+        const obj = JSON.parse(raw) || {}
+        const category = typeof obj.category === 'string' ? obj.category : ''
+        let players = Array.isArray(obj.players) && obj.players.length === 2 ? [Number(obj.players[0]) || 1, Number(obj.players[1]) || 20] : [1, 20]
+        if (players[0] > players[1]) players = [players[1], players[0]]
+        players = [Math.max(1, Math.min(20, players[0])), Math.max(1, Math.min(20, players[1]))]
+        let intensity = Array.isArray(obj.intensity) && obj.intensity.length === 2 ? [Number(obj.intensity[0]) || 1, Number(obj.intensity[1]) || 5] : [1, 5]
+        if (intensity[0] > intensity[1]) intensity = [intensity[1], intensity[0]]
+        intensity = [Math.max(1, Math.min(5, intensity[0])), Math.max(1, Math.min(5, intensity[1]))]
+        const favorites = !!obj.favorites
+        const court = Array.isArray(obj.court) ? obj.court.filter(Boolean) : []
+        const materials = Array.isArray(obj.materials) ? obj.materials.filter(Boolean) : []
+        return { category, players, intensity, favorites, court, materials }
+      } catch (_) {
+        return { category: '', players: [1, 20], intensity: [1, 5], favorites: false, court: [], materials: [] }
+      }
+    })())
     const showForm = ref(false)
     const editItem = ref(null)
     const formKey = ref(0)
@@ -551,6 +569,26 @@ export default {
     // Reset to first page when query, filters or sorting change
     watch([q, sortBy, sortDir], () => { page.value = 1 })
     watch(filter, () => { page.value = 1 }, { deep: true })
+
+    // Persist search query to localStorage
+    watch(q, (val) => {
+      try { localStorage.setItem(LS_Q_KEY, val || '') } catch (_) {}
+    })
+
+    // Persist filters to localStorage (normalize before saving)
+    watch(filter, (f) => {
+      try {
+        const snap = {
+          category: typeof f.category === 'string' ? f.category : '',
+          players: Array.isArray(f.players) && f.players.length === 2 ? [Number(f.players[0]) || 1, Number(f.players[1]) || 20] : [1, 20],
+          intensity: Array.isArray(f.intensity) && f.intensity.length === 2 ? [Number(f.intensity[0]) || 1, Number(f.intensity[1]) || 5] : [1, 5],
+          favorites: !!f.favorites,
+          court: Array.isArray(f.court) ? f.court.filter(Boolean) : [],
+          materials: Array.isArray(f.materials) ? f.materials.filter(Boolean) : []
+        }
+        localStorage.setItem(LS_FILTER_KEY, JSON.stringify(snap))
+      } catch (_) {}
+    }, { deep: true })
 
     // Clamp current page when the sorted results length changes (e.g., delete/filter)
     watch(sorted, () => {
