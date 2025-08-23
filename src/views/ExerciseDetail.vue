@@ -68,8 +68,8 @@
 
   <div class="container mx-auto px-4 py-6" v-if="exercise">
 
-    <!-- Edit modal -->
-    <modal :open="showForm" @close="closeForm" :hideDefaultClose="true">
+    <!-- Edit exercise modal -->
+    <modal :open="showForm" @close="closeForm" contentPaddingClass="p-0" :hideDefaultClose="true">
       <exercise-form
         :key="formKey"
         :initial="exercise"
@@ -80,31 +80,61 @@
     </modal>
 
     <!-- Delete confirm modal -->
-    <modal :open="showDeleteModal" @close="cancelDelete" :hideDefaultClose="true">
-      <DeleteConfirm :name="exercise.name" @cancel="cancelDelete" @confirm="confirmDelete" />
+    <modal :open="showDeleteModal" @close="cancelDelete" contentPaddingClass="p-0" :hideDefaultClose="true">
+      <DeleteConfirm :name="deleteName" @cancel="cancelDelete" @confirm="confirmDelete"/>
     </modal>
 
     <!-- Edit description modal -->
-    <modal :open="showEditDescription" @close="closeEditDescription">
-      <div class="px-5 pt-5 pb-3 border-b">
-        <h3 class="text-lg font-semibold text-gray-800">Beschrijving bewerken</h3>
+    <modal :open="showEditDescription" @close="closeEditDescription" contentPaddingClass="p-0" :hideDefaultClose="true">
+      <div class="sticky top-0 z-[1] bg-white backdrop-blur-sm px-5 sm:px-10 pt-5 pb-4 border-b">
+        <div class="flex items-center justify-between gap-3">
+          <h3 class="text-xl font-bold text-gray-800">
+            Beschrijving bewerken
+          </h3>
+          <button
+              type="button"
+              class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+              aria-label="Sluiten"
+              @click="closeEditDescription"
+          >
+            <X class="w-4 h-4" />
+          </button>
+        </div>
       </div>
-      <div class="p-5">
+
+      <!-- Content -->
+      <div class="px-5 sm:px-10 pt-5 flex-1">
         <label class="block text-sm font-medium text-gray-700 mb-1">Beschrijving</label>
         <textarea v-model="descDraft" class="form-input h-40 w-full resize-none" placeholder="Beschrijving"></textarea>
       </div>
-      <div class="modal-actions">
+
+      <div class="px-5 sm:px-10 pt-5 flex justify-end gap-3">
         <UiButton color="secondary" @click="closeEditDescription">Annuleren</UiButton>
         <UiButton color="primary" @click="saveEditDescription">Opslaan</UiButton>
       </div>
     </modal>
 
     <!-- Edit details modal -->
-    <modal :open="showEditDetails" @close="closeEditDetails">
-      <div class="px-5 pt-5 pb-3 border-b">
-        <h3 class="text-lg font-semibold text-gray-800">Details bewerken</h3>
+    <modal :open="showEditDetails" @close="closeEditDetails" contentPaddingClass="p-0" :hideDefaultClose="true">
+      <div class="sticky top-0 z-[1] bg-white backdrop-blur-sm px-5 sm:px-10 pt-5 pb-4 border-b">
+        <div class="flex items-center justify-between gap-3">
+          <h3 class="text-xl font-bold text-gray-800">
+            Details bewerken
+          </h3>
+          <button
+              type="button"
+              class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+              aria-label="Sluiten"
+              @click="closeEditDetails"
+          >
+            <X class="w-4 h-4" />
+          </button>
+        </div>
       </div>
-      <div class="p-5 grid grid-cols-1 md:grid-cols-4 gap-4">
+
+      <!-- Content -->
+      <div class="px-5 sm:px-10 pt-5 flex-1 grid grid-cols-4 md:grid-cols-4 gap-4">
+
         <!-- Players -->
         <div class="form-group col-span-4 md:col-span-2">
           <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1"><Users class="w-4 h-4" /> Aantal spelers</label>
@@ -126,7 +156,7 @@
           <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1"><TimerReset class="w-4 h-4" /> Duur</label>
           <div class="flex">
             <input type="number" v-model.number="detailsDraft.duration" min="1" class="form-input !rounded-r-none border-r-0" aria-label="Duur" />
-            <div class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-2 flex items-center text-gray-600 text-sm">minuten</div>
+            <div class="border border-gray-300 border-l-0 rounded-r-xl px-2 flex items-center text-gray-600 text-sm">minuten</div>
           </div>
         </div>
 
@@ -145,6 +175,7 @@
           </div>
           <button v-if="detailsDraft.courtNorm" type="button" class="ml-3 text-sm text-gray-600 hover:text-gray-800 underline" @click="toggleCourt('')">Wissen</button>
         </div>
+
         <!-- Materials -->
         <div class="form-group col-span-4 md:col-span-4">
           <label class="block text-sm font-medium text-gray-700 mb-1 inline-flex items-center gap-1"><TrafficCone class="w-4 h-4" /> Materialen</label>
@@ -155,7 +186,8 @@
           </div>
         </div>
       </div>
-      <div class="modal-actions">
+
+      <div class="px-5 sm:px-10 pt-5 border-t flex justify-end gap-3">
         <UiButton color="secondary" @click="closeEditDetails">Annuleren</UiButton>
         <UiButton color="primary" @click="saveEditDetails">Opslaan</UiButton>
       </div>
@@ -166,7 +198,7 @@
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
           <div class="flex items-center justify-between mb-2">
             <h2 class="text-lg font-semibold text-gray-800">Beschrijving</h2>
-            <button class="text-gray-500 hover:text-gray-700" @click="openEditDescription" aria-label="Beschrijving bewerken">
+            <button class="inline-flex justify-center items-center h-10 w-10 text-gray-500 hover:text-gray-700" @click="openEditDescription" aria-label="Beschrijving bewerken">
               <Pencil class="w-4 h-4" />
             </button>
           </div>
@@ -206,7 +238,7 @@
         <div class="bg-white rounded-lg shadow-md p-6">
           <div class="flex items-center justify-between mb-3">
             <h2 class="text-lg font-semibold text-gray-800">Details</h2>
-            <button class="text-gray-500 hover:text-gray-700" @click="openEditDetails" aria-label="Details bewerken">
+            <button class="inline-flex justify-center items-center h-10 w-10 text-gray-500 hover:text-gray-700" @click="openEditDetails" aria-label="Details bewerken">
               <Pencil class="w-4 h-4" />
             </button>
           </div>
