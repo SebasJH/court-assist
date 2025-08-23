@@ -10,7 +10,7 @@
     ]"
     @click="$emit('click', $event)"
   >
-    <component v-if="icon" :is="icon" :class="iconSizeClasses[size]" />
+    <component v-if="icon" :is="icon" :class="computedIconClass" />
     <slot />
   </button>
 </template>
@@ -36,6 +36,10 @@ export default {
     icon: {
       type: [String, Object],
       default: null
+    },
+    iconClass: {
+      type: String,
+      default: ''
     },
     disabled: {
       type: Boolean,
@@ -63,6 +67,10 @@ export default {
         lg: 'w-5 h-5',
         xl: 'w-6 h-6'
       }
+    },
+    computedIconClass() {
+      // If a custom iconClass is provided by the consumer, prefer it over size-based defaults
+      return this.iconClass && this.iconClass.length ? this.iconClass : this.iconSizeClasses[this.size]
     },
     colorClasses() {
       return {
