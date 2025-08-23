@@ -107,19 +107,19 @@
           :class="['fixed w-64 sm:w-40 whitespace-nowrap bg-white border border-gray-200 rounded shadow-lg flex flex-col z-[3000]']"
           :style="menuStyle"
         >
-          <button @click="onEdit" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 py-2 hover:bg-gray-100">
+          <button @click="onEdit" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-100">
             <Pencil class="w-fit h-4" />
             Wijzigen
           </button>
-          <button @click="onDuplicate" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 py-2 hover:bg-gray-100">
+          <button @click="onDuplicate" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-100">
             <Copy class="w-fit h-4" />
             Dupliceren
           </button>
-          <button @click="onToggleFavFromMenu" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 py-2 hover:bg-gray-100 sm:hidden">
+          <button @click="onToggleFavFromMenu" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-100 sm:hidden">
             <Star class="w-fit h-4" :class="exercise && exercise.favorite ? 'text-yellow-500' : ''" :fill="exercise && exercise.favorite ? 'currentColor' : 'none'" :stroke="'currentColor'" />
             <span>{{ (exercise && exercise.favorite) ? 'Verwijder uit favorieten' : 'Markeer als favoriet' }}</span>
           </button>
-          <button @click="onDelete" class="cursor-pointer border-t border-gray-200 text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 py-2 hover:bg-gray-100 text-red-500">
+          <button @click="onDelete" class="cursor-pointer border-t border-gray-200 text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-100 text-red-500">
             <Trash class="w-fit h-4" />
             Verwijderen
           </button>

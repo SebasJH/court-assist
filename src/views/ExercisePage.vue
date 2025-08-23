@@ -65,7 +65,7 @@
             aria-label="Weergave"
         >
           <button
-              class="w-full text-left px-3 py-2 text-sm flex items-center gap-2 hover:bg-blue-50"
+              class="w-full text-left px-3 h-10 text-sm flex items-center gap-2 hover:bg-blue-50"
               :class="viewMode === 'card' ? 'bg-blue-50' : ''"
               role="menuitemradio"
               :aria-checked="viewMode === 'card' ? 'true' : 'false'"
@@ -75,7 +75,7 @@
             Kaartweergave
           </button>
           <button
-              class="w-full text-left px-3 py-2 text-sm flex items-center gap-2 hover:bg-blue-50"
+              class="w-full text-left px-3 h-10 text-sm flex items-center gap-2 hover:bg-blue-50"
               :class="viewMode === 'list' ? 'bg-blue-50' : ''"
               role="menuitemradio"
               :aria-checked="viewMode === 'list' ? 'true' : 'false'"
@@ -120,7 +120,7 @@
             </div>
             <button
                 type="button"
-                class="inline-flex items-center justify-center w-8 h-8 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
                 aria-label="Sluiten"
                 title="Sluiten"
                 @click="showFilters = false"

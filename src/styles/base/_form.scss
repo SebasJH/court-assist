@@ -54,3 +54,10 @@ select.form-input {
 }
 
 
+
+
+/* Enforce consistent input height (align with 40px icon buttons) */
+input.form-input:not([type='checkbox']):not([type='radio']),
+select.form-input {
+  height: 40px;
+}

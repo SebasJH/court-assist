@@ -4,7 +4,7 @@
     <div class="flex items-center gap-2 md:flex-wrap order-2 md:order-1">
       <!-- Favorites toggle -->
       <button
-        class="inline-flex items-center gap-2 px-3 h-[42px] rounded-md border text-sm focus:outline-none"
+        class="inline-flex items-center justify-center gap-2 w-10 h-10 rounded-md border text-sm focus:outline-none"
         :class="favorites ? 'bg-blue-500 border-blue-500 text-white' : 'bg-white border-gray-300 text-gray-800 hover:bg-gray-50'"
         @click="$emit('update:favorites', !favorites)"
         :aria-pressed="favorites ? 'true' : 'false'"
@@ -15,7 +15,7 @@
 
       <!-- Filters button -->
       <button
-        class="inline-flex items-center gap-2 px-3 h-[42px] rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-sm text-gray-800 focus:outline-none"
+        class="inline-flex items-center gap-2 px-3 h-10 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-sm text-gray-800 focus:outline-none"
         :aria-pressed="showFilters ? 'true' : 'false'"
         @click="$emit('toggle-filters')"
         aria-controls="filters-title"
@@ -36,7 +36,7 @@
       <div v-if="showViewToggle" class="inline-flex rounded-md overflow-hidden border border-gray-300">
         <button
           type="button"
-          class="inline-flex items-center justify-center px-3 h-[42px] text-sm font-medium focus:outline-none"
+          class="inline-flex items-center justify-center px-3 h-10 text-sm font-medium focus:outline-none"
           :class="viewMode === 'card' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
           @click="$emit('update:viewMode', 'card')"
           :aria-pressed="viewMode === 'card' ? 'true' : 'false'"
@@ -47,7 +47,7 @@
         </button>
         <button
           type="button"
-          class="inline-flex items-center justify-center px-3 h-[42px] text-sm font-medium border-l border-gray-300 focus:outline-none"
+          class="inline-flex items-center justify-center px-3 h-10 text-sm font-medium border-l border-gray-300 focus:outline-none"
           :class="viewMode === 'list' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
           @click="$emit('update:viewMode', 'list')"
           :aria-pressed="viewMode === 'list' ? 'true' : 'false'"

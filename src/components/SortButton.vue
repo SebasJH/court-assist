@@ -1,7 +1,7 @@
 <template>
   <div class="relative" ref="containerRef">
     <button
-      class="inline-flex items-center gap-2 px-3 h-[42px] rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-sm text-gray-800 focus:outline-none"
+      class="inline-flex items-center gap-2 px-3 h-10 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-sm text-gray-800 focus:outline-none"
       @click="toggle"
     >
       <ArrowUpDown class="w-4 h-4" />
@@ -16,7 +16,7 @@
     >
       <div>
         <button
-          class="w-full text-left px-4 py-2 text-sm"
+          class="w-full text-left px-4 h-10 text-sm"
           :class="isActive('dateCreated','desc') ? 'bg-blue-500 text-white hover:bg-blue-600' : 'hover:bg-gray-100'"
           :aria-selected="isActive('dateCreated','desc') ? 'true' : 'false'"
           @click="setSort('dateCreated','desc')"
@@ -24,7 +24,7 @@
           Nieuwste eerst
         </button>
         <button
-          class="w-full text-left px-4 py-2 text-sm"
+          class="w-full text-left px-4 h-10 text-sm"
           :class="isActive('dateCreated','asc') ? 'bg-blue-500 text-white hover:bg-blue-600' : 'hover:bg-gray-100'"
           :aria-selected="isActive('dateCreated','asc') ? 'true' : 'false'"
           @click="setSort('dateCreated','asc')"
@@ -32,7 +32,7 @@
           Oudste eerst
         </button>
         <button
-          class="w-full text-left px-4 py-2 text-sm"
+          class="w-full text-left px-4 h-10 text-sm"
           :class="isActive('name','asc') ? 'bg-blue-500 text-white hover:bg-blue-600' : 'hover:bg-gray-100'"
           :aria-selected="isActive('name','asc') ? 'true' : 'false'"
           @click="setSort('name','asc')"
@@ -40,7 +40,7 @@
           A tot Z
         </button>
         <button
-          class="w-full text-left px-4 py-2 text-sm"
+          class="w-full text-left px-4 h-10 text-sm"
           :class="isActive('name','desc') ? 'bg-blue-500 text-white hover:bg-blue-600' : 'hover:bg-gray-100'"
           :aria-selected="isActive('name','desc') ? 'true' : 'false'"
           @click="setSort('name','desc')"

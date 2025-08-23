@@ -44,19 +44,19 @@
             <MoreVertical class="w-5 h-5" />
           </button>
           <div v-if="menuOpen" ref="menuRef" class="absolute top-full right-0 mt-2 w-64 whitespace-nowrap bg-white border border-gray-200 rounded shadow-lg flex flex-col z-[4000]">
-            <button @click="onEdit" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 py-2 hover:bg-gray-100">
+            <button @click="onEdit" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-100">
               <Pencil class="w-fit h-4" />
               Wijzigen
             </button>
-            <button @click="onDuplicate" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 py-2 hover:bg-gray-100">
+            <button @click="onDuplicate" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-100">
               <Copy class="w-fit h-4" />
               Dupliceren
             </button>
-            <button @click="onToggleFavFromMenu" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 py-2 hover:bg-gray-100 md:hidden">
+            <button @click="onToggleFavFromMenu" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-100 md:hidden">
               <Star class="w-fit h-4" :class="exercise && exercise.favorite ? 'text-yellow-500' : ''" :fill="exercise && exercise.favorite ? 'currentColor' : 'none'" :stroke="'currentColor'" />
               <span>{{ (exercise && exercise.favorite) ? 'Verwijder uit favorieten' : 'Markeer als favoriet' }}</span>
             </button>
-            <button @click="onDelete" class="cursor-pointer border-t border-gray-200 text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 py-2 hover:bg-gray-100 text-red-500">
+            <button @click="onDelete" class="cursor-pointer border-t border-gray-200 text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-100 text-red-500">
               <Trash class="w-fit h-4" />
               Verwijderen
             </button>
@@ -139,9 +139,9 @@
         <!-- Court -->
         <div class="form-group col-span-4 md:col-span-2">
           <label class="block text-sm font-medium text-gray-700 mb-1"><span class="inline-flex items-center gap-1"><RectangleCircle class="w-4 h-4" /> Veld</span></label>
-          <div class="inline-flex rounded-md overflow-hidden border border-gray-300 h-[42px]">
-            <button type="button" class="px-3 h-[42px] text-sm font-medium focus:outline-none" :class="detailsDraft.courtNorm === 'halfcourt' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'" @click="toggleCourt('halfcourt')">Half court</button>
-            <button type="button" class="px-3 h-[42px] text-sm font-medium border-l border-gray-300 focus:outline-none" :class="detailsDraft.courtNorm === 'fullcourt' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'" @click="toggleCourt('fullcourt')">Full court</button>
+          <div class="inline-flex rounded-md overflow-hidden border border-gray-300 h-10">
+            <button type="button" class="px-3 h-10 text-sm font-medium focus:outline-none" :class="detailsDraft.courtNorm === 'halfcourt' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'" @click="toggleCourt('halfcourt')">Half court</button>
+            <button type="button" class="px-3 h-10 text-sm font-medium border-l border-gray-300 focus:outline-none" :class="detailsDraft.courtNorm === 'fullcourt' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'" @click="toggleCourt('fullcourt')">Full court</button>
           </div>
           <button v-if="detailsDraft.courtNorm" type="button" class="ml-3 text-sm text-gray-600 hover:text-gray-800 underline" @click="toggleCourt('')">Wissen</button>
         </div>

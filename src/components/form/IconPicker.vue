@@ -2,7 +2,7 @@
   <div class="relative w-full" ref="containerRef">
     <div class="flex w-full">
       <div
-        class="px-3 py-2 h-[42px] border border-gray-300 rounded-l-lg bg-white flex items-center justify-center focus:outline-none focus:ring-0"
+        class="px-3 py-2 h-10 border border-gray-300 rounded-l-lg bg-white flex items-center justify-center focus:outline-none focus:ring-0"
         :class="open ? 'border-blue-500' : ''"
         :title="modelValue"
       >
@@ -10,7 +10,7 @@
       </div>
       <button
         type="button"
-        class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-3 h-[42px] flex items-center justify-center flex-1 text-gray-700 text-sm hover:bg-blue-50 hover:text-blue-700 transition-colors focus:outline-none focus:ring-0"
+        class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-3 h-10 flex items-center justify-center flex-1 text-gray-700 text-sm hover:bg-blue-50 hover:text-blue-700 transition-colors focus:outline-none focus:ring-0"
         @click="toggle"
       >
         Wijzigen

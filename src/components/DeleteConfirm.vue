@@ -8,7 +8,7 @@
         </h3>
         <button
           type="button"
-          class="inline-flex items-center justify-center w-8 h-8 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+          class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
           aria-label="Sluiten"
           @click="$emit('cancel')"
         >
