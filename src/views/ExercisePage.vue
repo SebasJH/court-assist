@@ -157,7 +157,7 @@
     <!-- Active filter chips -->
     <FiltersChips
         v-if="isFilterActive"
-        class="mb-4 flex flex-wrap gap-1 md:gap-2 items-center"
+        class="mb-4 flex flex-wrap gap-1 items-center"
         :q="q"
         :category="filter.category"
         :players="filter.players"

@@ -111,7 +111,7 @@ export default {
       if (newMin === null) return
       const mv = Array.isArray(props.modelValue) && props.modelValue.length === 2 ? props.modelValue : [null, null]
       const curMax = (typeof mv[1] === 'number' && Number.isFinite(mv[1])) ? Math.max(props.min, Math.min(props.max, mv[1])) : null
-      const newMax = curMax === null ? null : Math.max(newMin, curMax)
+      const newMax = props.allowEmpty ? curMax : (curMax === null ? null : Math.max(newMin, curMax))
       emit('update:modelValue', [newMin, newMax])
     }
     function onMax(val){
@@ -124,7 +124,7 @@ export default {
       if (newMax === null) return
       const mv = Array.isArray(props.modelValue) && props.modelValue.length === 2 ? props.modelValue : [null, null]
       const curMin = (typeof mv[0] === 'number' && Number.isFinite(mv[0])) ? Math.max(props.min, Math.min(props.max, mv[0])) : null
-      const newMin = curMin === null ? null : Math.min(curMin, newMax)
+      const newMin = props.allowEmpty ? curMin : (curMin === null ? null : Math.min(curMin, newMax))
       emit('update:modelValue', [newMin, newMax])
     }
 
