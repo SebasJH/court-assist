@@ -1,8 +1,6 @@
 .exercise-card {
   @apply bg-white rounded-xl shadow-md p-8 border border-[#E2E8F0] transition-shadow duration-200 transform transition-transform hover:scale-[1.02] hover:shadow-lg;
 
-
-
   .badge {
     @apply w-fit px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full;
   }

@@ -3,27 +3,29 @@
               :hideHamburgerWhenBack="true" @mobile-back="closeHeaderSearch">
     <template #lead>
       <div class="flex items-center gap-3 min-w-0 w-full">
-        <div v-if="isSearching" class="relative w-full md:hidden">
-          <Search class="w-4 h-4 !text-gray-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10"/>
-          <input
-              ref="searchInputRef"
-              class="form-input w-full !pl-9 !pr-10 !bg-white !border-gray-300 !text-gray-900 placeholder:text-gray-400 shadow-sm"
-              :value="q"
-              @input="e => q = (e && e.target ? e.target.value : '')"
-              placeholder="Zoek oefeningen..."
-              aria-label="Zoek oefeningen"
-          />
-          <button
-              v-if="q && q.length"
-              type="button"
-              class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-700"
-              aria-label="Zoekopdracht wissen"
-              @click="clearHeaderSearch"
-          >
-            <X class="w-5 h-5"/>
-          </button>
-        </div>
-        <h1 v-else class="text-2xl md:text-3xl font-bold text-gray-800 leading-tight truncate md:hidden">Oefeningen</h1>
+        <transition name="header-search" mode="out-in" @after-enter="onHeaderSearchAfterEnter">
+          <div v-if="isSearching" key="search" class="relative w-full md:hidden">
+            <Search class="w-4 h-4 !text-gray-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10"/>
+            <input
+                ref="searchInputRef"
+                class="form-input w-full !pl-9 !pr-10 !bg-white !border-gray-300 !text-gray-900 placeholder:text-gray-400 shadow-sm"
+                :value="q"
+                @input="e => q = (e && e.target ? e.target.value : '')"
+                placeholder="Zoek oefeningen..."
+                aria-label="Zoek oefeningen"
+            />
+            <button
+                v-if="q && q.length"
+                type="button"
+                class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-700"
+                aria-label="Zoekopdracht wissen"
+                @click="clearHeaderSearch"
+            >
+              <X class="w-5 h-5"/>
+            </button>
+          </div>
+          <h1 v-else key="title" class="text-2xl md:text-3xl font-bold text-gray-800 leading-tight truncate md:hidden">Oefeningen</h1>
+        </transition>
         <h1 class="hidden md:block text-3xl font-bold text-gray-800 leading-tight truncate">Oefeningen</h1>
       </div>
     </template>
@@ -394,6 +396,15 @@ export default {
 
     function closeHeaderSearch() {
       isSearching.value = false
+    }
+
+    function onHeaderSearchAfterEnter() {
+      if (!isSearching.value) return
+      nextTick(() => {
+        try {
+          searchInputRef.value && searchInputRef.value.focus()
+        } catch (_) {}
+      })
     }
 
     const route = useRoute()
@@ -881,6 +892,7 @@ export default {
       openHeaderSearch,
       clearHeaderSearch,
       closeHeaderSearch,
+      onHeaderSearchAfterEnter,
       filter,
       categories,
       materialOptions,
@@ -979,4 +991,11 @@ export default {
   opacity: 0;
   transform: translateY(8px) scale(0.98);
 }
+/* Mobile header search transition */
+.header-search-enter-active,
+.header-search-leave-active { transition: all 200ms ease; }
+.header-search-enter-from { opacity: 0; transform: translateX(8px); }
+.header-search-enter-to { opacity: 1; transform: translateX(0); }
+.header-search-leave-from { opacity: 1; transform: translateX(0); }
+.header-search-leave-to { opacity: 0; transform: translateX(8px); }
 </style>
