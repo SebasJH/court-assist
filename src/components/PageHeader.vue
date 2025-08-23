@@ -2,7 +2,7 @@
   <header class="bg-white border-b border-gray-200 sticky top-0 z-[4000]">
     <div class="container mx-auto px-4 py-0 flex items-center" :class="tall ? 'min-h-[96px]' : 'min-h-[72px]'">
       <div class="flex items-center justify-between gap-3 w-full">
-        <div class="flex items-center gap-3 min-w-0">
+        <div class="flex items-center gap-3 min-w-0 w-full">
           <button
             v-if="mobileBack"
             type="button"
