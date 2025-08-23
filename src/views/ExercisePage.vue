@@ -110,9 +110,9 @@
 
     <!-- Filters drawer (right side panel with overlay) -->
     <modal :open="showFilters" @close="showFilters = false" :drawer="true" side="right" drawerWidthClass="max-w-lg"
-           contentPaddingClass="p-0">
+           contentPaddingClass="p-0" :hideDefaultClose="true">
       <div class="flex h-full flex-col">
-        <div class="px-10 pt-5 pb-4 border-b">
+        <div class="px-5 sm:px-10 pt-5 pb-4 border-b">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
               <Filter class="w-5 h-5 text-gray-700"/>
@@ -129,7 +129,7 @@
             </button>
           </div>
         </div>
-        <div class="px-10 py-8 flex-1 overflow-y-auto">
+        <div class="px-5 sm:px-10 py-8 flex-1 overflow-y-auto">
           <FiltersPanel
               :categories="categories"
               :category="filter.category"

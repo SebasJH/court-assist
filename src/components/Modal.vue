@@ -1,9 +1,8 @@
 <!-- components/Modal.vue -->
 <template>
-  <transition name="modal-overlay-fade" appear>
-    <div
+  <div
         v-show="open"
-        class="fixed inset-0 z-[5000] flex bg-black/50"
+        class="fixed inset-0 z-[5000] flex bg-black/20 backdrop-blur-sm"
         :class="overlayClass"
         @mousedown="onOverlayMouseDown"
         @click="onOverlayClick"
@@ -31,7 +30,6 @@
         </div>
       </transition>
     </div>
-  </transition>
 </template>
 
 <script>

@@ -1,18 +1,18 @@
 <template>
   <form class="flex h-full flex-col" @submit.prevent="save" novalidate>
 
-    <div class="sticky top-0 z-10 bg-white backdrop-blur-sm px-10 pt-5 pb-0 border-b">
+    <div class="sticky top-0 z-10 bg-white backdrop-blur-sm px-5 sm:px-10 pt-5 pb-0 border-b">
       <div class="flex items-center justify-between gap-3">
         <h3 class="text-xl font-bold text-gray-800">
           {{ initial ? 'Wijzig oefening' : 'Nieuwe oefening' }}
         </h3>
         <button
           type="button"
-          class="text-gray-500 hover:text-black"
+          class="inline-flex items-center justify-center w-8 h-8 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
           aria-label="Sluiten"
           @click="$emit('close')"
         >
-          <X class="w-5 h-5" />
+          <X class="w-4 h-4" />
         </button>
       </div>
 
@@ -47,7 +47,7 @@
       </div>
     </div>
 
-    <div class="px-10 py-5 flex-1 overflow-y-auto">
+    <div class="px-5 sm:px-10 py-5 flex-1 overflow-y-auto">
       <!-- Basis -->
       <div v-show="currentTab==='basis'" class="grid grid-cols-1 md:grid-cols-4 gap-4">
 
@@ -130,7 +130,7 @@
                   :aria-invalid="errors.players ? 'true' : 'false'"
               />
               <div
-                  class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
+                  class="border border-gray-300 border-l-0 rounded-r-xl px-2 flex items-center text-gray-600 text-sm">
                 min
               </div>
             </div>
@@ -147,7 +147,7 @@
                   :aria-invalid="errors.players ? 'true' : 'false'"
               />
               <div
-                  class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
+                  class="border border-gray-300 border-l-0 rounded-r-xl px-2 flex items-center text-gray-600 text-sm">
                 max
               </div>
               <!-- Ephemeral tip for max cap -->
@@ -187,7 +187,7 @@
                 class="form-input !rounded-r-none !border-r-0"
             />
             <div
-                class="bg-gray-100 border border-gray-300 border-l rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
+                class="border border-gray-300 border-l rounded-r-xl px-2 flex items-center text-gray-600 text-sm">
               minuten
             </div>
           </div>
@@ -330,7 +330,7 @@
     </div>
 
     <!-- Buttons -->
-    <div class="px-10 pt-5 border-t flex justify-end gap-3">
+    <div class="px-5 sm:px-10 pt-5 border-t flex justify-end gap-3">
       <UiButton color="secondary" outline @click="$emit('close')">Annuleren</UiButton>
       <UiButton :color="isEdit ? 'primary' : 'accent'" type="submit" class="btn-submit">
         {{ isEdit ? 'Opslaan' : 'Aanmaken' }}
@@ -350,9 +350,9 @@ import UiButton from '../ui/Button.vue'
 
 export default {
   components: {
-    RichTextEditor, 
-    IconPicker, 
-    IntensitySelector, 
+    RichTextEditor,
+    IconPicker,
+    IntensitySelector,
     UiButton
   },
   props: {
