@@ -1,23 +1,18 @@
 <template>
-  <PageHeader :title="exercise ? exercise.name : 'Oefening'" back-to="/oefeningen" back-label="Oefeningen" tall>
+  <PageHeader :title="exercise ? exercise.name : 'Oefening'" :mobileBack="isSmallScreen">
     <template #lead>
       <div class="flex items-center gap-3 min-w-0">
-        <router-link to="/oefeningen" class="hidden md:inline-flex items-center text-sm text-gray-600 hover:text-blue-600">
-          <ArrowLeft class="w-4 h-4 mr-1" />
-          Oefeningen
+        <!-- Desktop back button (chevron) -->
+        <router-link
+          to="/oefeningen"
+          class="hidden md:inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+          aria-label="Terug"
+          title="Terug naar oefeningen"
+        >
+          <ArrowLeft class="w-5 h-5" />
         </router-link>
-        <span class="hidden md:inline-block text-gray-300 select-none" aria-hidden="true">/</span>
-        <div class="flex items-center gap-3 min-w-0">
-          <div class="bg-gray-100 w-10 h-10 lg:w-12 lg:h-12 rounded-lg flex items-center justify-center">
-            <component :is="exercise?.icon || exercise?.imageIcon || 'TrafficCone'" class="w-6 h-6 text-gray-700" />
-          </div>
-          <div class="min-w-0">
-            <div class="text-xl md:text-2xl font-bold text-gray-800 leading-tight truncate">{{ exercise ? exercise.name : 'Oefening' }}</div>
-            <div class="flex flex-wrap gap-1 mt-1">
-              <span v-for="cat in (exercise?.category || [])" :key="cat" class="badge bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">{{ cat }}</span>
-            </div>
-          </div>
-        </div>
+        <!-- Title only -->
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 leading-tight truncate">{{ exercise ? exercise.name : 'Oefening' }}</h1>
       </div>
     </template>
     <template #actions>
@@ -70,18 +65,6 @@
       </div>
     </template>
   </PageHeader>
-
-  <!-- Mobile-only compact breadcrumbs under header -->
-  <div class="md:hidden bg-white">
-    <div class="container mx-auto px-4 py-2 text-sm text-gray-600 flex items-center gap-1 overflow-hidden">
-      <router-link to="/oefeningen" class="inline-flex items-center hover:text-blue-600">
-        <ArrowLeft class="w-4 h-4 mr-1" />
-        Oefeningen
-      </router-link>
-      <span class="text-gray-300" aria-hidden="true">/</span>
-      <span class="truncate font-medium text-gray-800">{{ exercise ? exercise.name : 'Oefening' }}</span>
-    </div>
-  </div>
 
   <div class="container mx-auto px-4 py-6" v-if="exercise">
 
@@ -261,7 +244,7 @@
 <script setup>
 import UiButton from '../components/ui/Button.vue'
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import store from '../store'
 import PageHeader from '../components/PageHeader.vue'
 import Modal from '../components/Modal.vue'
@@ -283,7 +266,13 @@ function slugify(str) {
 }
 
 const route = useRoute()
+const router = useRouter()
 const slug = computed(() => route.params.slug)
+
+const isSmallScreen = ref(false)
+function updateSmallScreen(){
+  try { isSmallScreen.value = (window.innerWidth || document.documentElement.clientWidth) < 768 } catch(_) { isSmallScreen.value = false }
+}
 
 const exercise = computed(() => {
   const list = store.state.exercises
@@ -422,9 +411,13 @@ function handleClickOutside(event) {
 }
 
 onMounted(() => {
+  // Initialize small-screen state and listen for viewport changes
+  updateSmallScreen()
+  window.addEventListener('resize', updateSmallScreen)
   document.addEventListener('mousedown', handleClickOutside)
 })
 onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateSmallScreen)
   document.removeEventListener('mousedown', handleClickOutside)
 })
 
