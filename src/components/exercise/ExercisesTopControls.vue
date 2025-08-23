@@ -62,7 +62,7 @@
     <!-- Search (hidden on small screens per design) -->
     <div class="hidden md:block md:order-2 md:w-auto">
       <div class="relative">
-        <Search class="w-4 h-4 !text-gray-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+        <Search class="w-4 h-4 !text-gray-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
         <input
           class="form-input w-full md:w-72 !pl-9 pr-3"
           :value="q"

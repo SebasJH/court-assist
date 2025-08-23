@@ -1,47 +1,49 @@
 <template>
-  <PageHeader title="Oefeningen" :mobileBack="isSmallScreen && isSearching" :mobileBackEmitOnly="true" :hideHamburgerWhenBack="true" @mobile-back="closeHeaderSearch">
-      <template #lead>
-        <div class="flex items-center gap-3 min-w-0 w-full">
-          <div v-if="isSearching" class="relative w-full md:hidden">
-            <Search class="w-4 h-4 !text-gray-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-            <input
+  <PageHeader title="Oefeningen" :mobileBack="isSmallScreen && isSearching" :mobileBackEmitOnly="true"
+              :hideHamburgerWhenBack="true" @mobile-back="closeHeaderSearch">
+    <template #lead>
+      <div class="flex items-center gap-3 min-w-0 w-full">
+        <div v-if="isSearching" class="relative w-full md:hidden">
+          <Search class="w-4 h-4 !text-gray-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10"/>
+          <input
               ref="searchInputRef"
               class="form-input w-full !pl-9 !pr-10 !bg-white !border-gray-300 !text-gray-900 placeholder:text-gray-400 shadow-sm"
               :value="q"
               @input="e => q = (e && e.target ? e.target.value : '')"
               placeholder="Zoek oefeningen..."
               aria-label="Zoek oefeningen"
-            />
-            <button
+          />
+          <button
               v-if="q && q.length"
               type="button"
               class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-700"
               aria-label="Zoekopdracht wissen"
               @click="clearHeaderSearch"
-            >
-              <X class="w-5 h-5" />
-            </button>
-          </div>
-          <h1 v-else class="text-2xl md:text-3xl font-bold text-gray-800 leading-tight truncate md:hidden">Oefeningen</h1>
-          <h1 class="hidden md:block text-3xl font-bold text-gray-800 leading-tight truncate">Oefeningen</h1>
+          >
+            <X class="w-5 h-5"/>
+          </button>
         </div>
-      </template>
-      <template #actions>
-        <div class="relative flex items-center gap-2">
-          <UiButton class="hidden md:inline-flex" color="primary" icon="Plus" @click="openForm()">Nieuwe oefening</UiButton>
+        <h1 v-else class="text-2xl md:text-3xl font-bold text-gray-800 leading-tight truncate md:hidden">Oefeningen</h1>
+        <h1 class="hidden md:block text-3xl font-bold text-gray-800 leading-tight truncate">Oefeningen</h1>
+      </div>
+    </template>
+    <template #actions>
+      <div class="relative flex items-center gap-2">
+        <UiButton class="hidden md:inline-flex" color="primary" icon="Plus" @click="openForm()">Nieuwe oefening
+        </UiButton>
 
-          <!-- Mobile search toggle -->
-          <button
+        <!-- Mobile search toggle -->
+        <button
             v-if="!(isSmallScreen && isSearching)"
             type="button"
             class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
             aria-label="Zoeken"
             @click="openHeaderSearch"
-          >
-            <Search class="w-5 h-5" />
-          </button>
+        >
+          <Search class="w-5 h-5"/>
+        </button>
 
-          <button
+        <button
             v-if="!(isSmallScreen && isSearching)"
             ref="headerMenuBtnRef"
             type="button"
@@ -50,96 +52,97 @@
             :aria-expanded="headerMenuOpen ? 'true' : 'false'"
             aria-label="Weergave opties"
             @click="headerMenuOpen = !headerMenuOpen"
-          >
-            <MoreVertical class="w-5 h-5" />
-          </button>
+        >
+          <MoreVertical class="w-5 h-5"/>
+        </button>
 
-          <!-- Dropdown menu -->
-          <div
+        <!-- Dropdown menu -->
+        <div
             v-if="headerMenuOpen"
             ref="headerMenuRef"
             class="absolute right-0 top-full mt-2 w-48 bg-white shadow-lg border border-gray-200 rounded-md z-[4500]"
             role="menu"
             aria-label="Weergave"
-          >
-            <button
+        >
+          <button
               class="w-full text-left px-3 py-2 text-sm flex items-center gap-2 hover:bg-blue-50"
               :class="viewMode === 'card' ? 'bg-blue-50' : ''"
               role="menuitemradio"
               :aria-checked="viewMode === 'card' ? 'true' : 'false'"
               @click="selectView('card')"
-            >
-              <LayoutGrid class="w-4 h-4" />
-              Kaartweergave
-            </button>
-            <button
+          >
+            <LayoutGrid class="w-4 h-4"/>
+            Kaartweergave
+          </button>
+          <button
               class="w-full text-left px-3 py-2 text-sm flex items-center gap-2 hover:bg-blue-50"
               :class="viewMode === 'list' ? 'bg-blue-50' : ''"
               role="menuitemradio"
               :aria-checked="viewMode === 'list' ? 'true' : 'false'"
               @click="selectView('list')"
-            >
-              <List class="w-4 h-4" />
-              Lijstweergave
-            </button>
-          </div>
+          >
+            <List class="w-4 h-4"/>
+            Lijstweergave
+          </button>
         </div>
-      </template>
-    </PageHeader>
+      </div>
+    </template>
+  </PageHeader>
 
-    <div class="container mx-auto px-4 py-6">
+  <div class="container mx-auto px-4 py-6">
 
     <!-- Top controls component -->
     <ExercisesTopControls
-      :q="q"
-      :favorites="filter.favorites"
-      :showFilters="showFilters"
-      :sortBy="sortBy"
-      :sortDir="sortDir"
-      :viewMode="viewMode"
-      :showViewToggle="false"
-      @update:q="val => q = val"
-      @update:favorites="val => filter.favorites = val"
-      @toggle-filters="showFilters = !showFilters"
-      @update:sortBy="val => sortBy = val"
-      @update:sortDir="val => sortDir = val"
-      @update:viewMode="setViewMode"
+        :q="q"
+        :favorites="filter.favorites"
+        :showFilters="showFilters"
+        :sortBy="sortBy"
+        :sortDir="sortDir"
+        :viewMode="viewMode"
+        :showViewToggle="false"
+        @update:q="val => q = val"
+        @update:favorites="val => filter.favorites = val"
+        @toggle-filters="showFilters = !showFilters"
+        @update:sortBy="val => sortBy = val"
+        @update:sortDir="val => sortDir = val"
+        @update:viewMode="setViewMode"
     />
 
     <!-- Filters drawer (right side panel with overlay) -->
-    <modal :open="showFilters" @close="showFilters = false" :drawer="true" side="right" drawerWidthClass="max-w-lg" contentPaddingClass="p-0">
+    <modal :open="showFilters" @close="showFilters = false" :drawer="true" side="right" drawerWidthClass="max-w-lg"
+           contentPaddingClass="p-0">
       <div class="flex h-full flex-col">
         <div class="px-10 pt-5 pb-4 border-b">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <Filter class="w-5 h-5 text-gray-700" />
+              <Filter class="w-5 h-5 text-gray-700"/>
               <h2 id="filters-title" class="text-lg font-semibold text-gray-800">Filters</h2>
             </div>
             <button
-              type="button"
-              class="inline-flex items-center justify-center w-8 h-8 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
-              aria-label="Sluiten"
-              title="Sluiten"
-              @click="showFilters = false"
+                type="button"
+                class="inline-flex items-center justify-center w-8 h-8 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                aria-label="Sluiten"
+                title="Sluiten"
+                @click="showFilters = false"
             >
-              <X class="w-4 h-4" />
+              <X class="w-4 h-4"/>
             </button>
           </div>
         </div>
         <div class="px-10 py-8 flex-1 overflow-y-auto">
           <FiltersPanel
-            :categories="categories"
-            :category="filter.category"
-            @update:category="val => filter.category = val"
-            :players="filter.players"
-            @update:players="val => filter.players = val"
-            :intensity="filter.intensity"
-            @update:intensity="val => filter.intensity = val"
-            :court="filter.court"
-            @update:court="val => filter.court = val"
-            :materials="filter.materials"
-            @update:materials="val => filter.materials = val"
-            :materialOptions="materialOptions"
+              :categories="categories"
+              :category="filter.category"
+              @update:category="val => filter.category = val"
+              :players="filter.players"
+              @update:players="val => filter.players = val"
+              :intensity="filter.intensity"
+              @update:intensity="val => filter.intensity = val"
+              :court="filter.court"
+              @update:court="val => filter.court = val"
+              :materials="filter.materials"
+              @update:materials="val => filter.materials = val"
+              :materialOptions="materialOptions"
           />
         </div>
         <div class="px-5 py-4 border-t flex items-center justify-end gap-2">
@@ -151,31 +154,33 @@
 
     <!-- Active filter chips -->
     <FiltersChips
-      v-if="isFilterActive"
-      class="mb-4 flex flex-wrap gap-2 items-center"
-      :q="q"
-      :category="filter.category"
-      :players="filter.players"
-      :intensity="filter.intensity"
-      :court="filter.court"
-      :materials="filter.materials"
-      :favorites="filter.favorites"
-      :defaultPlayers="DEFAULT_PLAYERS"
-      :defaultIntensity="DEFAULT_INTENSITY"
-      @clear:search="clearSearch"
-      @clear:category="clearCategory"
-      @clear:players="clearPlayers"
-      @clear:intensity="clearIntensity"
-      @clear:court="clearCourt"
-      @clear:material="clearMaterial"
-      @clear:favorites="clearFavorites"
-      @reset="resetFilters"
+        v-if="isFilterActive"
+        class="mb-4 flex flex-wrap gap-2 items-center"
+        :q="q"
+        :category="filter.category"
+        :players="filter.players"
+        :intensity="filter.intensity"
+        :court="filter.court"
+        :materials="filter.materials"
+        :favorites="filter.favorites"
+        :defaultPlayers="DEFAULT_PLAYERS"
+        :defaultIntensity="DEFAULT_INTENSITY"
+        @clear:search="clearSearch"
+        @clear:category="clearCategory"
+        @clear:players="clearPlayers"
+        @clear:intensity="clearIntensity"
+        @clear:court="clearCourt"
+        @clear:material="clearMaterial"
+        @clear:favorites="clearFavorites"
+        @reset="resetFilters"
     />
 
     <!-- Cards or Empty state -->
     <template v-if="sorted.length > 0">
       <template v-if="viewMode === 'card'">
-        <transition-group name="exercise-list" tag="div" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-6" :css="!pageSwitching">
+        <transition-group name="exercise-list" tag="div"
+                          class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-6"
+                          :css="!pageSwitching">
           <ExerciseCardItem
               v-for="ex in pageItems"
               :key="ex.id"
@@ -188,20 +193,21 @@
         </transition-group>
       </template>
       <template v-else>
-        <div class="bg-white rounded-lg shadow-md">
-          <div class="overflow-x-hidden lg:overflow-x-auto overflow-y-visible" role="region" aria-label="Lijstweergave, horizontaal scrollen indien nodig">
-            <div class="lg:min-w-[48rem]">
-              <div class="hidden lg:flex items-center gap-4 px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-b bg-gray-0">
-                <div class="w-12"></div>
-                <div class="flex-1">Oefening</div>
-                <div class="w-28">Spelers</div>
-                <div class="w-28">Duur</div>
-                <div class="w-28">Veld</div>
-                <div class="w-28">Intensiteit</div>
-                <div class="w-20"></div>
-              </div>
-              <div>
-                <ExerciseListItem
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+
+          <div class="lg:min-w-[48rem]">
+            <div
+                class="hidden lg:flex items-center gap-4 px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-b bg-gray-0">
+              <div class="w-12"></div>
+              <div class="flex-1">Oefening</div>
+              <div class="w-28">Spelers</div>
+              <div class="w-28">Duur</div>
+              <div class="w-28">Veld</div>
+              <div class="w-28">Intensiteit</div>
+              <div class="w-20"></div>
+            </div>
+            <div>
+              <ExerciseListItem
                   v-for="ex in pageItems"
                   :key="ex.id"
                   :exercise="ex"
@@ -209,19 +215,19 @@
                   @delete="onDelete"
                   @duplicate="onDuplicate"
                   @toggle-fav="onToggleFav"
-                />
-              </div>
+              />
             </div>
           </div>
+
         </div>
       </template>
 
       <Pagination
-        v-if="pageCount > 1"
-        class="mt-6"
-        :page="page"
-        :pageCount="pageCount"
-        @update:page="setPage"
+          v-if="pageCount > 1"
+          class="mt-6"
+          :page="page"
+          :pageCount="pageCount"
+          @update:page="setPage"
       />
     </template>
     <div v-else class="py-20">
@@ -234,15 +240,17 @@
         </div>
         <div class="flex justify-center gap-3">
           <UiButton
-            v-if="hasAny && isFilterActive"
-            color="secondary"
-            @click="resetFilters"
-          >Verwijder filters</UiButton>
+              v-if="hasAny && isFilterActive"
+              color="secondary"
+              @click="resetFilters"
+          >Verwijder filters
+          </UiButton>
           <UiButton
-            v-else
-            color="primary"
-            @click="openForm()"
-          >Maak een oefening aan</UiButton>
+              v-else
+              color="primary"
+              @click="openForm()"
+          >Maak een oefening aan
+          </UiButton>
         </div>
       </div>
     </div>
@@ -260,41 +268,41 @@
 
     <!-- Delete confirm modal -->
     <modal :open="showDeleteModal" @close="cancelDelete" contentPaddingClass="p-0" :hideDefaultClose="true">
-      <DeleteConfirm :name="deleteName" @cancel="cancelDelete" @confirm="confirmDelete" />
+      <DeleteConfirm :name="deleteName" @cancel="cancelDelete" @confirm="confirmDelete"/>
     </modal>
   </div>
 
   <!-- Mobile FAB: create exercise -->
   <UiButton
-    :class="['md:hidden fixed safe-bottom-5 right-5 z-[3000] !p-0 w-14 h-14 shadow-xl', 'transition-opacity duration-300', { 'opacity-0 pointer-events-none': fabHidden }]"
-    color="primary"
-    icon="Plus"
-    iconClass="w-7 h-7"
-    aria-label="Nieuwe oefening"
-    title="Nieuwe oefening"
-    @click="openForm()"
+      :class="['md:hidden fixed safe-bottom-5 right-5 z-[3000] !p-0 w-14 h-14 shadow-xl', 'transition-opacity duration-300', { 'opacity-0 pointer-events-none': fabHidden }]"
+      color="primary"
+      icon="Plus"
+      iconClass="w-7 h-7"
+      aria-label="Nieuwe oefening"
+      title="Nieuwe oefening"
+      @click="openForm()"
   />
 
   <!-- Mobile scroll-to-top button -->
   <UiButton
-    :class="['md:hidden fixed safe-bottom-5 left-1/2 -translate-x-1/2 z-[3000] !p-0 w-12 h-12 shadow-lg', 'transition-opacity duration-200', { 'opacity-0 pointer-events-none': !showScrollTop }]"
-    color="secondary"
-    icon="ArrowUp"
-    iconClass="w-6 h-6"
-    aria-label="Naar boven"
-    title="Naar boven"
-    @click="scrollToTop"
+      :class="['md:hidden fixed safe-bottom-5 left-1/2 -translate-x-1/2 z-[3000] !p-0 w-12 h-12 shadow-lg', 'transition-opacity duration-200', { 'opacity-0 pointer-events-none': !showScrollTop }]"
+      color="secondary"
+      icon="ArrowUp"
+      iconClass="w-6 h-6"
+      aria-label="Naar boven"
+      title="Naar boven"
+      @click="scrollToTop"
   />
 
   <!-- Desktop scroll-to-top button (bottom-right) -->
   <UiButton
-    :class="['hidden md:inline-flex fixed safe-bottom-5 right-5 z-[3000] !p-0 w-12 h-12 shadow-lg', 'transition-opacity duration-200', { 'opacity-0 pointer-events-none': !showScrollTop }]"
-    color="secondary"
-    icon="ArrowUp"
-    iconClass="w-6 h-6"
-    aria-label="Naar boven"
-    title="Naar boven"
-    @click="scrollToTop"
+      :class="['hidden md:inline-flex fixed safe-bottom-5 right-5 z-[3000] !p-0 w-12 h-12 shadow-lg', 'transition-opacity duration-200', { 'opacity-0 pointer-events-none': !showScrollTop }]"
+      color="secondary"
+      icon="ArrowUp"
+      iconClass="w-6 h-6"
+      aria-label="Naar boven"
+      title="Naar boven"
+      @click="scrollToTop"
   />
 
 </template>
@@ -310,57 +318,99 @@ import ExercisesTopControls from '../components/exercise/ExercisesTopControls.vu
 import DeleteConfirm from '../components/DeleteConfirm.vue'
 import Pagination from '../components/Pagination.vue'
 import FiltersChips from '../components/FiltersChips.vue'
-import { EXERCISE_CATEGORIES, EXERCISE_MATERIALS, normalizeCourt } from '../constants'
+import {EXERCISE_CATEGORIES, EXERCISE_MATERIALS, normalizeCourt} from '../constants'
 import store from '../store'
-import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
-import { useRoute } from 'vue-router'
-import { ensureSampleExercises } from '../data/sampleExercises'
+import {ref, computed, watch, nextTick, onMounted, onBeforeUnmount} from 'vue'
+import {useRoute} from 'vue-router'
+import {ensureSampleExercises} from '../data/sampleExercises'
 import UiButton from '../components/ui/Button.vue'
 
 export default {
-  components: { ExerciseCardItem, ExerciseListItem, ExerciseForm, Modal, PageHeader, FiltersPanel, ExercisesTopControls, DeleteConfirm, Pagination, FiltersChips, UiButton },
+  components: {
+    ExerciseCardItem,
+    ExerciseListItem,
+    ExerciseForm,
+    Modal,
+    PageHeader,
+    FiltersPanel,
+    ExercisesTopControls,
+    DeleteConfirm,
+    Pagination,
+    FiltersChips,
+    UiButton
+  },
   setup() {
     // Sort state
     const sortBy = ref('dateCreated') // 'dateCreated' | 'name'
     const sortDir = ref('desc') // 'asc' | 'desc'
     // Backfill dateCreated for any pre-existing exercises missing it (defensive, non-destructive)
-    store.state.exercises.forEach(e => { if (!e.dateCreated) e.dateCreated = new Date().toISOString() })
+    store.state.exercises.forEach(e => {
+      if (!e.dateCreated) e.dateCreated = new Date().toISOString()
+    })
     const LS_FILTER_KEY = 'exerciseFilters'
     const LS_Q_KEY = 'exerciseQ'
 
     // Load persisted search query
     const q = ref((() => {
-      try { return localStorage.getItem(LS_Q_KEY) || '' } catch (_) { return '' }
+      try {
+        return localStorage.getItem(LS_Q_KEY) || ''
+      } catch (_) {
+        return ''
+      }
     })())
     const isSearching = ref(false)
     const searchInputRef = ref(null)
-    function openHeaderSearch(){
+
+    function openHeaderSearch() {
       isSearching.value = true
-      try { headerMenuOpen.value = false } catch(_) {}
-      nextTick(() => { try { searchInputRef.value && searchInputRef.value.focus() } catch(_) {} })
+      try {
+        headerMenuOpen.value = false
+      } catch (_) {
+      }
+      nextTick(() => {
+        try {
+          searchInputRef.value && searchInputRef.value.focus()
+        } catch (_) {
+        }
+      })
     }
-    function clearHeaderSearch(){
+
+    function clearHeaderSearch() {
       q.value = ''
       nextTick(() => {
         try {
           const el = searchInputRef.value
           if (el && typeof el.focus === 'function') {
             el.focus()
-            try { if (typeof el.setSelectionRange === 'function') el.setSelectionRange(el.value.length, el.value.length) } catch (_) {}
+            try {
+              if (typeof el.setSelectionRange === 'function') el.setSelectionRange(el.value.length, el.value.length)
+            } catch (_) {
+            }
           }
-        } catch (_) {}
+        } catch (_) {
+        }
       })
     }
-    function closeHeaderSearch(){ isSearching.value = false }
+
+    function closeHeaderSearch() {
+      isSearching.value = false
+    }
+
     const route = useRoute()
     const isSmallScreen = ref(false)
-    function updateSmallScreen(){
-      try { isSmallScreen.value = (window.innerWidth || document.documentElement.clientWidth) < 768 } catch(_) { isSmallScreen.value = false }
+
+    function updateSmallScreen() {
+      try {
+        isSmallScreen.value = (window.innerWidth || document.documentElement.clientWidth) < 768
+      } catch (_) {
+        isSmallScreen.value = false
+      }
     }
+
     const filter = ref((() => {
       try {
         const raw = localStorage.getItem(LS_FILTER_KEY)
-        if (!raw) return { category: '', players: [1, 20], intensity: [1, 5], favorites: false, court: [], materials: [] }
+        if (!raw) return {category: '', players: [1, 20], intensity: [1, 5], favorites: false, court: [], materials: []}
         const obj = JSON.parse(raw) || {}
         const category = typeof obj.category === 'string' ? obj.category : ''
         let players = Array.isArray(obj.players) && obj.players.length === 2 ? [Number(obj.players[0]) || 1, Number(obj.players[1]) || 20] : [1, 20]
@@ -372,9 +422,9 @@ export default {
         const favorites = !!obj.favorites
         const court = Array.isArray(obj.court) ? obj.court.filter(Boolean) : []
         const materials = Array.isArray(obj.materials) ? obj.materials.filter(Boolean) : []
-        return { category, players, intensity, favorites, court, materials }
+        return {category, players, intensity, favorites, court, materials}
       } catch (_) {
-        return { category: '', players: [1, 20], intensity: [1, 5], favorites: false, court: [], materials: [] }
+        return {category: '', players: [1, 20], intensity: [1, 5], favorites: false, court: [], materials: []}
       }
     })())
     const showForm = ref(false)
@@ -387,10 +437,21 @@ export default {
     const headerMenuOpen = ref(false)
     const headerMenuRef = ref(null)
     const headerMenuBtnRef = ref(null)
-    function closeHeaderMenu(){ headerMenuOpen.value = false }
-    function selectView(mode){ setViewMode(mode); closeHeaderMenu() }
-    function onDocKeydown(e){ if (e && e.key === 'Escape') closeHeaderMenu() }
-    function onDocMousedown(e){
+
+    function closeHeaderMenu() {
+      headerMenuOpen.value = false
+    }
+
+    function selectView(mode) {
+      setViewMode(mode);
+      closeHeaderMenu()
+    }
+
+    function onDocKeydown(e) {
+      if (e && e.key === 'Escape') closeHeaderMenu()
+    }
+
+    function onDocMousedown(e) {
       try {
         const m = headerMenuRef.value
         const b = headerMenuBtnRef.value
@@ -398,18 +459,28 @@ export default {
         if (!t) return
         if ((m && m.contains(t)) || (b && b.contains(t))) return
         closeHeaderMenu()
-      } catch(_) {}
+      } catch (_) {
+      }
     }
 
     // View mode: 'card' (default) or 'list', persisted in localStorage
     const viewMode = ref((() => {
-      try { return localStorage.getItem('exerciseView') === 'list' ? 'list' : 'card' } catch(_) { return 'card' }
+      try {
+        return localStorage.getItem('exerciseView') === 'list' ? 'list' : 'card'
+      } catch (_) {
+        return 'card'
+      }
     })())
-    function setViewMode(mode){
+
+    function setViewMode(mode) {
       if (mode !== 'card' && mode !== 'list') return
       viewMode.value = mode
-      try { localStorage.setItem('exerciseView', mode) } catch(_) {}
+      try {
+        localStorage.setItem('exerciseView', mode)
+      } catch (_) {
+      }
     }
+
     const pendingDeleteId = ref(null)
     const deleteName = computed(() => {
       const id = pendingDeleteId.value
@@ -425,6 +496,7 @@ export default {
       formKey.value++
       showForm.value = true
     }
+
     function closeForm() {
       editItem.value = null
       showForm.value = false
@@ -443,10 +515,12 @@ export default {
       pendingDeleteId.value = id
       showDeleteModal.value = true
     }
+
     function cancelDelete() {
       pendingDeleteId.value = null
       showDeleteModal.value = false
     }
+
     function confirmDelete() {
       const id = pendingDeleteId.value
       if (id != null) {
@@ -455,10 +529,14 @@ export default {
       pendingDeleteId.value = null
       showDeleteModal.value = false
     }
+
     function onDuplicate(id) {
       store.duplicateExercise(id)
     }
-    function onToggleFav(id) { store.toggleFavorite(id) }
+
+    function onToggleFav(id) {
+      store.toggleFavorite(id)
+    }
 
     // Helper: kijkt of spelers-bereiken overlappen (houdt rekening met maxPlayers = null)
     function playersOverlap(ex, selMin, selMax) {
@@ -474,8 +552,8 @@ export default {
       const selIntMax = filter.value.intensity[1]
       const selFav = !!filter.value.favorites
       const selCourts = Array.isArray(filter.value.court)
-        ? filter.value.court.map(c => normalizeCourt(c)).filter(Boolean)
-        : []
+          ? filter.value.court.map(c => normalizeCourt(c)).filter(Boolean)
+          : []
       const selMaterials = Array.isArray(filter.value.materials) ? filter.value.materials : []
 
       return store.state.exercises.filter(e => {
@@ -529,13 +607,13 @@ export default {
         if (by === 'name') {
           const an = (a.name || '').toString().toLowerCase()
           const bn = (b.name || '').toString().toLowerCase()
-          const cmp = an.localeCompare(bn, 'nl', { sensitivity: 'base' })
+          const cmp = an.localeCompare(bn, 'nl', {sensitivity: 'base'})
           if (cmp !== 0) return cmp * m
-          return ((a.id||0) - (b.id||0)) * m
+          return ((a.id || 0) - (b.id || 0)) * m
         } else { // dateCreated
           const ad = new Date(a.dateCreated || 0).getTime() || 0
           const bd = new Date(b.dateCreated || 0).getTime() || 0
-          if (ad === bd) return ((a.id||0) - (b.id||0)) * m
+          if (ad === bd) return ((a.id || 0) - (b.id || 0)) * m
           return (ad - bd) * m
         }
       })
@@ -563,35 +641,66 @@ export default {
       page.value = np
       nextTick(() => {
         // ensure DOM has swapped items before re-enabling transitions
-        setTimeout(() => { pageSwitching.value = false }, 0)
+        setTimeout(() => {
+          pageSwitching.value = false
+        }, 0)
       })
     }
-    function goPrev() { setPage(page.value - 1) }
-    function goNext() { setPage(page.value + 1) }
+
+    function goPrev() {
+      setPage(page.value - 1)
+    }
+
+    function goNext() {
+      setPage(page.value + 1)
+    }
 
 
     // Chip clear helpers
-    function clearSearch(){ q.value = '' }
-    function clearCategory(){ filter.value.category = '' }
-    function clearPlayers(){ filter.value.players = [1, 20] }
-    function clearIntensity(){ filter.value.intensity = [1, 5] }
-    function clearCourt(kind){
+    function clearSearch() {
+      q.value = ''
+    }
+
+    function clearCategory() {
+      filter.value.category = ''
+    }
+
+    function clearPlayers() {
+      filter.value.players = [1, 20]
+    }
+
+    function clearIntensity() {
+      filter.value.intensity = [1, 5]
+    }
+
+    function clearCourt(kind) {
       const arr = Array.isArray(filter.value.court) ? filter.value.court.slice() : []
       filter.value.court = arr.filter(v => v !== kind)
     }
-    function clearMaterial(m){
+
+    function clearMaterial(m) {
       const arr = Array.isArray(filter.value.materials) ? filter.value.materials.slice() : []
       filter.value.materials = arr.filter(v => v !== m)
     }
-    function clearFavorites(){ filter.value.favorites = false }
+
+    function clearFavorites() {
+      filter.value.favorites = false
+    }
 
     // Reset to first page when query, filters or sorting change
-    watch([q, sortBy, sortDir], () => { page.value = 1 })
-    watch(filter, () => { page.value = 1 }, { deep: true })
+    watch([q, sortBy, sortDir], () => {
+      page.value = 1
+    })
+    watch(filter, () => {
+      page.value = 1
+    }, {deep: true})
 
     // Persist search query to localStorage
     watch(q, (val) => {
-      try { localStorage.setItem(LS_Q_KEY, val || '') } catch (_) {}
+      try {
+        localStorage.setItem(LS_Q_KEY, val || '')
+      } catch (_) {
+      }
     })
 
     // Persist filters to localStorage (normalize before saving)
@@ -606,8 +715,9 @@ export default {
           materials: Array.isArray(f.materials) ? f.materials.filter(Boolean) : []
         }
         localStorage.setItem(LS_FILTER_KEY, JSON.stringify(snap))
-      } catch (_) {}
-    }, { deep: true })
+      } catch (_) {
+      }
+    }, {deep: true})
 
     // Clamp current page when the sorted results length changes (e.g., delete/filter)
     watch(sorted, () => {
@@ -665,8 +775,14 @@ export default {
     }
 
     function scheduleShowOnIdle() {
-      if (idleTimer) { clearTimeout(idleTimer); idleTimer = null }
-      idleTimer = setTimeout(() => { fabHidden.value = false; idleTimer = null }, IDLE_SHOW_MS)
+      if (idleTimer) {
+        clearTimeout(idleTimer);
+        idleTimer = null
+      }
+      idleTimer = setTimeout(() => {
+        fabHidden.value = false;
+        idleTimer = null
+      }, IDLE_SHOW_MS)
     }
 
     function onScrollFab() {
@@ -699,9 +815,15 @@ export default {
       try {
         if (route && route.query && (route.query.focusSearch === '1' || route.query.focusSearch === 1 || route.query.focusSearch === true)) {
           isSearching.value = true
-          nextTick(() => { try { searchInputRef.value && searchInputRef.value.focus() } catch(_) {} })
+          nextTick(() => {
+            try {
+              searchInputRef.value && searchInputRef.value.focus()
+            } catch (_) {
+            }
+          })
         }
-      } catch(_) {}
+      } catch (_) {
+      }
       // Detect the scroll container used by the app shell (App.vue uses main.flex-1.overflow-auto)
       const el = document.querySelector('main.flex-1.overflow-auto')
       scrollEl.value = el || window
@@ -709,7 +831,7 @@ export default {
       lastScrollY.value = getScrollY()
       // Initialize scroll-to-top visibility
       showScrollTop.value = lastScrollY.value > SCROLL_TOP_THRESHOLD
-      scrollTarget.addEventListener('scroll', onScrollFab, { passive: true })
+      scrollTarget.addEventListener('scroll', onScrollFab, {passive: true})
 
       // Header menu listeners
       document.addEventListener('mousedown', onDocMousedown)
@@ -718,7 +840,10 @@ export default {
     onBeforeUnmount(() => {
       window.removeEventListener('resize', updateSmallScreen)
       if (scrollTarget) scrollTarget.removeEventListener('scroll', onScrollFab)
-      if (idleTimer) { clearTimeout(idleTimer); idleTimer = null }
+      if (idleTimer) {
+        clearTimeout(idleTimer);
+        idleTimer = null
+      }
       document.removeEventListener('mousedown', onDocMousedown)
       document.removeEventListener('keydown', onDocKeydown)
     })
@@ -729,7 +854,7 @@ export default {
         if (y <= 0) return
         const target = scrollTarget || window
         if (typeof target.scrollTo === 'function') {
-          target.scrollTo({ top: 0, behavior: 'smooth' })
+          target.scrollTo({top: 0, behavior: 'smooth'})
         } else {
           if (target === window) {
             document.documentElement.scrollTop = 0
@@ -740,7 +865,10 @@ export default {
         }
       } catch (_) {
         // Fallback to window scroll
-        try { window.scrollTo(0, 0) } catch (_) {}
+        try {
+          window.scrollTo(0, 0)
+        } catch (_) {
+        }
       }
     }
 
@@ -820,27 +948,33 @@ export default {
 .exercise-list-move {
   transition: transform 220ms ease, opacity 220ms ease;
 }
+
 /* Enter animation for new items */
 .exercise-list-enter-active {
   transition: transform 220ms ease, opacity 220ms ease;
 }
+
 .exercise-list-enter-from {
   opacity: 0;
   transform: translateY(-8px) scale(0.98);
 }
+
 .exercise-list-enter-to {
   opacity: 1;
   transform: translateY(0) scale(1);
 }
+
 /* Optional leave animation (e.g., on delete) */
 .exercise-list-leave-active {
   transition: transform 180ms ease, opacity 180ms ease;
   position: absolute; /* avoid layout gap during leave */
 }
+
 .exercise-list-leave-from {
   opacity: 1;
   transform: translateY(0) scale(1);
 }
+
 .exercise-list-leave-to {
   opacity: 0;
   transform: translateY(8px) scale(0.98);

@@ -10,15 +10,10 @@
 /* Global utility to match input styling outside forms as well */
 .form-input {
   @apply w-full px-3 py-2 border rounded-xl bg-white/80 backdrop-blur-sm transition-modern border-gray-300 text-gray-900 placeholder:text-gray-400;
-
-  &:focus {
-    @apply outline-none ring-2 ring-blue-500/50 border-blue-400/50;
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  }
+  
 
   &:hover {
-    background: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.9);
     @apply border-gray-300;
   }
 }
