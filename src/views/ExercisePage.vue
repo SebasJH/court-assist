@@ -6,12 +6,21 @@
             <Search class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               ref="searchInputRef"
-              class="form-input w-full !pl-9 pr-9"
+              class="form-input w-full !pl-9 !pr-10"
               :value="q"
               @input="e => q = (e && e.target ? e.target.value : '')"
               placeholder="Zoek oefeningen..."
               aria-label="Zoek oefeningen"
             />
+            <button
+              v-if="q && q.length"
+              type="button"
+              class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              aria-label="Zoekopdracht wissen"
+              @click="clearHeaderSearch"
+            >
+              <X class="w-5 h-5" />
+            </button>
           </div>
           <h1 v-else class="text-2xl md:text-3xl font-bold text-gray-800 leading-tight truncate md:hidden">Oefeningen</h1>
           <h1 class="hidden md:block text-3xl font-bold text-gray-800 leading-tight truncate">Oefeningen</h1>
@@ -30,16 +39,6 @@
             @click="openHeaderSearch"
           >
             <Search class="w-5 h-5" />
-          </button>
-          <!-- Mobile clear search (replaces search + ellipsis while searching) -->
-          <button
-            v-if="isSmallScreen && isSearching"
-            type="button"
-            class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
-            aria-label="Zoekopdracht wissen"
-            @click="clearHeaderSearch"
-          >
-            <X class="w-5 h-5" />
           </button>
 
           <button
@@ -331,7 +330,18 @@ export default {
       try { headerMenuOpen.value = false } catch(_) {}
       nextTick(() => { try { searchInputRef.value && searchInputRef.value.focus() } catch(_) {} })
     }
-    function clearHeaderSearch(){ q.value = '' }
+    function clearHeaderSearch(){
+      q.value = ''
+      nextTick(() => {
+        try {
+          const el = searchInputRef.value
+          if (el && typeof el.focus === 'function') {
+            el.focus()
+            try { if (typeof el.setSelectionRange === 'function') el.setSelectionRange(el.value.length, el.value.length) } catch (_) {}
+          }
+        } catch (_) {}
+      })
+    }
     function closeHeaderSearch(){ isSearching.value = false }
     const route = useRoute()
     const isSmallScreen = ref(false)
