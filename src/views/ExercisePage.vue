@@ -570,6 +570,8 @@ export default {
           ? filter.value.court.map(c => normalizeCourt(c)).filter(Boolean)
           : []
       const selMaterials = Array.isArray(filter.value.materials) ? filter.value.materials : []
+      const playersFilterActive = (typeof filter.value.players[0] === 'number' && Number.isFinite(filter.value.players[0])) || (typeof filter.value.players[1] === 'number' && Number.isFinite(filter.value.players[1]))
+      const intensityFilterActive = (typeof filter.value.intensity[0] === 'number' && Number.isFinite(filter.value.intensity[0])) || (typeof filter.value.intensity[1] === 'number' && Number.isFinite(filter.value.intensity[1]))
 
       return store.state.exercises.filter(e => {
         // zoek op titel en beschrijving (geen fallback naar shortDescription)
@@ -583,7 +585,7 @@ export default {
         // categorie (nu array)
         if (filter.value.category && !e.category.includes(filter.value.category)) return false
 
-        // court type (checkboxes allow selecting one or both). If none selected, don't filter.
+        // court type (checkboxes allow selecting one of both). If none selected, don't filter.
         if (selCourts.length > 0) {
           const ec = normalizeCourt(e.court)
           // If both options are selected, include all (also those with empty court)
@@ -600,12 +602,17 @@ export default {
           }
         }
 
-        // aantal spelers (range overlap)
+        // aantal spelers (range overlap) — exclude items without players when filter active
+        if (playersFilterActive) {
+          const hasItemPlayers = (typeof e.minPlayers === 'number' && Number.isFinite(e.minPlayers)) || (typeof e.maxPlayers === 'number' && Number.isFinite(e.maxPlayers))
+          if (!hasItemPlayers) return false
+        }
         if (!playersOverlap(e, selPlayersMin, selPlayersMax)) return false
 
-        // intensiteit binnen bereik (oefeningen zonder intensiteit blijven zichtbaar)
-        const intensityVal = typeof e.intensity === 'number' ? e.intensity : null
-        if (intensityVal !== null) {
+        // intensiteit binnen bereik — exclude items without intensity when filter active
+        const intensityVal = (typeof e.intensity === 'number' && Number.isFinite(e.intensity)) ? e.intensity : null
+        if (intensityFilterActive) {
+          if (intensityVal === null) return false
           if (intensityVal < selIntMin || intensityVal > selIntMax) return false
         }
 
