@@ -26,7 +26,7 @@
         
         <!-- Favorite toggle -->
         <button
-          class="star hidden md:inline-flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors duration-200 w-10 h-10 cursor-pointer"
+          class="star hidden md:inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
           :aria-pressed="exercise.favorite ? 'true' : 'false'"
           :title="exercise.favorite ? 'Verwijder uit favorieten' : 'Markeer als favoriet'"
           @click.stop="toggleFav"
