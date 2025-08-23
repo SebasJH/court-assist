@@ -330,7 +330,7 @@
     </div>
 
     <!-- Buttons -->
-    <div class="px-10 pt-5 border-t flex justify-end gap-3">
+    <div class="px-10 py-5 border-t flex justify-end gap-3">
       <UiButton color="secondary" outline @click="$emit('close')">Annuleren</UiButton>
       <UiButton :color="isEdit ? 'primary' : 'accent'" type="submit" class="btn-submit">
         {{ isEdit ? 'Opslaan' : 'Aanmaken' }}

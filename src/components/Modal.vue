@@ -21,7 +21,7 @@
 
     <!-- Centered dialog variant -->
     <template v-else>
-      <div class="fixed inset-0 flex min-h-full items-end sm:items-center justify-center p-4">
+      <div class="fixed inset-0 flex min-h-full items-end sm:items-center justify-center p-4" @click="$emit('close')">
         <div
           :class="dialogPanelClass"
           @click.stop
@@ -37,7 +37,7 @@
           </button>
 
           <!-- Content -->
-          <div class="relative" :class="contentPaddingClass">
+          <div class="relative flex-1 min-h-0 overflow-y-auto" :class="contentPaddingClass">
             <slot />
           </div>
         </div>
@@ -78,7 +78,6 @@ export default {
         const duration = this.drawer ? 280 : 240
         this.closeTimer = setTimeout(() => {
           this.visible = false
-          this.isClosing = false
           this.closeTimer = null
         }, duration)
       }
@@ -93,7 +92,7 @@ export default {
       return [...base, anim]
     },
     dialogPanelClass() {
-      const base = ['relative w-full sm:max-w-4xl glass-card rounded-t-2xl sm:rounded-2xl shadow-glass overflow-hidden sm:overflow-visible max-h-[85vh] sm:max-h-none']
+      const base = ['relative w-full sm:max-w-4xl glass-card rounded-t-2xl sm:rounded-2xl shadow-glass overflow-hidden flex flex-col max-h-[85vh] sm:max-h-[85vh]']
       const anim = this.isClosing ? 'animate-dialog-out' : 'animate-dialog-in'
       return [...base, anim]
     }

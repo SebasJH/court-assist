@@ -43,7 +43,6 @@ export default {
         this.clearTimer()
         this.closeTimer = setTimeout(() => {
           this.visible = false
-          this.isClosing = false
           this.closeTimer = null
         }, 280)
       }
