@@ -8,7 +8,10 @@
     @keydown.enter.prevent="goToDetail"
   >
     <!-- Icon -->
-    <div class="bg-gray-100 w-10 h-10 md:w-12 md:h-12 rounded-lg flex justify-center items-center shrink-0">
+    <div class="bg-gray-100 w-10 h-10 md:w-12 md:h-12 rounded-lg flex justify-center items-center shrink-0 relative">
+      <div v-if="exercise.favorite" class="sm:hidden absolute -top-1 -left-1 w-5 h-5 rounded-md bg-white shadow z-10 flex items-center justify-center pointer-events-none" aria-label="Favoriet" role="img">
+        <Star class="w-3 h-3 text-yellow-500" :fill="'currentColor'" :stroke="'currentColor'"/>
+      </div>
       <component
         v-if="exercise.icon || exercise.imageIcon"
         :is="exercise.icon || exercise.imageIcon"
