@@ -11,7 +11,7 @@
       </div>
       <div class="ml-auto flex items-center gap-2">
         <button
-          class="xl:hidden inline-flex rounded-md p-2 hover:bg-gray-100 text-gray-600 transition-colors duration-200"
+          class="xl:hidden inline-flex justify-center items-center rounded-md w-10 h-10 border border-gray-300 hover:bg-gray-50 text-gray-600 transition-colors duration-200"
           title="Sluit menu"
           aria-label="Sluit menu"
           @click="$emit('close-mobile')"
