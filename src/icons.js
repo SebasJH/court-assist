@@ -9,6 +9,7 @@ import {
     ArrowLeftToLine,
     ArrowRightToLine,
     ArrowUpDown,
+    ArrowUp,
 
     TrafficCone,
     Dumbbell,
@@ -59,6 +60,7 @@ export function registerIcons(app) {
     app.component('ArrowLeftToLine', ArrowLeftToLine)
     app.component('ArrowRightToLine', ArrowRightToLine)
     app.component('ArrowUpDown', ArrowUpDown)
+    app.component('ArrowUp', ArrowUp)
 
     app.component('TrafficCone', TrafficCone)
     app.component('Dumbbell', Dumbbell)

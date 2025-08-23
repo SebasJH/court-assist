@@ -227,6 +227,17 @@
     @click="openForm()"
   />
 
+  <!-- Mobile scroll-to-top button -->
+  <UiButton
+    :class="['md:hidden fixed safe-bottom-5 left-1/2 -translate-x-1/2 z-[3000] !p-0 w-12 h-12 shadow-lg', 'transition-opacity duration-200', { 'opacity-0 pointer-events-none': !showScrollTop }]"
+    color="secondary"
+    icon="ArrowUp"
+    iconClass="w-6 h-6"
+    aria-label="Naar boven"
+    title="Naar boven"
+    @click="scrollToTop"
+  />
+
 </template>
 
 <script>
@@ -514,12 +525,14 @@ export default {
 
     // Mobile FAB visibility control on scroll (hide on scroll down, show on scroll up or after 2s idle)
     const fabHidden = ref(false)
+    const showScrollTop = ref(false)
     const scrollEl = ref(null)
     const lastScrollY = ref(0)
     let idleTimer = null
     let scrollTarget = null
     const IDLE_SHOW_MS = 1200
     const DELTA_THRESHOLD = 3
+    const SCROLL_TOP_THRESHOLD = 60
 
     function getScrollY() {
       if (scrollEl.value && scrollEl.value !== window) {
@@ -535,13 +548,16 @@ export default {
 
     function onScrollFab() {
       const y = getScrollY()
+      // Toggle visibility for scroll-to-top button when scrolled beyond threshold
+      showScrollTop.value = y > SCROLL_TOP_THRESHOLD
+
       const delta = y - lastScrollY.value
       if (Math.abs(delta) >= DELTA_THRESHOLD) {
         if (delta > 0) {
-          // Scrolling down -> hide
+          // Scrolling down -> hide create FAB
           fabHidden.value = true
         } else if (delta < 0) {
-          // Scrolling up -> show immediately
+          // Scrolling up -> show FAB immediately
           fabHidden.value = false
         }
         lastScrollY.value = y
@@ -557,6 +573,8 @@ export default {
       scrollEl.value = el || window
       scrollTarget = scrollEl.value === window ? window : scrollEl.value
       lastScrollY.value = getScrollY()
+      // Initialize scroll-to-top visibility
+      showScrollTop.value = lastScrollY.value > SCROLL_TOP_THRESHOLD
       scrollTarget.addEventListener('scroll', onScrollFab, { passive: true })
 
       // Header menu listeners
@@ -569,6 +587,27 @@ export default {
       document.removeEventListener('mousedown', onDocMousedown)
       document.removeEventListener('keydown', onDocKeydown)
     })
+
+    function scrollToTop() {
+      try {
+        const y = getScrollY()
+        if (y <= 0) return
+        const target = scrollTarget || window
+        if (typeof target.scrollTo === 'function') {
+          target.scrollTo({ top: 0, behavior: 'smooth' })
+        } else {
+          if (target === window) {
+            document.documentElement.scrollTop = 0
+            document.body && (document.body.scrollTop = 0)
+          } else if (target && target.scrollTop != null) {
+            target.scrollTop = 0
+          }
+        }
+      } catch (_) {
+        // Fallback to window scroll
+        try { window.scrollTo(0, 0) } catch (_) {}
+      }
+    }
 
     return {
       q,
@@ -625,8 +664,10 @@ export default {
       // constants for chips
       DEFAULT_PLAYERS,
       DEFAULT_INTENSITY,
-      // mobile FAB state
-      fabHidden
+      // mobile scroll UI
+      fabHidden,
+      showScrollTop,
+      scrollToTop
     }
   }
 }
