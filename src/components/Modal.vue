@@ -1,161 +1,184 @@
 <!-- components/Modal.vue -->
 <template>
-  <div v-if="visible" class="fixed inset-0 z-[4900]">
-    <!-- Backdrop (no animation) -->
-    <div 
-      class="fixed inset-0 bg-black/20 backdrop-blur-sm"
-      @click="$emit('close')"
-    ></div>
-
-    <!-- Drawer variant -->
-    <template v-if="drawer">
-      <div class="fixed inset-y-0" :class="side === 'right' ? 'right-0' : 'left-0'">
+  <transition name="modal-overlay-fade" appear>
+    <div
+        v-show="open"
+        class="fixed inset-0 z-[5000] flex bg-black/50"
+        :class="overlayClass"
+        @mousedown="onOverlayMouseDown"
+        @click="onOverlayClick"
+    >
+      <!-- Scrollbare content -->
+      <transition :name="drawer ? (side === 'left' ? 'drawer-left' : 'drawer-right') : 'modal-bottom'" appear>
         <div
-          :class="drawerPanelClass"
-          @click.stop
+            v-show="open"
+            ref="modalContent"
+            class="relative bg-white shadow-xl overflow-y-auto modal-panel"
+            :class="contentClass"
+            role="dialog"
+            aria-modal="true"
         >
-          <slot />
-        </div>
-      </div>
-    </template>
-
-    <!-- Centered dialog variant -->
-    <template v-else>
-      <div class="fixed inset-0 flex min-h-full items-end sm:items-center justify-center p-4" @click="$emit('close')">
-        <div
-          :class="dialogPanelClass"
-          @click.stop
-        >
-          <!-- Close button -->
           <button
-            v-if="!hideDefaultClose"
-            @click="$emit('close')"
-            class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-8 h-8 rounded-full glass hover:glass-button transition-modern"
-            aria-label="Sluiten"
+              v-if="!hideDefaultClose"
+              class="absolute top-5 right-5 z-[10] text-gray-500 hover:text-black"
+              aria-label="Sluiten"
+              @click="$emit('close')"
           >
-            <X class="w-4 h-4" />
+            <X />
           </button>
 
-          <!-- Content -->
-          <div class="relative flex-1 min-h-0 overflow-y-auto" :class="contentPaddingClass">
-            <slot />
-          </div>
+          <slot />
         </div>
-      </div>
-    </template>
-  </div>
+      </transition>
+    </div>
+  </transition>
 </template>
 
 <script>
 export default {
   props: {
     open: { type: Boolean, default: false },
-    hideDefaultClose: { type: Boolean, default: false },
+    maxWidthClass: { type: String, default: 'max-w-3xl' },
+    // Drawer mode (right/left side panel)
     drawer: { type: Boolean, default: false },
     side: { type: String, default: 'right' },
-    drawerWidthClass: { type: String, default: 'w-full max-w-md sm:max-w-lg' },
-    contentPaddingClass: { type: String, default: '' }
+    drawerWidthClass: { type: String, default: 'max-w-md' },
+    contentPaddingClass: { type: String, default: 'p-8' },
+    hideDefaultClose: { type: Boolean, default: false }
   },
   emits: ['close'],
   data() {
     return {
-      visible: this.open,
-      isClosing: false,
-      closeTimer: null
-    }
-  },
-  watch: {
-    open(newVal) {
-      this.clearTimer()
-      if (newVal) {
-        // Opening: show immediately and reset closing state
-        this.visible = true
-        this.isClosing = false
-      } else {
-        // Start closing animation (keep mounted until animation completes)
-        if (!this.visible) return
-        this.isClosing = true
-        const duration = this.drawer ? 280 : 240
-        this.closeTimer = setTimeout(() => {
-          this.visible = false
-          this.closeTimer = null
-        }, duration)
-      }
+      mouseStartedOnOverlay: false
     }
   },
   computed: {
-    drawerPanelClass() {
-      const base = ['h-full w-full glass-card shadow-glass overflow-hidden', this.drawerWidthClass]
-      const anim = this.isClosing
-        ? (this.side === 'right' ? 'animate-slide-out-right' : 'animate-slide-out-left')
-        : (this.side === 'right' ? 'animate-slide-in-right' : 'animate-slide-in-left')
-      return [...base, anim]
+    overlayClass() {
+      if (!this.drawer) return 'items-end md:items-center justify-center'
+      // stretch vertically and align to side
+      return this.side === 'left' ? 'items-stretch justify-start' : 'items-stretch justify-end'
     },
-    dialogPanelClass() {
-      const base = ['relative w-full sm:max-w-4xl glass-card rounded-t-2xl sm:rounded-2xl shadow-glass overflow-hidden flex flex-col max-h-[85vh] sm:max-h-[85vh]']
-      const anim = this.isClosing ? 'animate-dialog-out' : 'animate-dialog-in'
-      return [...base, anim]
+    contentClass() {
+      if (!this.drawer) {
+        return `rounded-t-2xl md:rounded-2xl w-full ${this.maxWidthClass} max-h-[90vh] ${this.contentPaddingClass} pb-safe-6`
+      }
+      return `h-full w-full ${this.drawerWidthClass} ${this.contentPaddingClass}`
     }
   },
   methods: {
-    clearTimer() {
-      if (this.closeTimer) {
-        clearTimeout(this.closeTimer)
-        this.closeTimer = null
+    onOverlayMouseDown(e) {
+      // Flag zetten als klik begon op overlay
+      this.mouseStartedOnOverlay = e.target === e.currentTarget
+    },
+    onOverlayClick(e) {
+      // Alleen sluiten als klik begon en eindigde op overlay
+      if (e.target === e.currentTarget && this.mouseStartedOnOverlay) {
+        this.$emit('close')
       }
+      // Reset flag
+      this.mouseStartedOnOverlay = false
+    },
+    onKeyDown(e) {
+      if (e.key === 'Escape') this.$emit('close')
     }
   },
-  beforeUnmount() {
-    this.clearTimer()
+  mounted() {
+    window.addEventListener('keydown', this.onKeyDown)
+  },
+  unmounted() {
+    window.removeEventListener('keydown', this.onKeyDown)
   }
 }
 </script>
 
-<style scoped>
-@keyframes slideInRight {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
-}
-@keyframes slideInLeft {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(0); }
-}
-@keyframes slideOutRight {
-  from { transform: translateX(0); }
-  to { transform: translateX(100%); }
-}
-@keyframes slideOutLeft {
-  from { transform: translateX(0); }
-  to { transform: translateX(-100%); }
-}
-.animate-slide-in-right { animation: slideInRight 0.28s ease-out; }
-.animate-slide-in-left { animation: slideInLeft 0.28s ease-out; }
-.animate-slide-out-right { animation: slideOutRight 0.28s ease-in; }
-.animate-slide-out-left { animation: slideOutLeft 0.28s ease-in; }
 
-/* Dialog (non-drawer) responsive animations */
-@keyframes dialogInMobile {
-  from { transform: translateY(100%); opacity: 1; }
-  to { transform: translateY(0); opacity: 1; }
+
+<style scoped>
+/* Overlay fade */
+.modal-overlay-fade-enter-active,
+.modal-overlay-fade-leave-active {
+  transition: opacity 200ms ease;
 }
-@keyframes dialogOutMobile {
-  from { transform: translateY(0); opacity: 1; }
-  to { transform: translateY(100%); opacity: 1; }
+.modal-overlay-fade-enter-from,
+.modal-overlay-fade-leave-to {
+  opacity: 0;
 }
-@keyframes dialogInDesktop {
-  from { transform: scale(0.96); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+
+/* Drawer slide (right/left) */
+.drawer-right-enter-active,
+.drawer-right-leave-active,
+.drawer-left-enter-active,
+.drawer-left-leave-active {
+  transition: transform 260ms ease, opacity 260ms ease;
 }
-@keyframes dialogOutDesktop {
-  from { transform: scale(1); opacity: 1; }
-  to { transform: scale(0.96); opacity: 0; }
+.drawer-right-enter-from,
+.drawer-right-leave-to {
+  transform: translateX(100%);
+  opacity: 0.9;
 }
-/* Default to mobile slide for small screens */
-.animate-dialog-in { animation: dialogInMobile 0.24s ease-out; }
-.animate-dialog-out { animation: dialogOutMobile 0.22s ease-in; }
-/* On >= sm screens, switch to scale+fade */
-@media (min-width: 640px) {
-  .animate-dialog-in { animation: dialogInDesktop 0.24s ease-out; }
-  .animate-dialog-out { animation: dialogOutDesktop 0.20s ease-in; }
+.drawer-right-enter-to,
+.drawer-right-leave-from {
+  transform: translateX(0);
+  opacity: 1;
+}
+.drawer-left-enter-from,
+.drawer-left-leave-to {
+  transform: translateX(-100%);
+  opacity: 0.9;
+}
+.drawer-left-enter-to,
+.drawer-left-leave-from {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* Centered modal subtle zoom */
+.modal-zoom-enter-active,
+.modal-zoom-leave-active {
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+.modal-zoom-enter-from,
+.modal-zoom-leave-to {
+  transform: translateY(-8px) scale(0.98);
+  opacity: 0;
+}
+.modal-zoom-enter-to,
+.modal-zoom-leave-from {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+/* Mobile-first bottom slide for non-drawer modals */
+.modal-bottom-enter-active,
+.modal-bottom-leave-active {
+  transition: transform 260ms ease, opacity 260ms ease;
+}
+.modal-bottom-enter-from,
+.modal-bottom-leave-to {
+  transform: translateY(100%);
+  opacity: 0.9;
+}
+.modal-bottom-enter-to,
+.modal-bottom-leave-from {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Desktop (md+) override: keep centered subtle zoom like before */
+@media (min-width: 768px) {
+  .modal-bottom-enter-active,
+  .modal-bottom-leave-active {
+    transition: transform 220ms ease, opacity 220ms ease;
+  }
+  .modal-bottom-enter-from,
+  .modal-bottom-leave-to {
+    transform: translateY(-8px) scale(0.98);
+    opacity: 0;
+  }
+  .modal-bottom-enter-to,
+  .modal-bottom-leave-from {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
 }
 </style>
