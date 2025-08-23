@@ -250,7 +250,7 @@
     </modal>
 
     <!-- Delete confirm modal -->
-    <modal :open="showDeleteModal" @close="cancelDelete">
+    <modal :open="showDeleteModal" @close="cancelDelete" contentPaddingClass="p-0" :hideDefaultClose="true">
       <DeleteConfirm :name="deleteName" @cancel="cancelDelete" @confirm="confirmDelete" />
     </modal>
   </div>

@@ -1,10 +1,9 @@
 <template>
   <PageHeader title="Trainingen" />
 
-  <div class="container mx-auto px-4 py-6">
-
+  <PageContainer>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <div class="library bg-white rounded-lg shadow-md p-6">
+      <PageSection customClass="library">
         <div class="flex justify-between items-center mb-4">
           <div class="text-sm font-medium text-gray-700">Bibliotheek</div>
           <div class="text-sm text-gray-500">Sleep oefeningen naar rechts</div>
@@ -22,9 +21,9 @@
             </div>
           </div>
         </div>
-      </div>
+      </PageSection>
 
-      <div class="program bg-white rounded-lg shadow-md p-6">
+      <PageSection customClass="program">
         <div class="flex justify-between items-center mb-4">
           <div class="flex items-center gap-2">
             <strong class="text-gray-700">Training: </strong>
@@ -54,22 +53,26 @@
           <UiButton color="primary" @click="saveProgram">Opslaan</UiButton>
           <UiButton color="secondary" @click="program.splice(0)">Leegmaken</UiButton>
         </div>
-      </div>
+      </PageSection>
     </div>
-  </div>
+  </PageContainer>
 </template>
 
 <script>
 import store from '../store'
 import { ref, computed } from 'vue'
-import PageHeader from '../components/PageHeader.vue'
-import ExerciseBadge from '../components/exercise/ExerciseBadge.vue'
-import UiButton from '../components/ui/Button.vue'
+import { PageHeader, PageContainer, PageSection, ExerciseBadge, UiButton } from '../components'
 import { ensureSampleExercises } from '../data/sampleExercises'
 import { hasPlayers, formatPlayersFromExercise, hasDuration as hasDurationField, hasCourt as hasCourtField, formatCourtFromExercise } from '../utils/exerciseFormat'
 
 export default {
-  components: { PageHeader, ExerciseBadge, UiButton },
+  components: { 
+    PageHeader, 
+    PageContainer, 
+    PageSection, 
+    ExerciseBadge, 
+    UiButton 
+  },
   setup(){
     // Ensure sample data exists even if user lands here first
     ensureSampleExercises(store)

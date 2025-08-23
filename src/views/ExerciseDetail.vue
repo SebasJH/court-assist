@@ -84,6 +84,7 @@
   </div>
 
   <div class="container mx-auto px-4 py-6" v-if="exercise">
+
     <!-- Edit modal -->
     <modal :open="showForm" @close="closeForm" :hideDefaultClose="true">
       <exercise-form
@@ -136,6 +137,7 @@
             @update:modelValue="([lo, hi]) => { detailsDraft.minPlayers = lo; detailsDraft.maxPlayers = hi }"
           />
         </div>
+
         <!-- Duration -->
         <div class="form-group col-span-4 md:col-span-2">
           <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1"><TimerReset class="w-4 h-4" /> Duur</label>
@@ -265,7 +267,7 @@ import PageHeader from '../components/PageHeader.vue'
 import Modal from '../components/Modal.vue'
 import ExerciseForm from '../components/exercise/ExerciseForm.vue'
 import DeleteConfirm from '../components/DeleteConfirm.vue'
-import ExerciseBadge from '../components/exercise/ExerciseBadge.vue'
+import ExerciseBadge from '../components/common/ExerciseBadge.vue'
 import IntensitySelector from '../components/form/IntensitySelector.vue'
 import RangeNumber from '../components/form/RangeNumber.vue'
 import { EXERCISE_CATEGORIES, EXERCISE_MATERIALS, normalizeCourt } from '../constants'

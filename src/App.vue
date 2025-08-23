@@ -26,9 +26,7 @@
 </template>
 
 <script>
-import Sidebar from './components/Sidebar.vue'
-import NotificationBar from './components/NotificationBar.vue'
-import MobileSidebarDrawer from './components/MobileSidebarDrawer.vue'
+import { Sidebar, NotificationBar, MobileSidebarDrawer } from './components'
 
 export default {
   name: 'App',

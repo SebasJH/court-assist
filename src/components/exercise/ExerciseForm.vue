@@ -349,7 +349,12 @@ import {EXERCISE_MATERIALS} from '../../constants'
 import UiButton from '../ui/Button.vue'
 
 export default {
-  components: {RichTextEditor, IconPicker, IntensitySelector, UiButton},
+  components: {
+    RichTextEditor, 
+    IconPicker, 
+    IntensitySelector, 
+    UiButton
+  },
   props: {
     initial: {type: Object, default: null},
     categories: {type: Array, default: () => []}

@@ -1,10 +1,29 @@
 <template>
-  <div>
-    <h3 class="text-lg font-semibold text-gray-800 mb-2">Bevestig verwijderen</h3>
-    <p class="text-gray-700 mb-6">Je staat op het punt "{{ name }}" te verwijderen, weet je dit zeker?</p>
-    <div class="flex justify-end gap-3">
-      <UiButton color="secondary" outline @click="$emit('cancel')">Annuleer</UiButton>
-      <UiButton color="danger" @click="$emit('confirm')">Verwijder</UiButton>
+  <div class="flex h-full flex-col">
+    <!-- Sticky header -->
+    <div class="sticky top-0 z-[1] bg-white px-10 pt-5 pb-4 border-b">
+      <div class="flex items-center justify-between gap-3">
+        <h3 class="text-xl font-bold text-gray-800">
+          Bevestig verwijderen
+        </h3>
+        <button
+          type="button"
+          class="text-gray-500 hover:text-black"
+          aria-label="Sluiten"
+          @click="$emit('cancel')"
+        >
+          <X class="w-5 h-5" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="px-10 pt-5 flex-1">
+      <p class="text-gray-700 mb-6">Je staat op het punt "{{ name }}" te verwijderen, weet je dit zeker?</p>
+      <div class="flex justify-end gap-3">
+        <UiButton color="secondary" outline @click="$emit('cancel')">Annuleer</UiButton>
+        <UiButton color="danger" @click="$emit('confirm')">Verwijder</UiButton>
+      </div>
     </div>
   </div>
 </template>
