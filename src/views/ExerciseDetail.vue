@@ -33,6 +33,17 @@
         >
           <Star :class="exercise.favorite ? 'w-5 h-5 text-yellow-500' : 'w-5 h-5 '" :fill="exercise.favorite ? 'currentColor' : 'none'" :stroke="exercise.favorite ? 'currentColor' : 'currentColor'" />
         </button>
+
+        <!-- Mobile search (only <md), left of ellipsis) -->
+        <button
+          type="button"
+          class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+          aria-label="Zoeken"
+          title="Zoeken"
+          @click.stop="openSearchFromDetail"
+        >
+          <Search class="w-5 h-5" />
+        </button>
         
         <!-- Menu button and dropdown -->
         <div class="relative">
@@ -282,6 +293,14 @@ function slugify(str) {
 const route = useRoute()
 const router = useRouter()
 const slug = computed(() => route.params.slug)
+
+function openSearchFromDetail() {
+  try {
+    router.push({ path: '/oefeningen', query: { focusSearch: '1' } })
+  } catch (_) {
+    try { router.push('/oefeningen?focusSearch=1') } catch (_) {}
+  }
+}
 
 const exercise = computed(() => {
   const list = store.state.exercises

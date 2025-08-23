@@ -4,6 +4,16 @@
       <div class="flex items-center justify-between gap-3 w-full">
         <div class="flex items-center gap-3 min-w-0">
           <button
+            v-if="mobileBack"
+            type="button"
+            class="xl:hidden inline-flex items-center justify-center w-10 h-10 shrink-0 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+            aria-label="Terug"
+            @click="onMobileBack"
+          >
+            <ArrowLeft class="w-5 h-5" />
+          </button>
+          <button
+            v-else
             type="button"
             class="xl:hidden inline-flex items-center justify-center w-10 h-10 shrink-0 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
             aria-label="Menu"
@@ -38,16 +48,29 @@
 <script>
 export default {
   name: 'PageHeader',
+  emits: ['mobile-back'],
   props: {
     title: { type: String, required: true },
     backTo: { type: String, default: null },
     backLabel: { type: String, default: 'Terug' },
-    tall: { type: Boolean, default: false }
+    tall: { type: Boolean, default: false },
+    mobileBack: { type: Boolean, default: false },
+    mobileBackEmitOnly: { type: Boolean, default: false }
   },
   methods: {
     openMobileSidebar() {
       // Dispatch a global event to let App.vue open the mobile sidebar drawer
       window.dispatchEvent(new CustomEvent('open-mobile-sidebar'))
+    },
+    onMobileBack() {
+      // Allow parent to handle back action (e.g., close search) when desired
+      this.$emit('mobile-back')
+      if (this.mobileBackEmitOnly) return
+      if (this.$router && this.$router.back) {
+        this.$router.back()
+      } else {
+        window.history.back()
+      }
     }
   }
 }

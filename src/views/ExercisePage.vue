@@ -1,9 +1,49 @@
 <template>
-  <PageHeader title="Oefeningen">
+  <PageHeader title="Oefeningen" :mobileBack="isSmallScreen && isSearching" :mobileBackEmitOnly="true" @mobile-back="closeHeaderSearch">
+      <template #lead>
+        <div class="flex items-center gap-3 min-w-0 w-full">
+          <div v-if="isSearching" class="relative w-full md:hidden">
+            <Search class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              ref="searchInputRef"
+              class="form-input w-full !pl-9 pr-9"
+              :value="q"
+              @input="e => q = (e && e.target ? e.target.value : '')"
+              placeholder="Zoek oefeningen..."
+              aria-label="Zoek oefeningen"
+            />
+          </div>
+          <h1 v-else class="text-2xl md:text-3xl font-bold text-gray-800 leading-tight truncate md:hidden">Oefeningen</h1>
+          <h1 class="hidden md:block text-3xl font-bold text-gray-800 leading-tight truncate">Oefeningen</h1>
+        </div>
+      </template>
       <template #actions>
         <div class="relative flex items-center gap-2">
           <UiButton class="hidden md:inline-flex" color="primary" icon="Plus" @click="openForm()">Nieuwe oefening</UiButton>
+
+          <!-- Mobile search toggle -->
           <button
+            v-if="!(isSmallScreen && isSearching)"
+            type="button"
+            class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+            aria-label="Zoeken"
+            @click="openHeaderSearch"
+          >
+            <Search class="w-5 h-5" />
+          </button>
+          <!-- Mobile clear search (replaces search + ellipsis while searching) -->
+          <button
+            v-if="isSmallScreen && isSearching"
+            type="button"
+            class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+            aria-label="Zoekopdracht wissen"
+            @click="clearHeaderSearch"
+          >
+            <X class="w-5 h-5" />
+          </button>
+
+          <button
+            v-if="!(isSmallScreen && isSearching)"
             ref="headerMenuBtnRef"
             type="button"
             class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
@@ -265,6 +305,7 @@ import FiltersChips from '../components/FiltersChips.vue'
 import { EXERCISE_CATEGORIES, EXERCISE_MATERIALS, normalizeCourt } from '../constants'
 import store from '../store'
 import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
+import { useRoute } from 'vue-router'
 import { ensureSampleExercises } from '../data/sampleExercises'
 import UiButton from '../components/ui/Button.vue'
 
@@ -277,6 +318,20 @@ export default {
     // Backfill dateCreated for any pre-existing exercises missing it (defensive, non-destructive)
     store.state.exercises.forEach(e => { if (!e.dateCreated) e.dateCreated = new Date().toISOString() })
     const q = ref('')
+    const isSearching = ref(false)
+    const searchInputRef = ref(null)
+    function openHeaderSearch(){
+      isSearching.value = true
+      try { headerMenuOpen.value = false } catch(_) {}
+      nextTick(() => { try { searchInputRef.value && searchInputRef.value.focus() } catch(_) {} })
+    }
+    function clearHeaderSearch(){ q.value = '' }
+    function closeHeaderSearch(){ isSearching.value = false }
+    const route = useRoute()
+    const isSmallScreen = ref(false)
+    function updateSmallScreen(){
+      try { isSmallScreen.value = (window.innerWidth || document.documentElement.clientWidth) < 768 } catch(_) { isSmallScreen.value = false }
+    }
     const filter = ref({
       category: '',
       players: [1, 20],
@@ -579,6 +634,17 @@ export default {
     }
 
     onMounted(() => {
+      // Initialize small-screen state and listen for viewport changes
+      updateSmallScreen()
+      window.addEventListener('resize', updateSmallScreen)
+
+      // If navigated with focusSearch flag, open mobile search and focus input
+      try {
+        if (route && route.query && (route.query.focusSearch === '1' || route.query.focusSearch === 1 || route.query.focusSearch === true)) {
+          isSearching.value = true
+          nextTick(() => { try { searchInputRef.value && searchInputRef.value.focus() } catch(_) {} })
+        }
+      } catch(_) {}
       // Detect the scroll container used by the app shell (App.vue uses main.flex-1.overflow-auto)
       const el = document.querySelector('main.flex-1.overflow-auto')
       scrollEl.value = el || window
@@ -593,6 +659,7 @@ export default {
       document.addEventListener('keydown', onDocKeydown)
     })
     onBeforeUnmount(() => {
+      window.removeEventListener('resize', updateSmallScreen)
       if (scrollTarget) scrollTarget.removeEventListener('scroll', onScrollFab)
       if (idleTimer) { clearTimeout(idleTimer); idleTimer = null }
       document.removeEventListener('mousedown', onDocMousedown)
@@ -622,6 +689,13 @@ export default {
 
     return {
       q,
+      // header mobile search
+      isSearching,
+      isSmallScreen,
+      searchInputRef,
+      openHeaderSearch,
+      clearHeaderSearch,
+      closeHeaderSearch,
       filter,
       categories,
       materialOptions,
