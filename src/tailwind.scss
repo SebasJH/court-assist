@@ -18,17 +18,17 @@ $error-color: #ef4444;
 // Custom component styles
 .btn-primary {
     @include button-base;
-    @apply bg-blue-500 text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+    @apply text-white bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 focus:ring-0;
 }
 
 .btn-secondary {
     @include button-base;
-    @apply bg-gray-500 text-white hover:bg-gray-600 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
+    @apply text-white bg-gradient-to-r from-slate-500 to-gray-600 hover:from-slate-600 hover:to-gray-700 focus:ring-0;
 }
 
 .btn-accent {
     @include button-base;
-    @apply bg-green-500 text-white hover:bg-green-600 focus:ring-2 focus:ring-green-500 focus:ring-offset-2;
+    @apply text-white bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 focus:ring-0;
 }
 
 .card {
@@ -63,26 +63,26 @@ $error-color: #ef4444;
 // Danger button variant
 .btn-danger {
     @include button-base;
-    @apply bg-red-600 text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2;
+    @apply text-white bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 focus:ring-0;
 }
 
 
 // Outline button variants
 .btn-primary-outline {
     @include button-base;
-    @apply bg-transparent border border-blue-500 text-blue-600 hover:bg-blue-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+    @apply bg-transparent border border-blue-500 text-blue-600 hover:bg-blue-50 focus:ring-0;
 }
 .btn-secondary-outline {
     @include button-base;
-    @apply bg-transparent border border-gray-500 text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
+    @apply bg-transparent border border-gray-500 text-gray-700 hover:bg-gray-50 focus:ring-0;
 }
 .btn-accent-outline {
     @include button-base;
-    @apply bg-transparent border border-green-500 text-green-600 hover:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2;
+    @apply bg-transparent border border-green-500 text-green-600 hover:bg-green-50 focus:ring-0;
 }
 .btn-danger-outline {
     @include button-base;
-    @apply bg-transparent border border-red-600 text-red-600 hover:bg-red-50 focus:ring-2 focus:ring-red-500 focus:ring-offset-2;
+    @apply bg-transparent border border-red-600 text-red-600 hover:bg-red-50 focus:ring-0;
 }
 
 

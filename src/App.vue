@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-screen bg-gray-50 relative">
+  <div class="flex h-screen bg-gradient-to-br from-indigo-50 via-sky-50 to-rose-50 relative">
     <NotificationBar />
 
     <!-- Desktop sidebar -->
