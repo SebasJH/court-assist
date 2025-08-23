@@ -1,7 +1,50 @@
 <template>
   <PageHeader title="Oefeningen">
       <template #actions>
-        <UiButton class="hidden md:inline-flex" color="primary" icon="Plus" @click="openForm()">Nieuwe oefening</UiButton>
+        <div class="relative flex items-center gap-2">
+          <UiButton class="hidden md:inline-flex" color="primary" icon="Plus" @click="openForm()">Nieuwe oefening</UiButton>
+          <button
+            ref="headerMenuBtnRef"
+            type="button"
+            class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+            aria-haspopup="menu"
+            :aria-expanded="headerMenuOpen ? 'true' : 'false'"
+            aria-label="Weergave opties"
+            @click="headerMenuOpen = !headerMenuOpen"
+          >
+            <MoreVertical class="w-5 h-5" />
+          </button>
+
+          <!-- Dropdown menu -->
+          <div
+            v-if="headerMenuOpen"
+            ref="headerMenuRef"
+            class="absolute right-0 top-full mt-2 w-48 bg-white shadow-lg border border-gray-200 rounded-md z-[4500]"
+            role="menu"
+            aria-label="Weergave"
+          >
+            <button
+              class="w-full text-left px-3 py-2 text-sm flex items-center gap-2 hover:bg-blue-50"
+              :class="viewMode === 'card' ? 'bg-blue-50' : ''"
+              role="menuitemradio"
+              :aria-checked="viewMode === 'card' ? 'true' : 'false'"
+              @click="selectView('card')"
+            >
+              <LayoutGrid class="w-4 h-4" />
+              Kaartweergave
+            </button>
+            <button
+              class="w-full text-left px-3 py-2 text-sm flex items-center gap-2 hover:bg-blue-50"
+              :class="viewMode === 'list' ? 'bg-blue-50' : ''"
+              role="menuitemradio"
+              :aria-checked="viewMode === 'list' ? 'true' : 'false'"
+              @click="selectView('list')"
+            >
+              <List class="w-4 h-4" />
+              Lijstweergave
+            </button>
+          </div>
+        </div>
       </template>
     </PageHeader>
 
@@ -15,6 +58,7 @@
       :sortBy="sortBy"
       :sortDir="sortDir"
       :viewMode="viewMode"
+      :showViewToggle="false"
       @update:q="val => q = val"
       @update:favorites="val => filter.favorites = val"
       @toggle-filters="showFilters = !showFilters"
@@ -224,6 +268,24 @@ export default {
     const formKey = ref(0)
     const showFilters = ref(false)
     const showDeleteModal = ref(false)
+
+    // Header menu for view options
+    const headerMenuOpen = ref(false)
+    const headerMenuRef = ref(null)
+    const headerMenuBtnRef = ref(null)
+    function closeHeaderMenu(){ headerMenuOpen.value = false }
+    function selectView(mode){ setViewMode(mode); closeHeaderMenu() }
+    function onDocKeydown(e){ if (e && e.key === 'Escape') closeHeaderMenu() }
+    function onDocMousedown(e){
+      try {
+        const m = headerMenuRef.value
+        const b = headerMenuBtnRef.value
+        const t = e && e.target
+        if (!t) return
+        if ((m && m.contains(t)) || (b && b.contains(t))) return
+        closeHeaderMenu()
+      } catch(_) {}
+    }
 
     // View mode: 'card' (default) or 'list', persisted in localStorage
     const viewMode = ref((() => {
@@ -496,10 +558,16 @@ export default {
       scrollTarget = scrollEl.value === window ? window : scrollEl.value
       lastScrollY.value = getScrollY()
       scrollTarget.addEventListener('scroll', onScrollFab, { passive: true })
+
+      // Header menu listeners
+      document.addEventListener('mousedown', onDocMousedown)
+      document.addEventListener('keydown', onDocKeydown)
     })
     onBeforeUnmount(() => {
       if (scrollTarget) scrollTarget.removeEventListener('scroll', onScrollFab)
       if (idleTimer) { clearTimeout(idleTimer); idleTimer = null }
+      document.removeEventListener('mousedown', onDocMousedown)
+      document.removeEventListener('keydown', onDocKeydown)
     })
 
     return {
@@ -526,6 +594,11 @@ export default {
       // view mode
       viewMode,
       setViewMode,
+      // header view menu
+      headerMenuOpen,
+      headerMenuRef,
+      headerMenuBtnRef,
+      selectView,
       openForm,
       showForm,
       editItem,

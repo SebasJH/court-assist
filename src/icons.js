@@ -43,7 +43,8 @@ import {
     List,
     RectangleCircle,
     Menu,
-    Plus
+    Plus,
+    MoreVertical
    }
     from 'lucide-vue-next'
 
@@ -92,6 +93,7 @@ export function registerIcons(app) {
     app.component('List', List)
     app.component('Menu', Menu)
     app.component('Plus', Plus)
+    app.component('MoreVertical', MoreVertical)
     
     // Custom local icons
     app.component('RectangleCircle', RectangleCircle)

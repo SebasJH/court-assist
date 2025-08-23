@@ -33,7 +33,7 @@
       />
 
       <!-- View toggle -->
-      <div class="inline-flex rounded-md overflow-hidden border border-gray-300">
+      <div v-if="showViewToggle" class="inline-flex rounded-md overflow-hidden border border-gray-300">
         <button
           type="button"
           class="inline-flex items-center justify-center px-3 h-[42px] text-sm font-medium focus:outline-none"
@@ -86,7 +86,8 @@ export default {
     showFilters: { type: Boolean, default: false },
     sortBy: { type: String, default: 'dateCreated' },
     sortDir: { type: String, default: 'desc' },
-    viewMode: { type: String, default: 'card' }
+    viewMode: { type: String, default: 'card' },
+    showViewToggle: { type: Boolean, default: true }
   },
   emits: ['update:q','update:favorites','toggle-filters','update:sortBy','update:sortDir','update:viewMode']
 }
