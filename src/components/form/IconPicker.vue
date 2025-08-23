@@ -10,7 +10,7 @@
       </div>
       <button
         type="button"
-        class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-3 h-10 flex items-center justify-center flex-1 text-gray-700 text-sm hover:bg-blue-50 hover:text-blue-700 transition-colors focus:outline-none focus:ring-0"
+        class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-xl px-3 h-10 flex items-center justify-center flex-1 text-gray-700 text-sm hover:bg-blue-50 hover:text-blue-700 transition-colors focus:outline-none focus:ring-0"
         @click="toggle"
       >
         Wijzigen
@@ -20,14 +20,14 @@
     <div
       v-if="open"
       ref="menuRef"
-      class="absolute right-0 z-20 mt-2 p-2 bg-white border border-gray-200 rounded-lg shadow-lg w-56"
+      class="absolute right-0 z-20 mt-2 p-2 bg-white border border-gray-200 rounded-lg shadow-lg w-60"
     >
       <div class="grid grid-cols-5 gap-2">
         <button
           v-for="icon in icons"
           :key="icon"
           type="button"
-          class="flex items-center justify-center border rounded p-2 transition-colors focus:outline-none focus:ring-0"
+          class="flex items-center h-10 w-10 justify-center border rounded p-2 transition-colors focus:outline-none focus:ring-0"
           :class="modelValue === icon ? 'bg-blue-500 text-white border-blue-500' : 'border-gray-200 hover:bg-gray-50'"
           @click="select(icon)"
           :title="icon"

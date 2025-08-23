@@ -157,7 +157,7 @@
     <!-- Active filter chips -->
     <FiltersChips
         v-if="isFilterActive"
-        class="mb-4 flex flex-wrap gap-2 items-center"
+        class="mb-4 flex flex-wrap gap-1 md:gap-2 items-center"
         :q="q"
         :category="filter.category"
         :players="filter.players"
@@ -421,21 +421,25 @@ export default {
     const filter = ref((() => {
       try {
         const raw = localStorage.getItem(LS_FILTER_KEY)
-        if (!raw) return {category: '', players: [1, 20], intensity: [1, 5], favorites: false, court: [], materials: []}
+        if (!raw) return {category: '', players: [null, null], intensity: [null, null], favorites: false, court: [], materials: []}
         const obj = JSON.parse(raw) || {}
         const category = typeof obj.category === 'string' ? obj.category : ''
-        let players = Array.isArray(obj.players) && obj.players.length === 2 ? [Number(obj.players[0]) || 1, Number(obj.players[1]) || 20] : [1, 20]
-        if (players[0] > players[1]) players = [players[1], players[0]]
-        players = [Math.max(1, Math.min(20, players[0])), Math.max(1, Math.min(20, players[1]))]
-        let intensity = Array.isArray(obj.intensity) && obj.intensity.length === 2 ? [Number(obj.intensity[0]) || 1, Number(obj.intensity[1]) || 5] : [1, 5]
-        if (intensity[0] > intensity[1]) intensity = [intensity[1], intensity[0]]
-        intensity = [Math.max(1, Math.min(5, intensity[0])), Math.max(1, Math.min(5, intensity[1]))]
+        let playersArr = Array.isArray(obj.players) && obj.players.length === 2 ? obj.players : [null, null]
+        let p0 = (typeof playersArr[0] === 'number' && Number.isFinite(playersArr[0])) ? Math.max(1, Math.min(50, Number(playersArr[0]))) : null
+        let p1 = (typeof playersArr[1] === 'number' && Number.isFinite(playersArr[1])) ? Math.max(1, Math.min(50, Number(playersArr[1]))) : null
+        if (p0 !== null && p1 !== null && p0 > p1) { const t = p0; p0 = p1; p1 = t }
+        const players = [p0, p1]
+        let intArr = Array.isArray(obj.intensity) && obj.intensity.length === 2 ? obj.intensity : [null, null]
+        let i0 = (typeof intArr[0] === 'number' && Number.isFinite(intArr[0])) ? Math.max(1, Math.min(5, Number(intArr[0]))) : null
+        let i1 = (typeof intArr[1] === 'number' && Number.isFinite(intArr[1])) ? Math.max(1, Math.min(5, Number(intArr[1]))) : null
+        if (i0 !== null && i1 !== null && i0 > i1) { const t = i0; i0 = i1; i1 = t }
+        const intensity = [i0, i1]
         const favorites = !!obj.favorites
         const court = Array.isArray(obj.court) ? obj.court.filter(Boolean) : []
         const materials = Array.isArray(obj.materials) ? obj.materials.filter(Boolean) : []
         return {category, players, intensity, favorites, court, materials}
       } catch (_) {
-        return {category: '', players: [1, 20], intensity: [1, 5], favorites: false, court: [], materials: []}
+        return {category: '', players: [null, null], intensity: [null, null], favorites: false, court: [], materials: []}
       }
     })())
     const showForm = ref(false)
@@ -557,10 +561,10 @@ export default {
     }
 
     const filtered = computed(() => {
-      const selPlayersMin = filter.value.players[0]
-      const selPlayersMax = filter.value.players[1]
-      const selIntMin = filter.value.intensity[0]
-      const selIntMax = filter.value.intensity[1]
+      const selPlayersMin = (typeof filter.value.players[0] === 'number' && Number.isFinite(filter.value.players[0])) ? filter.value.players[0] : 1
+      const selPlayersMax = (typeof filter.value.players[1] === 'number' && Number.isFinite(filter.value.players[1])) ? filter.value.players[1] : Infinity
+      const selIntMin = (typeof filter.value.intensity[0] === 'number' && Number.isFinite(filter.value.intensity[0])) ? filter.value.intensity[0] : 1
+      const selIntMax = (typeof filter.value.intensity[1] === 'number' && Number.isFinite(filter.value.intensity[1])) ? filter.value.intensity[1] : Infinity
       const selFav = !!filter.value.favorites
       const selCourts = Array.isArray(filter.value.court)
           ? filter.value.court.map(c => normalizeCourt(c)).filter(Boolean)
@@ -677,11 +681,11 @@ export default {
     }
 
     function clearPlayers() {
-      filter.value.players = [1, 20]
+      filter.value.players = [null, null]
     }
 
     function clearIntensity() {
-      filter.value.intensity = [1, 5]
+      filter.value.intensity = [null, null]
     }
 
     function clearCourt(kind) {
@@ -717,10 +721,14 @@ export default {
     // Persist filters to localStorage (normalize before saving)
     watch(filter, (f) => {
       try {
+        const p0 = (Array.isArray(f.players) && f.players.length === 2 && typeof f.players[0] === 'number' && Number.isFinite(f.players[0])) ? Math.max(1, Math.min(50, Number(f.players[0]))) : null
+        const p1 = (Array.isArray(f.players) && f.players.length === 2 && typeof f.players[1] === 'number' && Number.isFinite(f.players[1])) ? Math.max(1, Math.min(50, Number(f.players[1]))) : null
+        const i0 = (Array.isArray(f.intensity) && f.intensity.length === 2 && typeof f.intensity[0] === 'number' && Number.isFinite(f.intensity[0])) ? Math.max(1, Math.min(5, Number(f.intensity[0]))) : null
+        const i1 = (Array.isArray(f.intensity) && f.intensity.length === 2 && typeof f.intensity[1] === 'number' && Number.isFinite(f.intensity[1])) ? Math.max(1, Math.min(5, Number(f.intensity[1]))) : null
         const snap = {
           category: typeof f.category === 'string' ? f.category : '',
-          players: Array.isArray(f.players) && f.players.length === 2 ? [Number(f.players[0]) || 1, Number(f.players[1]) || 20] : [1, 20],
-          intensity: Array.isArray(f.intensity) && f.intensity.length === 2 ? [Number(f.intensity[0]) || 1, Number(f.intensity[1]) || 5] : [1, 5],
+          players: [p0, p1],
+          intensity: [i0, i1],
           favorites: !!f.favorites,
           court: Array.isArray(f.court) ? f.court.filter(Boolean) : [],
           materials: Array.isArray(f.materials) ? f.materials.filter(Boolean) : []
@@ -739,8 +747,8 @@ export default {
     // Empty-state helpers
     const hasAny = computed(() => Array.isArray(store.state.exercises) && store.state.exercises.length > 0)
 
-    const DEFAULT_PLAYERS = [1, 20]
-    const DEFAULT_INTENSITY = [1, 5]
+    const DEFAULT_PLAYERS = [null, null]
+    const DEFAULT_INTENSITY = [null, null]
 
     const isFilterActive = computed(() => {
       const f = filter.value

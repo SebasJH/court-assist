@@ -13,13 +13,13 @@ export function formatPlayers(min, max, { variant = 'compact' } = {}) {
   const minVal = isNum(min) ? min : null
   const maxVal = isNum(max) ? max : null
   if (variant === 'detail') {
-    if (minVal !== null && maxVal !== null) return `${minVal} - ${maxVal}`
+    if (minVal !== null && maxVal !== null) return (minVal === maxVal) ? `${minVal}` : `${minVal} - ${maxVal}`
     if (minVal !== null) return `${minVal} minimaal`
     if (maxVal !== null) return `${maxVal} maximaal`
     return ''
   }
   // compact
-  if (minVal !== null && maxVal !== null) return `${minVal}-${maxVal}`
+  if (minVal !== null && maxVal !== null) return (minVal === maxVal) ? `${minVal}` : `${minVal}-${maxVal}`
   if (minVal !== null) return `${minVal} min`
   if (maxVal !== null) return `${maxVal} max`
   return ''

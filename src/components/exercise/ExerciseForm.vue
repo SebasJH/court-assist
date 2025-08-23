@@ -125,7 +125,7 @@
                   type="number"
                   v-model.number="form.minPlayers"
                   min="1"
-                  :max="20"
+                  :max="50"
                   :class="['form-input !rounded-r-none border-r-0', errors.players ? '!border-red-500 focus:!border-red-500 !ring-1 !ring-red-500 focus:!ring-red-500' : '']"
                   :aria-invalid="errors.players ? 'true' : 'false'"
               />
@@ -142,7 +142,7 @@
                   type="number"
                   v-model.number="form.maxPlayers"
                   :min="(typeof form.minPlayers === 'number') ? form.minPlayers : null"
-                  :max="20"
+                  :max="50"
                   :class="['form-input !rounded-r-none border-r-0', errors.players ? '!border-red-500 focus:!border-red-500 !ring-1 !ring-red-500 focus:!ring-red-500' : '']"
                   :aria-invalid="errors.players ? 'true' : 'false'"
               />
@@ -156,7 +156,7 @@
                 <div class="relative drop-shadow-xl">
                   <div class="bg-white border border-gray-200 rounded-lg p-2">
                     <div class="text-xs text-gray-700">
-                      Je kunt maximaal 20 invullen. Laat het veld leeg als je geen limiet wilt.
+                      Je kunt maximaal 50 invullen. Laat het veld leeg als je geen limiet wilt.
                     </div>
                   </div>
                 </div>
@@ -332,7 +332,7 @@
     <!-- Buttons -->
     <div class="px-5 sm:px-10 pt-5 border-t flex justify-end gap-3">
       <UiButton color="secondary" outline @click="$emit('close')">Annuleren</UiButton>
-      <UiButton :color="isEdit ? 'primary' : 'accent'" type="submit" class="btn-submit">
+      <UiButton :color="isEdit ? 'primary' : 'success'" type="submit" class="btn-submit">
         {{ isEdit ? 'Opslaan' : 'Aanmaken' }}
       </UiButton>
     </div>
@@ -435,7 +435,7 @@ export default {
           coachingPoints: v.coachingPoints || v.fullDescription || v.full || '',
           category: Array.isArray(v.category) ? [...v.category] : (v.category ? [v.category] : []),
           minPlayers: (typeof v.minPlayers === 'number') ? v.minPlayers : null,
-          maxPlayers: (typeof v.maxPlayers === 'number') ? Math.min(20, v.maxPlayers) : null,
+          maxPlayers: (typeof v.maxPlayers === 'number') ? Math.min(50, v.maxPlayers) : null,
           intensity: (typeof v.intensity === 'number') ? v.intensity : null,
           court: v.court || '',
           materials: Array.isArray(v.materials) ? [...v.materials] : (v.materials ? [v.materials].flat().filter(Boolean) : []),
@@ -456,17 +456,17 @@ export default {
     watch(() => form.name, (v) => {
       if (v && errors.name) errors.name = ''
     })
-    // Clamp minPlayers to [1..20] while allowing null
+    // Clamp minPlayers to [1..50] while allowing null
     watch(() => form.minPlayers, (v) => {
       if (typeof v === 'number') {
-        if (v > 20) form.minPlayers = 20
+        if (v > 50) form.minPlayers = 50
         else if (v < 1) form.minPlayers = 1
       }
     })
-    // Clamp maxPlayers to [1..20] while allowing null and show ephemeral tip if user tries > 20
+    // Clamp maxPlayers to [1..50] while allowing null and show ephemeral tip if user tries > 50
     watch(() => form.maxPlayers, (v) => {
       if (typeof v === 'number') {
-        if (v > 20) {
+        if (v > 50) {
           const el = maxPlayersInputRef.value
           // Only show the tip when the user is actively editing this field
           if (el && document.activeElement === el) {
@@ -476,7 +476,7 @@ export default {
               showMaxCapTip.value = false
             }, 2000)
           }
-          form.maxPlayers = 20
+          form.maxPlayers = 50
         } else if (v < 1) {
           form.maxPlayers = 1
         }
@@ -486,7 +486,7 @@ export default {
     watch(() => [form.minPlayers, form.maxPlayers], () => {
       const min = (typeof form.minPlayers === 'number') ? form.minPlayers : null
       const max = (typeof form.maxPlayers === 'number') ? form.maxPlayers : null
-      const cappedMax = (typeof max === 'number') ? Math.min(20, max) : null
+      const cappedMax = (typeof max === 'number') ? Math.min(50, max) : null
       if (!(min !== null && cappedMax !== null && cappedMax < min)) {
         if (errors.players) errors.players = ''
       }
@@ -580,7 +580,7 @@ export default {
       // Players min/max relation
       const min = (typeof form.minPlayers === 'number') ? form.minPlayers : null
       const max = (typeof form.maxPlayers === 'number') ? form.maxPlayers : null
-      const cappedMax = (typeof max === 'number') ? Math.min(20, max) : null
+      const cappedMax = (typeof max === 'number') ? Math.min(50, max) : null
       if (min !== null && cappedMax !== null && cappedMax < min) {
         errors.players = 'Maximaal aantal mag niet lager zijn dan minimaal aantal'
       }
@@ -616,8 +616,8 @@ export default {
 
       const min = (typeof form.minPlayers === 'number') ? form.minPlayers : null
       const max = (typeof form.maxPlayers === 'number') ? form.maxPlayers : null
-      const cappedMin = (typeof min === 'number') ? Math.max(1, Math.min(20, min)) : null
-      const cappedMax = (typeof max === 'number') ? Math.min(20, max) : null
+      const cappedMin = (typeof min === 'number') ? Math.max(1, Math.min(50, min)) : null
+      const cappedMax = (typeof max === 'number') ? Math.min(50, max) : null
 
       // Zorg ervoor dat de id correct wordt meegestuurd
       const saveData = {...form}

@@ -75,34 +75,56 @@ export default {
     idPrefix: { type: String, default: 'range' },
     minLabel: { type: String, default: 'Min' },
     maxLabel: { type: String, default: 'Max' },
-    attachedLabels: { type: Boolean, default: false }
+    attachedLabels: { type: Boolean, default: false },
+    allowEmpty: { type: Boolean, default: false }
   },
   emits: ['update:modelValue'],
   setup(props, { emit }){
-    const current = computed(() => {
-      const mv = Array.isArray(props.modelValue) && props.modelValue.length === 2 ? props.modelValue : [props.min, props.max]
-      const lo = typeof mv[0] === 'number' ? mv[0] : props.min
-      const hi = typeof mv[1] === 'number' ? mv[1] : props.max
-      return [Math.max(props.min, Math.min(props.max, lo)), Math.max(props.min, Math.min(props.max, hi))]
-    })
-    const currentMin = computed(() => current.value[0])
-    const currentMax = computed(() => current.value[1])
-
     function clamp(n) {
       const v = Number.parseInt(n, 10)
       if (Number.isNaN(v)) return null
       return Math.max(props.min, Math.min(props.max, v))
     }
+
+    const currentMin = computed(() => {
+      const mv = Array.isArray(props.modelValue) && props.modelValue.length === 2 ? props.modelValue : (props.allowEmpty ? [null, null] : [props.min, props.max])
+      const lo = mv[0]
+      if (props.allowEmpty && (lo === null || typeof lo !== 'number' || !Number.isFinite(lo))) return ''
+      const n = typeof lo === 'number' ? lo : props.min
+      return Math.max(props.min, Math.min(props.max, n))
+    })
+    const currentMax = computed(() => {
+      const mv = Array.isArray(props.modelValue) && props.modelValue.length === 2 ? props.modelValue : (props.allowEmpty ? [null, null] : [props.min, props.max])
+      const hi = mv[1]
+      if (props.allowEmpty && (hi === null || typeof hi !== 'number' || !Number.isFinite(hi))) return ''
+      const n = typeof hi === 'number' ? hi : props.max
+      return Math.max(props.min, Math.min(props.max, n))
+    })
+
     function onMin(val){
+      if (props.allowEmpty && (val === '' || val === null)) {
+        const mv = Array.isArray(props.modelValue) && props.modelValue.length === 2 ? props.modelValue : [null, null]
+        emit('update:modelValue', [null, (typeof mv[1] === 'number' && Number.isFinite(mv[1])) ? mv[1] : null])
+        return
+      }
       const newMin = clamp(val)
       if (newMin === null) return
-      const newMax = Math.max(newMin, clamp(currentMax.value) ?? props.max)
+      const mv = Array.isArray(props.modelValue) && props.modelValue.length === 2 ? props.modelValue : [null, null]
+      const curMax = (typeof mv[1] === 'number' && Number.isFinite(mv[1])) ? Math.max(props.min, Math.min(props.max, mv[1])) : null
+      const newMax = curMax === null ? null : Math.max(newMin, curMax)
       emit('update:modelValue', [newMin, newMax])
     }
     function onMax(val){
+      if (props.allowEmpty && (val === '' || val === null)) {
+        const mv = Array.isArray(props.modelValue) && props.modelValue.length === 2 ? props.modelValue : [null, null]
+        emit('update:modelValue', [(typeof mv[0] === 'number' && Number.isFinite(mv[0])) ? mv[0] : null, null])
+        return
+      }
       const newMax = clamp(val)
       if (newMax === null) return
-      const newMin = Math.min(clamp(currentMin.value) ?? props.min, newMax)
+      const mv = Array.isArray(props.modelValue) && props.modelValue.length === 2 ? props.modelValue : [null, null]
+      const curMin = (typeof mv[0] === 'number' && Number.isFinite(mv[0])) ? Math.max(props.min, Math.min(props.max, mv[0])) : null
+      const newMin = curMin === null ? null : Math.min(curMin, newMax)
       emit('update:modelValue', [newMin, newMax])
     }
 

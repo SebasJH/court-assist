@@ -140,9 +140,9 @@
           <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1"><Users class="w-4 h-4" /> Aantal spelers</label>
           <RangeNumber
             idPrefix="details-players"
-            :modelValue="[(typeof detailsDraft.minPlayers === 'number' ? detailsDraft.minPlayers : 1), (typeof detailsDraft.maxPlayers === 'number' ? detailsDraft.maxPlayers : 20)]"
+            :modelValue="[(typeof detailsDraft.minPlayers === 'number' ? detailsDraft.minPlayers : 1), (typeof detailsDraft.maxPlayers === 'number' ? detailsDraft.maxPlayers : 50)]"
             :min="1"
-            :max="20"
+            :max="50"
             :step="1"
             :attachedLabels="true"
             minLabel="min"

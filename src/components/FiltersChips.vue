@@ -13,12 +13,12 @@
     </span>
     <!-- Players -->
     <span v-if="players[0] !== defaultPlayers[0] || players[1] !== defaultPlayers[1]" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8">
-      Spelers: {{ players[0] }}–{{ players[1] }}
+      Spelers: {{ formatPlayers(players[0], players[1]) }}
       <button class="hover:text-blue-900" @click="$emit('clear:players')" aria-label="Reset spelers">×</button>
     </span>
     <!-- Intensity -->
     <span v-if="intensity[0] !== defaultIntensity[0] || intensity[1] !== defaultIntensity[1]" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8">
-      Intensiteit: {{ intensity[0] }}–{{ intensity[1] }}
+      Intensiteit: {{ formatIntensityRange(intensity[0], intensity[1]) }}
       <button class="hover:text-blue-900" @click="$emit('clear:intensity')" aria-label="Reset intensiteit">×</button>
     </span>
     <!-- Court -->
@@ -46,18 +46,19 @@
 </template>
 
 <script>
+import { formatPlayers as fmtPlayers } from '../utils/exerciseFormat'
 export default {
   name: 'FiltersChips',
   props: {
     q: { type: String, default: '' },
     category: { type: String, default: '' },
-    players: { type: Array, default: () => [1, 20] },
-    intensity: { type: Array, default: () => [1, 5] },
+    players: { type: Array, default: () => [null, null] },
+    intensity: { type: Array, default: () => [null, null] },
     court: { type: Array, default: () => [] },
     materials: { type: Array, default: () => [] },
     favorites: { type: Boolean, default: false },
-    defaultPlayers: { type: Array, default: () => [1, 20] },
-    defaultIntensity: { type: Array, default: () => [1, 5] }
+    defaultPlayers: { type: Array, default: () => [null, null] },
+    defaultIntensity: { type: Array, default: () => [null, null] }
   },
   emits: ['clear:search','clear:category','clear:players','clear:intensity','clear:court','clear:material','clear:favorites','reset'],
   methods: {
@@ -66,6 +67,18 @@ export default {
       if (v === 'halfcourt') return 'Half court'
       if (v === 'fullcourt') return 'Full court'
       return c
+    },
+    formatPlayers(min, max){
+      return fmtPlayers(min, max, { variant: 'compact' })
+    },
+    formatIntensityRange(min, max){
+      const isNum = (v) => typeof v === 'number' && Number.isFinite(v)
+      const lo = isNum(min) ? min : null
+      const hi = isNum(max) ? max : null
+      if (lo !== null && hi !== null) return (lo === hi) ? `${lo}` : `${lo}–${hi}`
+      if (lo !== null) return `${lo} min`
+      if (hi !== null) return `${hi} max`
+      return ''
     }
   }
 }

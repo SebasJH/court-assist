@@ -38,9 +38,10 @@
             idPrefix="players"
             :modelValue="players"
             :min="1"
-            :max="20"
+            :max="50"
             :step="1"
             :attachedLabels="true"
+            :allowEmpty="true"
             minLabel="min"
             maxLabel="max"
             @update:modelValue="$emit('update:players', $event)"
@@ -59,6 +60,7 @@
             :max="5"
             :step="1"
             :attachedLabels="true"
+            :allowEmpty="true"
             minLabel="min"
             maxLabel="max"
             @update:modelValue="$emit('update:intensity', $event)"
@@ -91,8 +93,8 @@ export default {
   props: {
     categories: { type: Array, default: () => [] },
     category: { type: String, default: '' },
-    players: { type: Array, default: () => [1, 20] },
-    intensity: { type: Array, default: () => [1, 5] },
+    players: { type: Array, default: () => [null, null] },
+    intensity: { type: Array, default: () => [null, null] },
     court: { type: Array, default: () => [] },
     materials: { type: Array, default: () => [] },
     materialOptions: { type: Array, default: () => [] }
