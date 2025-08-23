@@ -1,7 +1,7 @@
 <!-- components/Modal.vue -->
 <template>
   <div
-        v-show="open"
+        v-if="visible"
         class="fixed inset-0 z-[5000] flex bg-black/20 backdrop-blur-sm"
         :class="overlayClass"
         @mousedown="onOverlayMouseDown"
@@ -47,7 +47,9 @@ export default {
   emits: ['close'],
   data() {
     return {
-      mouseStartedOnOverlay: false
+      mouseStartedOnOverlay: false,
+      visible: this.open,
+      closeTimer: null
     }
   },
   computed: {
@@ -61,6 +63,24 @@ export default {
         return `rounded-t-2xl md:rounded-2xl w-full ${this.maxWidthClass} max-h-[90vh] ${this.contentPaddingClass} pb-safe-6`
       }
       return `h-full w-full ${this.drawerWidthClass} ${this.contentPaddingClass}`
+    }
+  },
+  watch: {
+    open(newVal) {
+      if (newVal) {
+        // Opening: ensure overlay/container is visible immediately
+        this.clearTimer()
+        this.visible = true
+      } else {
+        // Closing: keep visible until leave animation completes (match 260ms drawer leave)
+        if (!this.visible) return
+        this.clearTimer()
+        const duration = 260
+        this.closeTimer = setTimeout(() => {
+          this.visible = false
+          this.closeTimer = null
+        }, duration)
+      }
     }
   },
   methods: {
@@ -78,6 +98,12 @@ export default {
     },
     onKeyDown(e) {
       if (e.key === 'Escape') this.$emit('close')
+    },
+    clearTimer() {
+      if (this.closeTimer) {
+        clearTimeout(this.closeTimer)
+        this.closeTimer = null
+      }
     }
   },
   mounted() {
@@ -85,6 +111,7 @@ export default {
   },
   unmounted() {
     window.removeEventListener('keydown', this.onKeyDown)
+    this.clearTimer()
   }
 }
 </script>
