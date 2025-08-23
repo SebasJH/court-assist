@@ -1,5 +1,5 @@
 <template>
-  <PageHeader :title="exercise ? exercise.name : 'Oefening'" :mobileBack="isSmallScreen">
+  <PageHeader :title="exercise ? exercise.name : 'Oefening'" :mobileBack="isSmallScreen" :hideHamburgerWhenBack="true">
     <template #lead>
       <div class="flex items-center gap-3 min-w-0">
         <!-- Desktop back button (chevron) -->
@@ -80,7 +80,7 @@
     </modal>
 
     <!-- Delete confirm modal -->
-    <modal :open="showDeleteModal" @close="cancelDelete">
+    <modal :open="showDeleteModal" @close="cancelDelete" :hideDefaultClose="true">
       <DeleteConfirm :name="exercise.name" @cancel="cancelDelete" @confirm="confirmDelete" />
     </modal>
 

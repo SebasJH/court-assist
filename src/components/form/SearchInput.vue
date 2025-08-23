@@ -1,6 +1,6 @@
 <template>
   <div class="relative" :class="wrapperClass">
-    <Search class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+    <Search class="w-4 h-4 !text-gray-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
     <input
       :type="type"
       class="form-input !pl-9 pr-3"

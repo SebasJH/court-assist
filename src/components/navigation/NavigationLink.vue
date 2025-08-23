@@ -1,8 +1,11 @@
 <template>
   <a
     href="#"
-    class="nav-link items-center transition-all duration-300 ease-in-out"
-    :class="collapsed ? 'justify-center px-0 py-3 gap-0' : 'gap-2 px-4 py-3'"
+    class="nav-link items-center transition-modern rounded-xl"
+    :class="[
+      'hover:glass hover:shadow-glass',
+      collapsed ? 'justify-center px-0 py-3 gap-0' : 'gap-2 px-4 py-3'
+    ]"
     @click.prevent="$emit('click')"
   >
     <TrafficCone v-if="icon === 'TrafficCone'" class="w-5 h-5" />

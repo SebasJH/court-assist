@@ -1,43 +1,37 @@
 <template>
-  <header class="bg-white border-b border-gray-200 sticky top-0 z-[4000]">
-    <div class="container mx-auto px-4 py-0 flex items-center" :class="tall ? 'min-h-[96px]' : 'min-h-[72px]'">
-      <div class="flex items-center justify-between gap-3 w-full">
-        <div class="flex items-center gap-3 min-w-0 w-full">
+  <header class="sticky top-0 z-20 glass-container border-b border-white/20">
+    <div class="container mx-auto px-4 py-0 flex items-center min-h-[72px]">
+      <div class="flex items-center justify-between gap-4 w-full">
+        <!-- Lead content with mobile hamburger before the title -->
+        <div class="flex items-center gap-3 flex-1 min-w-0">
           <button
-            v-if="mobileBack"
+            v-if="!(hideHamburgerWhenBack && mobileBack)"
             type="button"
-            class="xl:hidden inline-flex items-center justify-center w-10 h-10 shrink-0 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
-            aria-label="Terug"
-            @click="onMobileBack"
-          >
-            <ArrowLeft class="w-5 h-5" />
-          </button>
-          <button
-            v-else
-            type="button"
-            class="xl:hidden inline-flex items-center justify-center w-10 h-10 shrink-0 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+            class="xl:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
             aria-label="Menu"
             @click="openMobileSidebar"
           >
             <Menu class="w-5 h-5" />
           </button>
-          <slot name="lead">
-            <template v-if="backTo">
-              <div class="flex items-center gap-2 min-w-0">
-                <router-link :to="backTo" class="inline-flex items-center text-sm text-gray-600 hover:text-blue-600">
-                  <ArrowLeft class="w-4 h-4 mr-1" />
-                  {{ backLabel }}
-                </router-link>
-                <span class="text-gray-300 select-none" aria-hidden="true">/</span>
-                <span class="text-xl md:text-2xl font-bold text-gray-800 leading-tight truncate">{{ title }}</span>
-              </div>
-            </template>
-            <template v-else>
-              <h1 class="text-2xl md:text-3xl font-bold text-gray-800 leading-tight truncate">{{ title }}</h1>
-            </template>
-          </slot>
+          <button
+            v-if="mobileBack"
+            type="button"
+            class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+            aria-label="Terug"
+            title="Terug"
+            @click="onMobileBack"
+          >
+            <ArrowLeft class="w-5 h-5" />
+          </button>
+          <div class="min-w-0 flex-1">
+            <slot name="lead">
+              <h1 class="text-3xl font-bold text-gray-800 leading-tight">{{ title }}</h1>
+            </slot>
+          </div>
         </div>
-        <div class="shrink-0">
+
+        <!-- Actions -->
+        <div class="flex items-center gap-3 flex-shrink-0">
           <slot name="actions" />
         </div>
       </div>
@@ -55,7 +49,8 @@ export default {
     backLabel: { type: String, default: 'Terug' },
     tall: { type: Boolean, default: false },
     mobileBack: { type: Boolean, default: false },
-    mobileBackEmitOnly: { type: Boolean, default: false }
+    mobileBackEmitOnly: { type: Boolean, default: false },
+    hideHamburgerWhenBack: { type: Boolean, default: false }
   },
   methods: {
     openMobileSidebar() {

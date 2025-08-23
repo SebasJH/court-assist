@@ -1,89 +1,88 @@
 <template>
-  <transition name="msd-overlay-fade" appear>
-    <div
-      v-show="open"
-      class="fixed inset-0 z-[5000] flex bg-black/50 items-stretch justify-start xl:hidden"
-      @mousedown="onOverlayMouseDown"
-      @click="onOverlayClick"
-      role="presentation"
-    >
-      <transition name="msd-drawer-left" appear>
-        <div
-          v-show="open"
-          ref="panel"
-          class="relative bg-white shadow-xl overflow-y-auto h-full w-full"
-          :class="[drawerWidthClass, contentPaddingClass]"
-          role="dialog"
-          aria-modal="true"
-        >
-          <slot />
-        </div>
-      </transition>
+  <div v-if="visible" class="fixed inset-0 z-40 xl:hidden">
+    <!-- Backdrop (no animation) -->
+    <div 
+      class="fixed inset-0 bg-black/20 backdrop-blur-sm"
+      @click="onBackdropClick"
+    ></div>
+
+    <!-- Drawer (animate only the panel) -->
+    <div class="fixed inset-y-0 left-0 w-full max-w-xs">
+      <div :class="panelClass">
+        <slot />
+      </div>
     </div>
-  </transition>
+  </div>
 </template>
 
 <script>
 export default {
   name: 'MobileSidebarDrawer',
   props: {
-    open: { type: Boolean, default: false },
-    // side kept for future extensibility; only 'left' is used for the mobile menu
-    side: { type: String, default: 'left' },
-    drawerWidthClass: { type: String, default: 'max-w-xs' },
-    contentPaddingClass: { type: String, default: 'p-0' }
+    open: { type: Boolean, default: false }
   },
   emits: ['close'],
   data() {
-    return { mouseStartedOnOverlay: false }
-  },
-  methods: {
-    onOverlayMouseDown(e) {
-      this.mouseStartedOnOverlay = e.target === e.currentTarget
-    },
-    onOverlayClick(e) {
-      if (e.target === e.currentTarget && this.mouseStartedOnOverlay) {
-        this.$emit('close')
-      }
-      this.mouseStartedOnOverlay = false
-    },
-    onKeyDown(e) {
-      if (e.key === 'Escape') this.$emit('close')
+    return {
+      visible: this.open,
+      isClosing: false,
+      closeTimer: null
     }
   },
-  mounted() {
-    window.addEventListener('keydown', this.onKeyDown)
+  watch: {
+    open(newVal) {
+      if (newVal) {
+        // Opening
+        this.clearTimer()
+        this.visible = true
+        this.isClosing = false
+      } else {
+        // Start closing animation
+        if (!this.visible) return
+        this.isClosing = true
+        this.clearTimer()
+        this.closeTimer = setTimeout(() => {
+          this.visible = false
+          this.isClosing = false
+          this.closeTimer = null
+        }, 280)
+      }
+    }
   },
-  unmounted() {
-    window.removeEventListener('keydown', this.onKeyDown)
+  computed: {
+    panelClass() {
+      return [
+        'h-full glass-card shadow-glass overflow-hidden',
+        this.isClosing ? 'animate-slide-out-left' : 'animate-slide-in-left'
+      ]
+    }
+  },
+  methods: {
+    onBackdropClick() {
+      this.$emit('close')
+    },
+    clearTimer() {
+      if (this.closeTimer) {
+        clearTimeout(this.closeTimer)
+        this.closeTimer = null
+      }
+    }
+  },
+  beforeUnmount() {
+    this.clearTimer()
   }
 }
 </script>
 
 <style scoped>
-/* Overlay fade */
-.msd-overlay-fade-enter-active,
-.msd-overlay-fade-leave-active {
-  transition: opacity 200ms ease;
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
 }
-.msd-overlay-fade-enter-from,
-.msd-overlay-fade-leave-to {
-  opacity: 0;
+@keyframes slideOutLeft {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
 }
-
-/* Drawer slide from left */
-.msd-drawer-left-enter-active,
-.msd-drawer-left-leave-active {
-  transition: transform 260ms ease, opacity 260ms ease;
-}
-.msd-drawer-left-enter-from,
-.msd-drawer-left-leave-to {
-  transform: translateX(-100%);
-  opacity: 0.9;
-}
-.msd-drawer-left-enter-to,
-.msd-drawer-left-leave-from {
-  transform: translateX(0);
-  opacity: 1;
-}
+.animate-slide-in-left { animation: slideInLeft 0.28s ease-out; }
+.animate-slide-out-left { animation: slideOutLeft 0.28s ease-in; }
 </style>

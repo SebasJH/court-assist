@@ -1,7 +1,19 @@
 .nav-link {
-  @apply flex w-full text-gray-600 rounded-lg mb-2 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-800;
+  @apply flex w-full text-gray-700 rounded-xl mb-3 transition-modern;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  
+  &:hover {
+    @apply text-gray-800;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+  }
 }
 
 .nav-link.active {
-  @apply bg-blue-50 text-blue-700 font-medium;
+  @apply text-blue-700 font-medium;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
 }

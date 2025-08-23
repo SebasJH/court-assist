@@ -1,9 +1,9 @@
 <template>
   <router-link
     :to="to"
-    class="nav-link items-center transition-all duration-300 ease-in-out"
+    class="nav-link items-center transition-modern rounded-xl"
     :class="[
-      isActive ? 'active' : '',
+      isActive ? 'active glass-button shadow-glass' : 'hover:glass hover:shadow-glass',
       collapsed ? 'justify-center px-0 py-3 gap-0' : 'gap-2 px-4 py-3'
     ]"
     @click="$emit('click')"

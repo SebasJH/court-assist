@@ -26,7 +26,7 @@
         :aria-label="minLabel"
         @input="onMin($event.target.value)"
       />
-      <div class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
+      <div class="bg-white/80 backdrop-blur-sm border border-gray-300 border-l-0 rounded-r-xl px-3 py-2 flex items-center text-gray-700 text-sm">
         {{ minLabel }}
       </div>
     </div>
@@ -56,7 +56,7 @@
         :aria-label="maxLabel"
         @input="onMax($event.target.value)"
       />
-      <div class="bg-gray-100 border border-gray-300 border-l-0 rounded-r-lg px-2 flex items-center text-gray-600 text-sm">
+      <div class="bg-white/80 backdrop-blur-sm border border-gray-300 border-l-0 rounded-r-xl px-3 py-2 flex items-center text-gray-700 text-sm">
         {{ maxLabel }}
       </div>
     </div>

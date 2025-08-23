@@ -1,12 +1,12 @@
 <template>
-  <PageHeader title="Oefeningen" :mobileBack="isSmallScreen && isSearching" :mobileBackEmitOnly="true" @mobile-back="closeHeaderSearch">
+  <PageHeader title="Oefeningen" :mobileBack="isSmallScreen && isSearching" :mobileBackEmitOnly="true" :hideHamburgerWhenBack="true" @mobile-back="closeHeaderSearch">
       <template #lead>
         <div class="flex items-center gap-3 min-w-0 w-full">
           <div v-if="isSearching" class="relative w-full md:hidden">
-            <Search class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search class="w-4 h-4 !text-gray-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               ref="searchInputRef"
-              class="form-input w-full !pl-9 !pr-10"
+              class="form-input w-full !pl-9 !pr-10 !bg-white !border-gray-300 !text-gray-900 placeholder:text-gray-400 shadow-sm"
               :value="q"
               @input="e => q = (e && e.target ? e.target.value : '')"
               placeholder="Zoek oefeningen..."
@@ -115,6 +115,15 @@
               <Filter class="w-5 h-5 text-gray-700" />
               <h2 id="filters-title" class="text-lg font-semibold text-gray-800">Filters</h2>
             </div>
+            <button
+              type="button"
+              class="inline-flex items-center justify-center w-8 h-8 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+              aria-label="Sluiten"
+              title="Sluiten"
+              @click="showFilters = false"
+            >
+              <X class="w-4 h-4" />
+            </button>
           </div>
         </div>
         <div class="px-10 py-8 flex-1 overflow-y-auto">
