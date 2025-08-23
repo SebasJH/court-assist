@@ -85,7 +85,7 @@
 
   <div class="container mx-auto px-4 py-6" v-if="exercise">
     <!-- Edit modal -->
-    <modal :open="showForm" @close="closeForm">
+    <modal :open="showForm" @close="closeForm" :hideDefaultClose="true">
       <exercise-form
         :key="formKey"
         :initial="exercise"

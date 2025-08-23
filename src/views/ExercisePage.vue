@@ -239,7 +239,7 @@
     </div>
 
     <!-- Modal -->
-    <modal :open="showForm" @close="closeForm" contentPaddingClass="p-0">
+    <modal :open="showForm" @close="closeForm" contentPaddingClass="p-0" :hideDefaultClose="true">
       <exercise-form
           :key="formKey"
           :initial="editItem"

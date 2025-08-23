@@ -19,6 +19,7 @@
             aria-modal="true"
         >
           <button
+          v-if="!hideDefaultClose"
           class="absolute top-5 right-5 z-[10] text-gray-500 hover:text-black"
           aria-label="Sluiten"
           @click="$emit('close')"
@@ -42,7 +43,8 @@ export default {
     drawer: { type: Boolean, default: false },
     side: { type: String, default: 'right' },
     drawerWidthClass: { type: String, default: 'max-w-md' },
-    contentPaddingClass: { type: String, default: 'p-8' }
+    contentPaddingClass: { type: String, default: 'p-8' },
+    hideDefaultClose: { type: Boolean, default: false }
   },
   emits: ['close'],
   data() {
