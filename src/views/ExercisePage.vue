@@ -8,7 +8,7 @@
             <Search class="w-4 h-4 !text-gray-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10"/>
             <input
                 ref="searchInputRef"
-                class="form-input w-full !pl-9 !pr-10 !bg-white !border-gray-300 !text-gray-900 placeholder:text-gray-400 shadow-sm dark:!bg-neutral-900 dark:!border-neutral-700 dark:!text-gray-100 dark:placeholder:text-gray-400"
+                class="form-input w-full !pl-9 !pr-10 !bg-white !border-gray-300 !text-gray-900 placeholder:text-gray-400 shadow-sm dark:!bg-gray-600/40 dark:!border-gray-600 dark:!text-gray-50 dark:placeholder:text-gray-400"
                 :value="q"
                 @input="e => q = (e && e.target ? e.target.value : '')"
                 placeholder="Zoek oefeningen..."
@@ -38,7 +38,7 @@
         <button
             v-if="!(isSmallScreen && isSearching)"
             type="button"
-            class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+            class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 dark:border-none transition-colors duration-200"
             aria-label="Zoeken"
             @click="openHeaderSearch"
         >

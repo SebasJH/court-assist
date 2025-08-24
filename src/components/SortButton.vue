@@ -11,13 +11,13 @@
     <div
       v-if="open"
       ref="menuRef"
-      :class="['absolute overflow-hidden top-full mt-2 w-64 bg-white border border-gray-200 rounded shadow-lg z-[3000]', alignRight ? 'right-0' : 'left-0']"
+      :class="['absolute overflow-hidden top-full mt-2 w-64 bg-white border border-gray-200 rounded-md shadow-lg z-[3000] dark:bg-gray-700 dark:border-gray-600 border border-gray-200', alignRight ? 'right-0' : 'left-0']"
       @click.stop
     >
       <div>
         <button
           class="w-full text-left px-4 h-10 text-sm"
-          :class="isActive('dateCreated','desc') ? 'bg-blue-500 text-white hover:bg-blue-600' : 'hover:bg-gray-100'"
+          :class="isActive('dateCreated','desc') ? 'bg-blue-500 text-white hover:bg-blue-600' : 'hover:bg-gray-100 dark:hover:bg-gray-600'"
           :aria-selected="isActive('dateCreated','desc') ? 'true' : 'false'"
           @click="setSort('dateCreated','desc')"
         >
@@ -25,7 +25,7 @@
         </button>
         <button
           class="w-full text-left px-4 h-10 text-sm"
-          :class="isActive('dateCreated','asc') ? 'bg-blue-500 text-white hover:bg-blue-600' : 'hover:bg-gray-100'"
+          :class="isActive('dateCreated','asc') ? 'bg-blue-500 text-white hover:bg-blue-600' : 'hover:bg-gray-100 dark:hover:bg-gray-600'"
           :aria-selected="isActive('dateCreated','asc') ? 'true' : 'false'"
           @click="setSort('dateCreated','asc')"
         >
@@ -33,7 +33,7 @@
         </button>
         <button
           class="w-full text-left px-4 h-10 text-sm"
-          :class="isActive('name','asc') ? 'bg-blue-500 text-white hover:bg-blue-600' : 'hover:bg-gray-100'"
+          :class="isActive('name','asc') ? 'bg-blue-500 text-white hover:bg-blue-600 ' : 'hover:bg-gray-100 dark:hover:bg-gray-600'"
           :aria-selected="isActive('name','asc') ? 'true' : 'false'"
           @click="setSort('name','asc')"
         >
@@ -41,7 +41,7 @@
         </button>
         <button
           class="w-full text-left px-4 h-10 text-sm"
-          :class="isActive('name','desc') ? 'bg-blue-500 text-white hover:bg-blue-600' : 'hover:bg-gray-100'"
+          :class="isActive('name','desc') ? 'bg-blue-500 text-white hover:bg-blue-600' : 'hover:bg-gray-100 dark:hover:bg-gray-600'"
           :aria-selected="isActive('name','desc') ? 'true' : 'false'"
           @click="setSort('name','desc')"
         >

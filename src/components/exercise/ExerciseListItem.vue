@@ -97,7 +97,7 @@
           v-if="menuOpen"
           ref="menuRef"
           @click.stop
-          :class="['fixed w-54 whitespace-nowrap bg-white border border-gray-200 rounded shadow-lg flex flex-col z-[3000]']"
+          :class="['fixed w-54 whitespace-nowrap bg-white border border-gray-200 rounded-md shadow-lg flex flex-col z-[3000]']"
           :style="menuStyle"
         >
           <button @click="onEdit" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-50">
