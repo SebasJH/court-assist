@@ -5,7 +5,7 @@
     :class="[
       'inline-flex items-center justify-center gap-2 font-medium rounded-xl transition-modern focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed h-10',
       sizeClasses[size],
-      colorClasses[color],
+      (outline ? outlineColorClasses[color] : colorClasses[color]),
       customClass
     ]"
     @click="$emit('click', $event)"
@@ -48,6 +48,10 @@ export default {
     customClass: {
       type: String,
       default: ''
+    },
+    outline: {
+      type: Boolean,
+      default: false
     }
   },
   emits: ['click'],
@@ -79,7 +83,18 @@ export default {
         danger: 'bg-red-500 text-white hover:bg-red-600',
         success: 'bg-green-500 text-white hover:bg-green-600',
         warning: 'bg-yellow-500 text-gray-900 hover:bg-yellow-600',
-        black: 'bg-black text-white hover:bg-gray-600',
+        cancel: 'border border-gray-900 text-gray-900 bg-transparent hover:bg-gray-50 dark:border-neutral-600 dark:text-gray-100 dark:hover:bg-neutral-800'
+      }
+    },
+    outlineColorClasses() {
+      return {
+        primary: 'border border-blue-500 text-blue-600 bg-transparent hover:bg-blue-50 dark:border-blue-500 dark:text-blue-300 dark:hover:bg-blue-500/10',
+        secondary: 'border border-green-500 text-green-600 bg-transparent hover:bg-green-50 dark:border-green-500 dark:text-green-300 dark:hover:bg-green-500/10',
+        accent: 'border border-yellow-500 text-yellow-600 bg-transparent hover:bg-yellow-50 dark:border-yellow-500 dark:text-yellow-300 dark:hover:bg-yellow-500/10',
+        danger: 'border border-red-500 text-red-600 bg-transparent hover:bg-red-50 dark:border-red-500 dark:text-red-300 dark:hover:bg-red-500/10',
+        success: 'border border-green-500 text-green-600 bg-transparent hover:bg-green-50 dark:border-green-500 dark:text-green-300 dark:hover:bg-green-500/10',
+        warning: 'border border-yellow-500 text-yellow-700 bg-transparent hover:bg-yellow-50 dark:border-yellow-500 dark:text-yellow-300 dark:hover:bg-yellow-500/10',
+        cancel: 'border border-gray-900 text-gray-900 bg-transparent hover:bg-gray-100 dark:border-neutral-600 dark:text-gray-100 dark:hover:bg-neutral-800'
       }
     }
   }
