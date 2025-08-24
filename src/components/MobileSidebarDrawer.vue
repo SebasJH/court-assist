@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible" class="fixed inset-0 z-40 xl:hidden">
+  <div v-if="visible" class="fixed inset-0 z-[4800] xl:hidden">
     <!-- Backdrop (no animation) -->
     <div 
       class="fixed inset-0 bg-black/20 backdrop-blur-sm"
