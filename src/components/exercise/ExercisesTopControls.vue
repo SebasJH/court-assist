@@ -2,10 +2,11 @@
   <!-- Top controls: Favorites, Filters, Sort, View toggle, Search -->
   <div class="mb-4 flex flex-col md:flex-row md:flex-wrap items-stretch md:items-center gap-3 md:justify-end">
     <div class="flex items-center gap-2 md:flex-wrap order-2 md:order-1">
+
       <!-- Favorites toggle -->
       <button
         class="inline-flex items-center justify-center gap-2 w-10 h-10 rounded-md border text-sm focus:outline-none"
-        :class="favorites ? 'bg-blue-500 border-blue-500 text-white' : 'bg-white border-gray-300 text-gray-800 hover:bg-gray-50'"
+        :class="favorites ? 'bg-blue-500 border-blue-500 text-white' : 'bg-white dark:bg-gray-700  border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-50 hover:bg-gray-50 hover:dark:bg-gray-600'"
         @click="$emit('update:favorites', !favorites)"
         :aria-pressed="favorites ? 'true' : 'false'"
         title="Toon alleen favorieten"
@@ -15,7 +16,7 @@
 
       <!-- Filters button -->
       <button
-        class="inline-flex items-center gap-2 px-3 h-10 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-sm text-gray-800 focus:outline-none"
+        class="inline-flex items-center gap-2 px-3 h-10 text-sm rounded-md border border-gray-300 bg-white dark:bg-gray-700  border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-50 hover:bg-gray-50 hover:dark:bg-gray-600"
         :aria-pressed="showFilters ? 'true' : 'false'"
         @click="$emit('toggle-filters')"
         aria-controls="filters-title"

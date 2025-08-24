@@ -1,7 +1,7 @@
 <template>
   <div class="relative" ref="containerRef">
     <button
-      class="inline-flex items-center gap-2 px-3 h-10 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-sm text-gray-800 focus:outline-none"
+      class="inline-flex items-center gap-2 px-3 h-10 text-sm rounded-md border border-gray-300 bg-white dark:bg-gray-700  border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-50 hover:bg-gray-50 hover:dark:bg-gray-600"
       @click="toggle"
     >
       <ArrowUpDown class="w-4 h-4" />

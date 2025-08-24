@@ -7,9 +7,9 @@
       :style="wrapperStyle"
     >
       <div ref="boxRef" class="relative drop-shadow-xl">
-        <div class="bg-white border border-gray-200 rounded-lg p-3 break-words">
-          <div class="text-sm font-semibold text-gray-800">{{ title }}</div>
-          <div v-if="body" class="mt-1 text-xs text-gray-600">{{ body }}</div>
+        <div class="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl p-3 break-words">
+          <div class="text-sm font-semibold text-gray-800 dark:text-blue-400">{{ title }}</div>
+          <div v-if="body" class="mt-1 text-xs text-gray-600 dark:text-gray-50">{{ body }}</div>
           <slot />
         </div>
       </div>
