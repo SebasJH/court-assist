@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 border-t border-gray-200">
+  <div class="p-4 border-t border-gray-200 dark:border-gray-600">
     <UiButton v-if="!collapsed" color="secondary" class="w-full mb-3 text-sm" @click="$emit('switch-sport')">
       Switch sport
     </UiButton>
@@ -10,7 +10,7 @@
         {{ userInitials }}
       </div>
       <div
-        class="text-sm font-medium text-gray-700 transition-[opacity,max-width] duration-300 ease-in-out overflow-hidden whitespace-nowrap"
+        class="text-sm font-medium text-gray-700 dark:text-white transition-[opacity,max-width] duration-300 ease-in-out overflow-hidden whitespace-nowrap"
         :class="collapsed ? 'opacity-0 max-w-0' : 'opacity-100 max-w-[160px]'"
       >
         {{ userName }}

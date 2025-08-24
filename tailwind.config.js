@@ -35,18 +35,8 @@ export default {
       backdropBlur: {
         xs: '2px',
       },
-      boxShadow: {
-        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.1), 0 4px 16px 0 rgba(0, 0, 0, 0.05)',
-        'glass-inset': 'inset 0 1px 0 rgba(255, 255, 255, 0.2)',
-        'modern': '0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-      },
+
       colors: {
-        // Translucent glass tokens (keep)
-        glass: {
-          white: 'rgba(255, 255, 255, 0.25)',
-          dark: 'rgba(0, 0, 0, 0.1)',
-          card: 'rgba(255, 255, 255, 0.9)'
-        },
         // Custom brand palette — 500 is the base. Higher = darker, lower = lighter.
         // Primary (Blue)
         blue: {

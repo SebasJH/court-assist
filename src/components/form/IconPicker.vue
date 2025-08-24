@@ -10,7 +10,7 @@
       </div>
       <button
         type="button"
-        class="bg-gray-100 dark:bg-neutral-800 border border-gray-300 dark:border-neutral-700 border-l-0 rounded-r-xl px-3 h-10 flex items-center justify-center flex-1 text-gray-700 dark:text-gray-200 text-sm hover:bg-blue-50 dark:hover:bg-neutral-700 hover:text-blue-700 transition-colors focus:outline-none focus:ring-0"
+        class="bg-gray-50 dark:bg-neutral-800 border border-gray-300 dark:border-neutral-700 border-l-0 rounded-r-xl px-3 h-10 flex items-center justify-center flex-1 text-gray-700 dark:text-gray-200 text-sm hover:bg-blue-50 dark:hover:bg-neutral-700 hover:text-blue-700 transition-colors focus:outline-none focus:ring-0"
         @click="toggle"
       >
         Wijzigen

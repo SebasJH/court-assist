@@ -69,17 +69,16 @@ export default {
       }
     },
     computedIconClass() {
-      // If a custom iconClass is provided by the consumer, prefer it over size-based defaults
       return this.iconClass && this.iconClass.length ? this.iconClass : this.iconSizeClasses[this.size]
     },
     colorClasses() {
       return {
-        primary: 'bg-blue-500 text-white hover:bg-blue-600 shadow-modern',
-        secondary: 'glass text-gray-800 border border-white/30 hover:border-white/50 shadow-glass hover:shadow-modern',
-        accent: 'bg-purple-500 text-white hover:bg-purple-600 shadow-modern',
-        danger: 'bg-red-500 text-white hover:bg-red-600 shadow-modern',
-        success: 'bg-green-500 text-white hover:bg-green-600 shadow-modern',
-        warning: 'bg-yellow-500 text-gray-900 hover:bg-yellow-600 shadow-modern'
+        primary: 'bg-blue-500 text-white hover:bg-blue-600',
+        secondary: 'bg-green-500 text-white hover:bg-green-600',
+        accent: 'bg-purple-500 text-white hover:bg-purple-600',
+        danger: 'bg-red-500 text-white hover:bg-red-600',
+        success: 'bg-green-500 text-white hover:bg-green-600',
+        warning: 'bg-yellow-500 text-gray-900 hover:bg-yellow-600'
       }
     }
   }

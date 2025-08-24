@@ -1,17 +1,17 @@
 <template>
-  <div class="exercise-card relative cursor-pointer" role="link" :aria-label="`Open ${exercise.name}`" @click="goToDetail" tabindex="0" @keydown.enter.prevent="goToDetail" :class="zClass">
+  <div class="exercise-card relative cursor-pointer bg-white dark:bg-gray-700/50 border-gray-50 dark:border-neutral-700 rounded-xl shadow-md p-8 border  transition-shadow duration-200 transform transition-transform hover:scale-[1.02] hover:shadow-lg" role="link" :aria-label="`Open ${exercise.name}`" @click="goToDetail" tabindex="0" @keydown.enter.prevent="goToDetail" :class="zClass">
     <div class="flex flex-col h-full">
       <div class="flex items-start gap-3">
 
         <!-- Icon -->
-        <div class="bg-gray-50 dark:bg-neutral-800 w-12 h-12 md:w-16 md:h-16 rounded-lg flex justify-center items-center relative">
-          <div v-if="exercise.favorite" class="md:hidden absolute -top-1 -left-1 w-5 h-5 rounded-md bg-white shadow z-10 flex items-center justify-center pointer-events-none" aria-label="Favoriet" role="img">
+        <div class="bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 w-12 h-12 md:w-16 md:h-16 rounded-lg flex justify-center items-center relative">
+          <div v-if="exercise.favorite" class="absolute -top-1 -left-1 w-5 h-5 rounded-md bg-white dark:bg-gray-600 shadow z-10 flex items-center justify-center pointer-events-none" aria-label="Favoriet" role="img">
             <Star class="w-3 h-3 text-yellow-500" :fill="'currentColor'" :stroke="'currentColor'"/>
           </div>
           <component
             v-if="exercise.icon || exercise.imageIcon"
             :is="exercise.icon || exercise.imageIcon"
-            class="w-8 h-8 text-gray-700"
+            class="w-8 h-8 text-gray-700 dark:text-gray-100"
             :aria-label="`Icon ${exercise.icon || exercise.imageIcon}`"
           />
           <TrafficCone v-else class="w-8 h-8 text-gray-400" aria-label="Default icon" />
@@ -19,14 +19,14 @@
 
         <!-- Title -->
         <div class="flex-1 min-w-0 pr-12 md:pr-[4.5rem]">
-          <div class="text-lg font-bold text-gray-800 dark:text-gray-100 break-words clamp-2">{{ exercise.name }}</div>
+          <div class="text-lg font-bold text-gray-800 dark:text-gray-50 break-words clamp-2">{{ exercise.name }}</div>
 
           <!-- Categories -->
           <div class="flex flex-wrap gap-1 mt-1">
             <span
                 v-for="cat in exercise.category"
                 :key="cat"
-                class="exercise-category badge small bg-blue-100 text-blue-800 px-2 py-1 rounded-full whitespace-nowrap"
+                class="exercise-category badge small bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-400 px-2 py-1 rounded-full whitespace-nowrap"
             >
               {{ cat }}
             </span>
@@ -36,19 +36,11 @@
 
         <!-- Actions -->
         <div class="absolute top-4 right-4 flex items-start gap-2" ref="controlsRef" @mouseenter="liftEnter" @mouseleave="liftLeave">
-          <button
-            class="star hidden md:inline-flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors duration-200 w-9 h-9 cursor-pointer"
-            :aria-pressed="exercise.favorite ? 'true' : 'false'"
-            :title="exercise.favorite ? 'Verwijder uit favorieten' : 'Markeer als favoriet'"
-            @click.stop="toggleFav"
-          >
-            <Star :class="exercise.favorite ? 'w-5 h-5 text-yellow-500' : 'w-5 h-5 '" :fill="exercise.favorite ? 'currentColor' : 'none'" :stroke="exercise.favorite ? 'currentColor' : 'currentColor'" />
-          </button>
 
           <!-- Menu button wrapper is relative so dropdown anchors to the dots -->
           <div class="relative">
             <div
-              class="menu w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors duration-200 cursor-pointer"
+              class="menu w-9 h-9 flex items-center justify-center rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 transition-colors duration-200 cursor-pointer"
               @click.stop="toggleMenu"
               ref="menuButtonRef"
             >
@@ -59,7 +51,7 @@
               v-if="menuOpen"
               ref="menuRef"
               @click.stop
-              :class="['absolute top-full mt-2 w-64 md:w-40 whitespace-nowrap bg-white border border-gray-200 rounded shadow-lg flex flex-col z-[3000]', alignRight ? 'right-0' : 'left-0']"
+              :class="['absolute top-full mt-2 w-60 whitespace-nowrap bg-white dark:bg-gray-700 dark:border-gray-600 border border-gray-200 rounded shadow-lg flex flex-col z-[3000]', alignRight ? 'right-0' : 'left-0']"
             >
               <button @click="onEdit" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-100">
                 <Pencil class="w-fit h-4" />
@@ -69,11 +61,11 @@
                 <Copy class="w-fit h-4" />
                 Dupliceren
               </button>
-              <button @click="onToggleFavFromMenu" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-100 md:hidden">
+              <button @click="onToggleFavFromMenu" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-100">
                 <Star class="w-fit h-4" :class="exercise.favorite ? 'text-yellow-500' : ''" :fill="exercise.favorite ? 'currentColor' : 'none'" :stroke="'currentColor'" />
                 <span>{{ exercise.favorite ? 'Verwijder uit favorieten' : 'Markeer als favoriet' }}</span>
               </button>
-              <button @click="onDelete" class="cursor-pointer border-t border-gray-200 text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-100 text-red-500">
+              <button @click="onDelete" class="cursor-pointer border-t border-gray-200 dark:border-gray-600 text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-100 text-red-500">
                 <Trash class="w-fit h-4" />
                 Verwijderen
               </button>
@@ -86,13 +78,13 @@
       <div class="exercise-details mt-6 flex-1 flex flex-col gap-y-4">
 
         <!-- Description -->
-        <div class="flex-1 text-sm leading-relaxed text-gray-600 clamp-3">{{ exercise.description || exercise.shortDescription }}</div>
+        <div class="flex-1 text-sm leading-relaxed text-gray-600 dark:text-gray-50 clamp-3">{{ exercise.description || exercise.shortDescription }}</div>
 
         <div class="mt-0 flex items-end justify-between gap-2">
           <div class="flex-1 min-w-0 flex flex-wrap items-center gap-y-1 gap-x-1.5">
             <!-- Players with tooltip -->
             <div v-if="showPlayers" class="relative" ref="playersRef" @mouseenter="onEnterPlayers" @mouseleave="onLeavePlayers">
-              <div class="exercise-players bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:bg-gray-300 hover:shadow-sm transition-colors transition-shadow duration-150">
+              <div class="exercise-players bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1  hover:shadow-sm transition-colors transition-shadow duration-150">
                 <Users class="h-4 w-fit" />
                 <div>{{ playersLabel }}</div>
               </div>
@@ -101,7 +93,7 @@
 
             <!-- Duration with tooltip -->
             <div v-if="hasDuration" class="relative" ref="durationRef" @mouseenter="onEnterDuration" @mouseleave="onLeaveDuration">
-              <div class="exercise-duration bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:bg-gray-300 hover:shadow-sm transition-colors transition-shadow duration-150">
+              <div class="exercise-duration bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors transition-shadow duration-150">
                 <TimerReset class="h-4 w-fit" />
                 <div>{{ exercise.duration }} min</div>
               </div>
@@ -110,7 +102,7 @@
 
             <!-- Intensity with tooltip -->
             <div v-if="typeof exercise.intensity === 'number'" class="relative" ref="intensityRef" @mouseenter="onEnterIntensity" @mouseleave="onLeaveIntensity">
-              <div class="exercise-intensity bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:bg-gray-300 hover:shadow-sm transition-colors transition-shadow duration-150">
+              <div class="exercise-intensity bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors transition-shadow duration-150">
                 <Zap class="h-4 w-fit" />
                 <div>{{ exercise.intensity }}/5</div>
               </div>
@@ -119,14 +111,14 @@
 
             <!-- Court with tooltip -->
             <div v-if="hasCourt" class="relative" ref="courtRef" @mouseenter="onEnterCourt" @mouseleave="onLeaveCourt">
-              <div class="exercise-court bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:bg-gray-300 hover:shadow-sm transition-colors transition-shadow duration-150">
+              <div class="exercise-court bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors transition-shadow duration-150">
                 <RectangleCircle class="h-4 w-fit" />
                 <div>{{ courtLabel }}</div>
               </div>
               <Tooltip :title="courtTooltip.title" :body="courtTooltip.body" :open="courtOpen" :anchor="courtRef" />
             </div>
           </div>
-          <router-link :to="`/oefening/${slug}`" class="shrink-0 self-end whitespace-nowrap text-blue-600 hover:text-blue-700 hover:underline text-sm font-medium" @click.stop>Lees meer →</router-link>
+          <router-link :to="`/oefening/${slug}`" class="shrink-0 self-end whitespace-nowrap text-blue-500 hover:text-blue-600 dark:text-blue-400 dark-hover:text-blue-500 hover:underline text-sm font-semibold" @click.stop>Lees meer →</router-link>
         </div>
       </div>
     </div>

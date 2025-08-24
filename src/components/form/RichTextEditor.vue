@@ -1,7 +1,7 @@
 <template>
   <div class="rte-wrapper border border-gray-300 rounded-xl bg-white">
     <!-- Toolbar -->
-    <div class="rte-toolbar flex items-center gap-2 px-2 py-1 bg-gray-100 border-b border-gray-300 rounded-t-xl">
+    <div class="rte-toolbar flex items-center gap-2 px-2 py-1 bg-gray-50 border-b border-gray-300 rounded-t-xl">
       <button type="button" class="rte-btn" @mousedown.prevent @click="applyCmd('bold')" title="Vet">
         <strong>B</strong>
       </button>

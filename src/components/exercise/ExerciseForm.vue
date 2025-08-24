@@ -99,7 +99,7 @@
                 @click="toggleCategory(c)"
                 :class="form.category.includes(c)
               ? 'bg-blue-500 text-white'
-              : 'bg-gray-100 hover:bg-blue-100 text-gray-800'"
+              : 'bg-gray-50 hover:bg-blue-100 text-gray-800'"
                 class="px-2 py-1 rounded cursor-pointer"
             >
               {{ c }}
@@ -240,8 +240,8 @@
                 type="button"
                 @click="toggleMaterial(m)"
                 :class="form.materials.includes(m)
-                ? 'bg-green-500 text-white'
-                : 'bg-gray-100 hover:bg-green-100 text-gray-800'"
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-50 hover:bg-blue-100 text-gray-800'"
                 class="px-2 py-1 rounded cursor-pointer"
             >
               {{ m }}

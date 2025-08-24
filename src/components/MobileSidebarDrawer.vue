@@ -51,7 +51,7 @@ export default {
   computed: {
     panelClass() {
       return [
-        'h-full glass-card shadow-glass overflow-hidden',
+        'h-full overflow-hidden',
         this.isClosing ? 'animate-slide-out-left' : 'animate-slide-in-left'
       ]
     }

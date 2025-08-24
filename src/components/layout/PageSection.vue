@@ -1,5 +1,5 @@
 <template>
-  <section :class="['glass-card rounded-2xl shadow-glass transition-modern hover:shadow-modern', customClass]">
+  <section :class="['rounded-2xl', customClass]">
     <slot />
   </section>
 </template>

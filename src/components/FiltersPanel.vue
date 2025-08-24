@@ -73,7 +73,7 @@
         <fieldset>
           <legend class="block text-sm text-gray-700 mb-2">Materialen</legend>
           <div class="flex flex-wrap gap-2">
-            <label v-for="m in materialOptions" :key="m" class="inline-flex items-center gap-2 bg-gray-100 hover:bg-blue-50 text-gray-800 rounded px-2 py-1 cursor-pointer select-none">
+            <label v-for="m in materialOptions" :key="m" class="inline-flex items-center gap-2 bg-gray-50 hover:bg-blue-100 text-gray-800 rounded px-2 py-1 cursor-pointer select-none">
               <input type="checkbox" class="form-checkbox w-4 h-4" :checked="materials.includes(m)" @change="onToggleMaterial(m, $event.target.checked)" />
               <span class="text-sm">{{ m }}</span>
             </label>

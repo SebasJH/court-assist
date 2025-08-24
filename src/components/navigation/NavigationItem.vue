@@ -1,9 +1,9 @@
 <template>
   <router-link
     :to="to"
-    class="nav-link items-center transition-modern rounded-xl"
+    class="nav-link items-center rounded-xl"
     :class="[
-      isActive ? 'active glass-button shadow-glass' : 'hover:glass hover:shadow-glass',
+      isActive ? 'active bg-blue-500 text-white' : '',
       collapsed ? 'justify-center px-0 py-3 gap-0' : 'gap-2 px-4 py-3'
     ]"
     @click="$emit('click')"
@@ -56,5 +56,7 @@ export default {
 </script>
 
 <style scoped>
-.nav-link { height: 44px; }
+.nav-link {
+  height: 44px;
+}
 </style>

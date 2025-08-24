@@ -24,9 +24,9 @@
               <X class="w-5 h-5"/>
             </button>
           </div>
-          <h1 v-else key="title" class="text-2xl md:text-3xl font-bold text-gray-800 leading-tight truncate md:hidden">Oefeningen</h1>
+          <h1 v-else key="title" class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-50 leading-tight truncate md:hidden">Oefeningen</h1>
         </transition>
-        <h1 class="hidden md:block text-3xl font-bold text-gray-800 leading-tight truncate">Oefeningen</h1>
+        <h1 class="hidden md:block text-3xl font-bold text-gray-800 dark:text-gray-50 leading-tight truncate">Oefeningen</h1>
       </div>
     </template>
     <template #actions>
@@ -195,7 +195,7 @@
         </transition-group>
       </template>
       <template v-else>
-        <div class="bg-white dark:bg-neutral-900 rounded-lg shadow-md overflow-hidden">
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
 
           <div class="lg:min-w-[48rem]">
             <div

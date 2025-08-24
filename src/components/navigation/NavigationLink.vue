@@ -1,9 +1,9 @@
 <template>
   <a
     href="#"
-    class="nav-link items-center transition-modern rounded-xl"
+    class="nav-link items-center rounded-xl flex w-full text-gray-700 rounded-xl mb-3"
     :class="[
-      'hover:glass hover:shadow-glass',
+      '',
       collapsed ? 'justify-center px-0 py-3 gap-0' : 'gap-2 px-4 py-3'
     ]"
     @click.prevent="$emit('click')"
@@ -48,5 +48,7 @@ export default {
 </script>
 
 <style scoped>
-.nav-link { height: 44px; }
+.nav-link {
+  height: 44px;
+}
 </style>

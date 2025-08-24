@@ -1,6 +1,6 @@
-/* Modern glassmorphism and improved styling */
 body {
   @apply antialiased text-gray-800 bg-gradient-to-br from-indigo-50 via-sky-50 to-rose-50;
+  @apply dark:text-white dark:bg-gradient-to-br dark:from-neutral-800 dark:via-neutral-800 dark:to-neutral-800;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
@@ -20,15 +20,6 @@ html {
 }
 
 /* Glassmorphism utilities */
-.glass-container {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 
-    0 8px 32px 0 rgba(31, 38, 135, 0.1),
-    0 4px 16px 0 rgba(0, 0, 0, 0.05);
-}
 
 /* Modern animations */
 @keyframes fadeInUp {

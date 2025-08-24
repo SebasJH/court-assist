@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible" class="bg-gray-200 px-2 py-1 rounded-lg text-sm flex items-center w-fit gap-1">
+  <div v-if="visible" class="bg-gray-50 px-2 py-1 rounded-lg text-sm flex items-center w-fit gap-1">
     <component :is="icon" class="w-4 h-4" />
     <div>{{ label }}</div>
   </div>
