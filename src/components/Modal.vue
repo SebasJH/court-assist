@@ -1,35 +1,37 @@
 <!-- components/Modal.vue -->
 <template>
-  <div
-        v-if="visible"
-        class="fixed inset-0 z-[5000] flex bg-black/20 backdrop-blur-sm"
-        :class="overlayClass"
-        @mousedown="onOverlayMouseDown"
-        @click="onOverlayClick"
-    >
-      <!-- Scrollbare content -->
-      <transition :name="drawer ? (side === 'left' ? 'drawer-left' : 'drawer-right') : 'modal-bottom'" appear>
-        <div
-            v-show="open"
-            ref="modalContent"
-            class="relative bg-white shadow-xl overflow-y-auto modal-panel"
-            :class="contentClass"
-            role="dialog"
-            aria-modal="true"
-        >
-          <button
-              v-if="!hideDefaultClose"
-              class="absolute top-5 right-5 z-[10] text-gray-500 hover:text-black"
-              aria-label="Sluiten"
-              @click="$emit('close')"
+  <teleport to="body">
+    <div
+          v-if="visible"
+          class="fixed inset-0 z-[5000] flex bg-black/30 dark:bg-black/60 backdrop-blur-sm"
+          :class="overlayClass"
+          @mousedown="onOverlayMouseDown"
+          @click="onOverlayClick"
+      >
+        <!-- Scrollbare content -->
+        <transition :name="drawer ? (side === 'left' ? 'drawer-left' : 'drawer-right') : 'modal-bottom'" appear>
+          <div
+              v-show="open"
+              ref="modalContent"
+              class="relative bg-white dark:bg-neutral-900 shadow-xl overflow-y-auto modal-panel"
+              :class="contentClass"
+              role="dialog"
+              aria-modal="true"
           >
-            <X />
-          </button>
+            <button
+                v-if="!hideDefaultClose"
+                class="absolute top-5 right-5 z-[10] text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-gray-200"
+                aria-label="Sluiten"
+                @click="$emit('close')"
+            >
+              <X />
+            </button>
 
-          <slot />
-        </div>
-      </transition>
-    </div>
+            <slot />
+          </div>
+        </transition>
+      </div>
+  </teleport>
 </template>
 
 <script>

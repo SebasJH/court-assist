@@ -8,7 +8,7 @@
             <Search class="w-4 h-4 !text-gray-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10"/>
             <input
                 ref="searchInputRef"
-                class="form-input w-full !pl-9 !pr-10 !bg-white !border-gray-300 !text-gray-900 placeholder:text-gray-400 shadow-sm"
+                class="form-input w-full !pl-9 !pr-10 !bg-white !border-gray-300 !text-gray-900 placeholder:text-gray-400 shadow-sm dark:!bg-neutral-900 dark:!border-neutral-700 dark:!text-gray-100 dark:placeholder:text-gray-400"
                 :value="q"
                 @input="e => q = (e && e.target ? e.target.value : '')"
                 placeholder="Zoek oefeningen..."
@@ -195,7 +195,7 @@
         </transition-group>
       </template>
       <template v-else>
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="bg-white dark:bg-neutral-900 rounded-lg shadow-md overflow-hidden">
 
           <div class="lg:min-w-[48rem]">
             <div
@@ -233,7 +233,7 @@
       />
     </template>
     <div v-else class="py-20">
-      <div class="bg-white border border-dashed border-gray-300 rounded-xl p-10 text-center max-w-xl mx-auto">
+      <div class="bg-white dark:bg-neutral-900 border border-dashed border-gray-300 dark:border-neutral-700 rounded-xl p-10 text-center max-w-xl mx-auto">
         <div class="text-lg font-semibold text-gray-800 mb-2">
           {{ hasAny ? 'Er zijn geen oefeningen gevonden met dit filter' : 'Er zijn momenteel geen oefeningen' }}
         </div>

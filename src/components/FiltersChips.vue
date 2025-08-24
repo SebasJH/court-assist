@@ -2,46 +2,46 @@
   <!-- Root wrapper to receive classes/attrs from parent -->
   <div v-bind="$attrs">
     <!-- Search -->
-    <span v-if="q && q.trim().length" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8">
+    <span v-if="q && q.trim().length" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
       Zoek: "{{ q }}"
       <button class="hover:text-blue-900" @click="$emit('clear:search')" aria-label="Verwijder zoekopdracht">×</button>
     </span>
     <!-- Category -->
-    <span v-if="category" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8">
+    <span v-if="category" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
       Categorie: {{ category }}
       <button class="hover:text-blue-900" @click="$emit('clear:category')" aria-label="Verwijder categorie">×</button>
     </span>
     <!-- Players -->
-    <span v-if="players[0] !== defaultPlayers[0] || players[1] !== defaultPlayers[1]" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8">
+    <span v-if="players[0] !== defaultPlayers[0] || players[1] !== defaultPlayers[1]" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
       Spelers: {{ formatPlayers(players[0], players[1]) }}
       <button class="hover:text-blue-900" @click="$emit('clear:players')" aria-label="Reset spelers">×</button>
     </span>
     <!-- Intensity -->
-    <span v-if="intensity[0] !== defaultIntensity[0] || intensity[1] !== defaultIntensity[1]" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8">
+    <span v-if="intensity[0] !== defaultIntensity[0] || intensity[1] !== defaultIntensity[1]" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
       Intensiteit: {{ formatIntensityRange(intensity[0], intensity[1]) }}
       <button class="hover:text-blue-900" @click="$emit('clear:intensity')" aria-label="Reset intensiteit">×</button>
     </span>
     <!-- Court -->
     <template v-if="Array.isArray(court) && court.length">
-      <span v-for="c in court" :key="c" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8">
+      <span v-for="c in court" :key="c" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
         Veld: {{ formatCourt(c) }}
         <button class="hover:text-blue-900" @click="$emit('clear:court', c)" :aria-label="'Verwijder veld ' + c">×</button>
       </span>
     </template>
     <!-- Materials -->
     <template v-if="Array.isArray(materials) && materials.length">
-      <span v-for="m in materials" :key="m" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8">
+      <span v-for="m in materials" :key="m" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
         Materiaal: {{ m }}
         <button class="hover:text-blue-900" @click="$emit('clear:material', m)" :aria-label="'Verwijder materiaal ' + m">×</button>
       </span>
     </template>
     <!-- Favorites -->
-    <span v-if="favorites" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8">
+    <span v-if="favorites" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
       Favorieten
       <button class="hover:text-blue-900" @click="$emit('clear:favorites')" aria-label="Verwijder favorieten filter">×</button>
     </span>
     <!-- Reset all -->
-    <button class="text-sm h-8 px-3 rounded-full border border-gray-300 bg-white hover:bg-gray-50" @click="$emit('reset')">Alles wissen</button>
+    <button class="text-sm h-8 px-3 rounded-full border border-gray-300 bg-white hover:bg-gray-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-gray-200 dark:hover:bg-neutral-800" @click="$emit('reset')">Alles wissen</button>
   </div>
 </template>
 

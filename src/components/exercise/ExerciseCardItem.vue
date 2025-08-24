@@ -4,7 +4,7 @@
       <div class="flex items-start gap-3">
 
         <!-- Icon -->
-        <div class="bg-gray-100 w-12 h-12 md:w-16 md:h-16 rounded-lg flex justify-center items-center relative">
+        <div class="bg-gray-50 dark:bg-neutral-800 w-12 h-12 md:w-16 md:h-16 rounded-lg flex justify-center items-center relative">
           <div v-if="exercise.favorite" class="md:hidden absolute -top-1 -left-1 w-5 h-5 rounded-md bg-white shadow z-10 flex items-center justify-center pointer-events-none" aria-label="Favoriet" role="img">
             <Star class="w-3 h-3 text-yellow-500" :fill="'currentColor'" :stroke="'currentColor'"/>
           </div>
@@ -19,7 +19,7 @@
 
         <!-- Title -->
         <div class="flex-1 min-w-0 pr-12 md:pr-[4.5rem]">
-          <div class="text-lg font-bold text-gray-800 break-words clamp-2">{{ exercise.name }}</div>
+          <div class="text-lg font-bold text-gray-800 dark:text-gray-100 break-words clamp-2">{{ exercise.name }}</div>
 
           <!-- Categories -->
           <div class="flex flex-wrap gap-1 mt-1">

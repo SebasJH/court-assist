@@ -4,6 +4,7 @@ export default {
     "./index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       animation: {
@@ -116,12 +117,12 @@ export default {
         gray: {
           50:  '#F2F2F2',
           100: '#D8D8D8',
-          200: '#D8D8D8', // fallback to nearest
+          200: '#C5C5C5', // nieuw
           300: '#B2B2B2',
-          400: '#B2B2B2', // fallback to nearest
+          400: '#999999', // nieuw
           500: '#7F7F7F',
           600: '#4C4C4C',
-          700: '#4C4C4C', // fallback to nearest
+          700: '#333333', // nieuw
           800: '#191919',
           900: '#000000'
         },
@@ -139,7 +140,7 @@ export default {
           50:  '#FDECEC', 100: '#FBD9D9', 200: '#FBD9D9', 300: '#F37C7C', 400: '#F37C7C', 500: '#EF4444', 600: '#BF3636', 700: '#BF3636', 800: '#5F1B1B', 900: '#471414'
         },
         neutral: {
-          50:  '#F2F2F2', 100: '#D8D8D8', 200: '#D8D8D8', 300: '#B2B2B2', 400: '#B2B2B2', 500: '#7F7F7F', 600: '#4C4C4C', 700: '#4C4C4C', 800: '#191919', 900: '#000000'
+          50:  '#F2F2F2', 100: '#D8D8D8', 200: '#C5C5C5', 300: '#B2B2B2', 400: '#999999', 500: '#7F7F7F', 600: '#4C4C4C', 700: '#333333', 800: '#191919', 900: '#000000'
         }
       }
     },
