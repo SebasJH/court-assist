@@ -118,7 +118,7 @@
               <Tooltip :title="courtTooltip.title" :body="courtTooltip.body" :open="courtOpen" :anchor="courtRef" />
             </div>
           </div>
-          <router-link :to="`/oefening/${slug}`" class="shrink-0 self-end whitespace-nowrap text-blue-500 hover:text-blue-600 dark:text-blue-400 dark-hover:text-blue-500 hover:underline text-sm font-semibold" @click.stop>Lees meer →</router-link>
+          <router-link :to="`/oefening/${slug}`" class="shrink-0 self-end whitespace-nowrap text-blue-500 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-400 hover:underline text-sm font-semibold" @click.stop>Lees meer →</router-link>
         </div>
       </div>
     </div>
