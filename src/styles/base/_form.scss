@@ -41,3 +41,7 @@ input.form-input:not([type='checkbox']):not([type='radio']),
 select.form-input {
   height: 40px;
 }
+
+input[type='checkbox'] {
+  @apply accent-blue-500;
+}

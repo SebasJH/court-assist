@@ -19,7 +19,7 @@
           <X :class="iconSizeClass" />
         </button>
         <button
-          class="hidden xl:inline-flex rounded-md p-2 hover:bg-gray-100 text-gray-600 dark:hover:bg-gray-600 dark:text-gray-50 transition-colors duration-200"
+          class="hidden xl:inline-flex rounded-md p-2 hover:bg-gray-50 text-gray-600 dark:hover:bg-gray-600 dark:text-gray-50 transition-colors duration-200"
           :title="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
           @click="$emit('toggle')"
         >

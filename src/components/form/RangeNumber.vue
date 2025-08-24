@@ -18,7 +18,7 @@
       <input
         :id="`${idPrefix}-min`"
         type="number"
-        class="form-input !rounded-r-none border-r-0"
+        class="form-input !rounded-r-none border-r-0 dark:!bg-gray-700 dark:!border-gray-600 dark:!text-gray-50"
         :value="currentMin"
         :min="min"
         :max="max"
@@ -26,7 +26,7 @@
         :aria-label="minLabel"
         @input="onMin($event.target.value)"
       />
-      <div class="bg-white border border-gray-300 border-l-0 rounded-r-xl px-3 h-10 flex items-center text-gray-700 text-sm">
+      <div class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 border-l-0 rounded-r-xl px-3 h-10 flex items-center text-gray-700 dark:text-gray-50 text-sm">
         {{ minLabel }}
       </div>
     </div>
@@ -48,7 +48,7 @@
       <input
         :id="`${idPrefix}-max`"
         type="number"
-        class="form-input !rounded-r-none border-r-0"
+        class="form-input !rounded-r-none border-r-0 dark:!bg-gray-700 dark:!border-gray-600 dark:!text-gray-50"
         :value="currentMax"
         :min="min"
         :max="max"
@@ -56,7 +56,7 @@
         :aria-label="maxLabel"
         @input="onMax($event.target.value)"
       />
-      <div class="bg-white border border-gray-300 border-l-0 rounded-r-xl px-3 h-10 flex items-center text-gray-700 text-sm">
+      <div class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 border-l-0 rounded-r-xl px-3 h-10 flex items-center text-gray-700 dark:text-gray-50 text-sm">
         {{ maxLabel }}
       </div>
     </div>

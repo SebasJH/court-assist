@@ -1,5 +1,5 @@
 <template>
-  <!-- Top controls: Favorites, Filters, Sort, View toggle, Search -->
+  <!-- Top controls: Favorites, Filters, Sort, Search -->
   <div class="mb-4 flex flex-col md:flex-row md:flex-wrap items-stretch md:items-center gap-3 md:justify-end">
     <div class="flex items-center gap-2 md:flex-wrap order-2 md:order-1">
 
@@ -33,31 +33,6 @@
         @update:sortDir="$emit('update:sortDir', $event)"
       />
 
-      <!-- View toggle -->
-      <div v-if="showViewToggle" class="inline-flex rounded-md overflow-hidden border border-gray-300">
-        <button
-          type="button"
-          class="inline-flex items-center justify-center px-3 h-10 text-sm font-medium focus:outline-none"
-          :class="viewMode === 'card' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
-          @click="$emit('update:viewMode', 'card')"
-          :aria-pressed="viewMode === 'card' ? 'true' : 'false'"
-          aria-label="Kaartweergave"
-          title="Kaartweergave"
-        >
-          <LayoutGrid class="w-4 h-4" />
-        </button>
-        <button
-          type="button"
-          class="inline-flex items-center justify-center px-3 h-10 text-sm font-medium border-l border-gray-300 focus:outline-none"
-          :class="viewMode === 'list' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
-          @click="$emit('update:viewMode', 'list')"
-          :aria-pressed="viewMode === 'list' ? 'true' : 'false'"
-          aria-label="Lijstweergave"
-          title="Lijstweergave"
-        >
-          <List class="w-4 h-4" />
-        </button>
-      </div>
     </div>
 
     <!-- Search (hidden on small screens per design) -->

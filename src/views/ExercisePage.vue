@@ -78,7 +78,7 @@
           </button>
           <button
               class="w-full text-left px-3 h-10 text-sm flex items-center gap-2 hover:bg-blue-50 dark:hover:bg-gray-600"
-              :class="viewMode === 'list' ? 'bg-blue-50 bg-gray-600' : ''"
+              :class="viewMode === 'list' ? 'bg-blue-50 dark:bg-gray-600' : ''"
               role="menuitemradio"
               :aria-checked="viewMode === 'list' ? 'true' : 'false'"
               @click="selectView('list')"
@@ -110,19 +110,19 @@
         @update:viewMode="setViewMode"
     />
 
-    <!-- Filters drawer (right side panel with overlay) -->
+    <!-- Filters drawer -->
     <modal :open="showFilters" @close="showFilters = false" :drawer="true" side="right" drawerWidthClass="max-w-lg"
            contentPaddingClass="p-0" :hideDefaultClose="true">
       <div class="flex h-full flex-col">
-        <div class="px-5 sm:px-10 pt-5 pb-4 border-b">
+        <div class="px-5 sm:px-10 pt-5 pb-4 border-b dark:border-gray-600">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
               <Filter class="w-5 h-5 text-gray-700"/>
-              <h2 id="filters-title" class="text-lg font-semibold text-gray-800">Filters</h2>
+              <h2 id="filters-title" class="text-lg font-semibold text-gray-800 dark:text-gray-100">Filters</h2>
             </div>
             <button
                 type="button"
-                class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 dark:border-none"
                 aria-label="Sluiten"
                 title="Sluiten"
                 @click="showFilters = false"
@@ -147,7 +147,7 @@
               :materialOptions="materialOptions"
           />
         </div>
-        <div class="px-5 py-4 border-t flex items-center justify-end gap-2">
+        <div class="px-5 py-4 border-t flex items-center justify-end gap-2 dark:border-gray-600">
           <UiButton color="cancel" @click="resetFilters">Alles wissen</UiButton>
           <UiButton color="primary" @click="showFilters = false">Toepassen</UiButton>
         </div>
