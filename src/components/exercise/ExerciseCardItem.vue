@@ -19,7 +19,7 @@
 
         <!-- Title -->
         <div class="flex-1 min-w-0 pr-12 md:pr-[4.5rem]">
-          <div class="text-lg font-bold text-gray-800 break-words">{{ exercise.name }}</div>
+          <div class="text-lg font-bold text-gray-800 break-words clamp-2">{{ exercise.name }}</div>
 
           <!-- Categories -->
           <div class="flex flex-wrap gap-1 mt-1">
@@ -86,7 +86,7 @@
       <div class="exercise-details mt-6 flex-1 flex flex-col gap-y-4">
 
         <!-- Description -->
-        <div class="flex-1 text-sm leading-relaxed text-gray-600">{{ exercise.description || exercise.shortDescription }}</div>
+        <div class="flex-1 text-sm leading-relaxed text-gray-600 clamp-3">{{ exercise.description || exercise.shortDescription }}</div>
 
         <div class="mt-0 flex items-end justify-between gap-2">
           <div class="flex-1 min-w-0 flex flex-wrap items-center gap-y-1 gap-x-1.5">
@@ -324,5 +324,16 @@ function goToDetail() {
 
 
 <style scoped>
-
+.clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 </style>

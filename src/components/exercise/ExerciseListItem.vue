@@ -31,6 +31,7 @@
           class="badge small bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-xs whitespace-nowrap"
         >{{ cat }}</span>
       </div>
+
       <!-- Mobile-only compact details -->
       <div class="lg:hidden mt-1 flex flex-wrap items-center gap-1.5 text-xs text-gray-700">
         <div v-if="showPlayers" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-100">
