@@ -11,30 +11,6 @@ $error-color: #ef4444;
     @apply px-4 py-2 rounded-lg font-medium transition-all duration-200;
 }
 
-@mixin card-base {
-    @apply bg-white rounded-xl shadow-lg p-6 border border-gray-100;
-}
-
-// Custom component styles
-.btn-primary {
-    @include button-base;
-    @apply text-white bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 focus:ring-0;
-}
-
-.btn-secondary {
-    @include button-base;
-    @apply text-white bg-gradient-to-r from-slate-500 to-gray-600 hover:from-slate-600 hover:to-gray-700 focus:ring-0;
-}
-
-.btn-accent {
-    @include button-base;
-    @apply text-white bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 focus:ring-0;
-}
-
-.card {
-    @include card-base;
-}
-
 // Custom utility classes
 .text-gradient {
     @apply bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent;
@@ -57,13 +33,6 @@ $error-color: #ef4444;
     .container {
         @apply px-8;
     }
-}
-
-
-// Danger button variant
-.btn-danger {
-    @include button-base;
-    @apply text-white bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 focus:ring-0;
 }
 
 

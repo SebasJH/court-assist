@@ -109,7 +109,7 @@
       </div>
 
       <div class="px-5 sm:px-10 pt-5 flex justify-end gap-3">
-        <UiButton color="secondary" @click="closeEditDescription">Annuleren</UiButton>
+        <UiButton color="cancel" @click="closeEditDescription">Annuleren</UiButton>
         <UiButton color="primary" @click="saveEditDescription">Opslaan</UiButton>
       </div>
     </modal>
@@ -188,7 +188,7 @@
       </div>
 
       <div class="px-5 sm:px-10 pt-5 border-t flex justify-end gap-3">
-        <UiButton color="secondary" @click="closeEditDetails">Annuleren</UiButton>
+        <UiButton color="cancel" @click="closeEditDetails">Annuleren</UiButton>
         <UiButton color="primary" @click="saveEditDetails">Opslaan</UiButton>
       </div>
     </modal>

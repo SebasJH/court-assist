@@ -26,7 +26,7 @@ export default {
     color: {
       type: String,
       default: 'primary',
-      validator: (value) => ['primary', 'secondary', 'accent', 'danger', 'success', 'warning'].includes(value)
+      validator: (value) => ['primary', 'secondary', 'accent', 'danger', 'success', 'warning', 'cancel'].includes(value)
     },
     size: {
       type: String,
@@ -75,10 +75,11 @@ export default {
       return {
         primary: 'bg-blue-500 text-white hover:bg-blue-600',
         secondary: 'bg-green-500 text-white hover:bg-green-600',
-        accent: 'bg-purple-500 text-white hover:bg-purple-600',
+        accent: 'bg-yellow-500 text-white hover:bg-yellow-600',
         danger: 'bg-red-500 text-white hover:bg-red-600',
         success: 'bg-green-500 text-white hover:bg-green-600',
-        warning: 'bg-yellow-500 text-gray-900 hover:bg-yellow-600'
+        warning: 'bg-yellow-500 text-gray-900 hover:bg-yellow-600',
+        black: 'bg-black text-white hover:bg-gray-600',
       }
     }
   }

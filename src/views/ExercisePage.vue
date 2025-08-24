@@ -243,7 +243,7 @@
         <div class="flex justify-center gap-3">
           <UiButton
               v-if="hasAny && isFilterActive"
-              color="secondary"
+              color="primary"
               @click="resetFilters"
           >Verwijder filters
           </UiButton>
@@ -299,7 +299,7 @@
   <!-- Desktop scroll-to-top button (bottom-right) -->
   <UiButton
       :class="['hidden md:inline-flex fixed safe-bottom-5 right-5 z-[3000] !p-0 w-12 h-12 shadow-lg', 'transition-opacity duration-200', { 'opacity-0 pointer-events-none': !showScrollTop }]"
-      color="secondary"
+      color="primary"
       icon="ArrowUp"
       iconClass="w-6 h-6"
       aria-label="Naar boven"

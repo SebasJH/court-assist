@@ -331,7 +331,7 @@
 
     <!-- Buttons -->
     <div class="px-5 sm:px-10 pt-5 border-t flex justify-end gap-3">
-      <UiButton color="secondary" outline @click="$emit('close')">Annuleren</UiButton>
+      <UiButton color="cancel" @click="$emit('close')">Annuleren</UiButton>
       <UiButton :color="isEdit ? 'primary' : 'success'" type="submit" class="btn-submit">
         {{ isEdit ? 'Opslaan' : 'Aanmaken' }}
       </UiButton>
