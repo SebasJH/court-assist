@@ -18,7 +18,7 @@
         </div>
 
         <!-- Title -->
-        <div class="flex-1 min-w-0 pr-12 md:pr-[4.5rem]">
+        <div class="flex-1 min-w-0 pr-8">
           <div class="text-lg font-bold text-gray-800 dark:text-gray-50 break-words clamp-2">{{ exercise.name }}</div>
 
           <!-- Categories -->

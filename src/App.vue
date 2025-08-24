@@ -15,7 +15,7 @@
       <Sidebar />
     </div>
 
-    <main class="flex-1 overflow-auto relative z-10">
+    <main class="flex-1 overflow-auto relative">
       <router-view />
     </main>
 

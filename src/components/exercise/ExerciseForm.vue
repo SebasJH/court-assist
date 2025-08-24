@@ -152,7 +152,7 @@
               </div>
               <!-- Ephemeral tip for max cap -->
               <div v-if="showMaxCapTip"
-                   class="pointer-events-none absolute left-1/2 -translate-x-1/2 top-full mt-2 z-20 w-64 max-w-[18rem]">
+                   class="pointer-events-none absolute left-1/2 -translate-x-1/2 top-full mt-2 z-[1] w-64 max-w-[18rem]">
                 <div class="relative drop-shadow-xl">
                   <div class="bg-white border border-gray-200 rounded-lg p-2">
                     <div class="text-xs text-gray-700">
