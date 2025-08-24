@@ -51,7 +51,7 @@
               v-if="menuOpen"
               ref="menuRef"
               @click.stop
-              :class="['absolute top-full mt-2 w-60 whitespace-nowrap bg-white dark:bg-gray-700 dark:border-gray-600 border border-gray-200 rounded shadow-lg flex flex-col z-[3000]', alignRight ? 'right-0' : 'left-0']"
+              :class="['absolute top-full mt-2 w-52 whitespace-nowrap bg-white dark:bg-gray-700 dark:border-gray-600 border border-gray-200 rounded shadow-lg flex flex-col z-[3000]', alignRight ? 'right-0' : 'left-0']"
             >
               <button @click="onEdit" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-100">
                 <Pencil class="w-fit h-4" />
