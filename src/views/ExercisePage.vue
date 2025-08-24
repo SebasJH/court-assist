@@ -421,9 +421,9 @@ export default {
     const filter = ref((() => {
       try {
         const raw = localStorage.getItem(LS_FILTER_KEY)
-        if (!raw) return {category: '', players: [null, null], intensity: [null, null], favorites: false, court: [], materials: []}
+        if (!raw) return {category: [], players: [null, null], intensity: [null, null], favorites: false, court: [], materials: []}
         const obj = JSON.parse(raw) || {}
-        const category = typeof obj.category === 'string' ? obj.category : ''
+        const category = Array.isArray(obj.category) ? obj.category.filter(Boolean) : (typeof obj.category === 'string' && obj.category ? [obj.category] : [])
         let playersArr = Array.isArray(obj.players) && obj.players.length === 2 ? obj.players : [null, null]
         let p0 = (typeof playersArr[0] === 'number' && Number.isFinite(playersArr[0])) ? Math.max(1, Math.min(50, Number(playersArr[0]))) : null
         let p1 = (typeof playersArr[1] === 'number' && Number.isFinite(playersArr[1])) ? Math.max(1, Math.min(50, Number(playersArr[1]))) : null
@@ -439,7 +439,7 @@ export default {
         const materials = Array.isArray(obj.materials) ? obj.materials.filter(Boolean) : []
         return {category, players, intensity, favorites, court, materials}
       } catch (_) {
-        return {category: '', players: [null, null], intensity: [null, null], favorites: false, court: [], materials: []}
+        return {category: [], players: [null, null], intensity: [null, null], favorites: false, court: [], materials: []}
       }
     })())
     const showForm = ref(false)
@@ -582,8 +582,13 @@ export default {
         // favorieten
         if (selFav && !e.favorite) return false
 
-        // categorie (nu array)
-        if (filter.value.category && !e.category.includes(filter.value.category)) return false
+        // categorie (meerdere selecties mogelijk; match als een van de gekozen categorieën voorkomt)
+        const selCats = Array.isArray(filter.value.category) ? filter.value.category.filter(Boolean) : []
+        if (selCats.length > 0) {
+          const ecats = Array.isArray(e.category) ? e.category : (e.category ? [e.category] : [])
+          const hasAny = ecats.some(c => selCats.includes(c))
+          if (!hasAny) return false
+        }
 
         // court type (checkboxes allow selecting one of both). If none selected, don't filter.
         if (selCourts.length > 0) {
@@ -683,8 +688,13 @@ export default {
       q.value = ''
     }
 
-    function clearCategory() {
-      filter.value.category = ''
+    function clearCategory(kind) {
+      if (typeof kind === 'string') {
+        const arr = Array.isArray(filter.value.category) ? filter.value.category.slice() : []
+        filter.value.category = arr.filter(v => v !== kind)
+      } else {
+        filter.value.category = []
+      }
     }
 
     function clearPlayers() {
@@ -733,7 +743,7 @@ export default {
         const i0 = (Array.isArray(f.intensity) && f.intensity.length === 2 && typeof f.intensity[0] === 'number' && Number.isFinite(f.intensity[0])) ? Math.max(1, Math.min(5, Number(f.intensity[0]))) : null
         const i1 = (Array.isArray(f.intensity) && f.intensity.length === 2 && typeof f.intensity[1] === 'number' && Number.isFinite(f.intensity[1])) ? Math.max(1, Math.min(5, Number(f.intensity[1]))) : null
         const snap = {
-          category: typeof f.category === 'string' ? f.category : '',
+          category: Array.isArray(f.category) ? f.category.filter(Boolean) : (typeof f.category === 'string' && f.category ? [f.category] : []),
           players: [p0, p1],
           intensity: [i0, i1],
           favorites: !!f.favorites,
@@ -770,7 +780,7 @@ export default {
     function resetFilters() {
       q.value = ''
       filter.value = {
-        category: '',
+        category: [],
         players: [...DEFAULT_PLAYERS],
         intensity: [...DEFAULT_INTENSITY],
         favorites: false,

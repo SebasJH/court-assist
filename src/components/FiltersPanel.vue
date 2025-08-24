@@ -5,12 +5,23 @@
       <!-- Category -->
       <div class="flex flex-col gap-2">
         <label class="text-sm text-gray-700" for="filter-category">
-          Categorie
+          Categorieën
         </label>
-        <select id="filter-category" :value="category" @change="$emit('update:category', $event.target.value)" class="form-input">
-          <option value="">Alle categorieën</option>
-          <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
-        </select>
+        <div class="flex flex-wrap gap-2">
+          <label
+            v-for="c in categories"
+            :key="c"
+            class="inline-flex items-center gap-2 bg-gray-50 hover:bg-blue-100 text-gray-800 rounded px-2 py-1 cursor-pointer select-none"
+          >
+            <input
+              type="checkbox"
+              class="form-checkbox w-4 h-4"
+              :checked="isCategorySelected(c)"
+              @change="onToggleCategory(c, $event.target.checked)"
+            />
+            <span class="text-sm">{{ c }}</span>
+          </label>
+        </div>
       </div>
 
       <!-- Court -->
@@ -92,7 +103,7 @@ export default {
   components: { RangeNumber },
   props: {
     categories: { type: Array, default: () => [] },
-    category: { type: String, default: '' },
+    category: { type: Array, default: () => [] },
     players: { type: Array, default: () => [null, null] },
     intensity: { type: Array, default: () => [null, null] },
     court: { type: Array, default: () => [] },
@@ -121,7 +132,16 @@ export default {
       if (checked) set.add(kind); else set.delete(kind)
       emit('update:court', Array.from(set))
     }
-    return { onToggleMaterial, isCourtSelected, onToggleCourt }
+    function isCategorySelected(cat){
+      const arr = Array.isArray(props.category) ? props.category : []
+      return arr.includes(cat)
+    }
+    function onToggleCategory(cat, checked){
+      const set = new Set(Array.isArray(props.category) ? props.category : [])
+      if (checked) set.add(cat); else set.delete(cat)
+      emit('update:category', Array.from(set))
+    }
+    return { onToggleMaterial, isCourtSelected, onToggleCourt, isCategorySelected, onToggleCategory }
   }
 }
 </script>

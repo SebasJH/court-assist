@@ -7,10 +7,12 @@
       <button class="hover:text-blue-900" @click="$emit('clear:search')" aria-label="Verwijder zoekopdracht">×</button>
     </span>
     <!-- Category -->
-    <span v-if="category" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
-      Categorie: {{ category }}
-      <button class="hover:text-blue-900" @click="$emit('clear:category')" aria-label="Verwijder categorie">×</button>
-    </span>
+    <template v-if="Array.isArray(category) && category.length">
+      <span v-for="c in category" :key="c" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
+        Categorie: {{ c }}
+        <button class="hover:text-blue-900" @click="$emit('clear:category', c)" :aria-label="'Verwijder categorie ' + c">×</button>
+      </span>
+    </template>
     <!-- Players -->
     <span v-if="players[0] !== defaultPlayers[0] || players[1] !== defaultPlayers[1]" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
       Spelers: {{ formatPlayers(players[0], players[1]) }}
@@ -51,7 +53,7 @@ export default {
   name: 'FiltersChips',
   props: {
     q: { type: String, default: '' },
-    category: { type: String, default: '' },
+    category: { type: Array, default: () => [] },
     players: { type: Array, default: () => [null, null] },
     intensity: { type: Array, default: () => [null, null] },
     court: { type: Array, default: () => [] },

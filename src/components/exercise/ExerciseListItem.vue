@@ -84,7 +84,7 @@
 
     <!-- Actions -->
     <div class="flex lg:w-20 items-center justify-end gap-2 shrink-0" ref="actionsRef" @mouseenter="liftEnter" @mouseleave="liftLeave" @click.stop>
-      
+
       <div class="relative">
         <div
           class="w-8 h-8 flex items-center justify-center rounded-md bg-gray-50 hover:bg-gray-200 transition-colors duration-200 cursor-pointer"
