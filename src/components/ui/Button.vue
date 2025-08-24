@@ -83,7 +83,7 @@ export default {
         danger: 'bg-red-500 text-white hover:bg-red-600',
         success: 'bg-green-500 text-white hover:bg-green-600',
         warning: 'bg-yellow-500 text-gray-900 hover:bg-yellow-600',
-        cancel: 'border border-gray-900 text-gray-900 bg-transparent hover:bg-gray-50 dark:border-neutral-600 dark:text-gray-100 dark:hover:bg-neutral-800'
+        cancel: 'border border-gray-900 text-gray-900 bg-transparent hover:bg-gray-50 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-600'
       }
     },
     outlineColorClasses() {
