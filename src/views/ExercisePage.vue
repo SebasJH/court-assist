@@ -148,7 +148,7 @@
           />
         </div>
         <div class="px-5 py-4 border-t flex items-center justify-end gap-2">
-          <UiButton color="secondary" @click="resetFilters">Alles wissen</UiButton>
+          <UiButton color="cancel" @click="resetFilters">Alles wissen</UiButton>
           <UiButton color="primary" @click="showFilters = false">Toepassen</UiButton>
         </div>
       </div>
