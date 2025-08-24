@@ -2,14 +2,14 @@
   <!-- Root wrapper to receive classes/attrs from parent -->
   <div v-bind="$attrs">
     <!-- Search -->
-    <span v-if="q && q.trim().length" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
-      Zoek: "{{ q }}"
+    <span v-if="q && q.trim().length" :title="q" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
+      Zoek: "{{ truncate(q) }}"
       <button class="hover:text-blue-900" @click="$emit('clear:search')" aria-label="Verwijder zoekopdracht">×</button>
     </span>
     <!-- Category -->
     <template v-if="Array.isArray(category) && category.length">
-      <span v-for="c in category" :key="c" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
-        Categorie: {{ c }}
+      <span v-for="c in category" :key="c" :title="c" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
+        Categorie: {{ truncate(c) }}
         <button class="hover:text-blue-900" @click="$emit('clear:category', c)" :aria-label="'Verwijder categorie ' + c">×</button>
       </span>
     </template>
@@ -25,15 +25,15 @@
     </span>
     <!-- Court -->
     <template v-if="Array.isArray(court) && court.length">
-      <span v-for="c in court" :key="c" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
-        Veld: {{ formatCourt(c) }}
+      <span v-for="c in court" :key="c" :title="formatCourt(c)" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
+        Veld: {{ truncate(formatCourt(c)) }}
         <button class="hover:text-blue-900" @click="$emit('clear:court', c)" :aria-label="'Verwijder veld ' + c">×</button>
       </span>
     </template>
     <!-- Materials -->
     <template v-if="Array.isArray(materials) && materials.length">
-      <span v-for="m in materials" :key="m" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
-        Materiaal: {{ m }}
+      <span v-for="m in materials" :key="m" :title="m" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
+        Materiaal: {{ truncate(m) }}
         <button class="hover:text-blue-900" @click="$emit('clear:material', m)" :aria-label="'Verwijder materiaal ' + m">×</button>
       </span>
     </template>
@@ -60,7 +60,8 @@ export default {
     materials: { type: Array, default: () => [] },
     favorites: { type: Boolean, default: false },
     defaultPlayers: { type: Array, default: () => [null, null] },
-    defaultIntensity: { type: Array, default: () => [null, null] }
+    defaultIntensity: { type: Array, default: () => [null, null] },
+    maxChipChars: { type: Number, default: 32 }
   },
   emits: ['clear:search','clear:category','clear:players','clear:intensity','clear:court','clear:material','clear:favorites','reset'],
   methods: {
@@ -81,6 +82,17 @@ export default {
       if (lo !== null) return `${lo} min`
       if (hi !== null) return `${hi} max`
       return ''
+    },
+    truncate(text) {
+      try {
+        const s = String(text ?? '')
+        const limit = Number(this.maxChipChars) || 32
+        if (s.length <= limit) return s
+        // Reserve one char for the ellipsis
+        return s.slice(0, Math.max(0, limit - 1)) + '…'
+      } catch (_) {
+        return text
+      }
     }
   }
 }
