@@ -53,19 +53,19 @@
               @click.stop
               :class="['absolute top-full mt-2 w-52 whitespace-nowrap bg-white dark:bg-gray-700 dark:border-gray-600 border border-gray-200 rounded shadow-lg flex flex-col z-[3000]', alignRight ? 'right-0' : 'left-0']"
             >
-              <button @click="onEdit" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-100">
+              <button @click="onEdit" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-50 dark:hover:bg-gray-600">
                 <Pencil class="w-fit h-4" />
                 Wijzigen
               </button>
-              <button @click="onDuplicate" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-100">
+              <button @click="onDuplicate" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-50 dark:hover:bg-gray-600">
                 <Copy class="w-fit h-4" />
                 Dupliceren
               </button>
-              <button @click="onToggleFavFromMenu" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-100">
+              <button @click="onToggleFavFromMenu" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-50 dark:hover:bg-gray-600">
                 <Star class="w-fit h-4" :class="exercise.favorite ? 'text-yellow-500' : ''" :fill="exercise.favorite ? 'currentColor' : 'none'" :stroke="'currentColor'" />
                 <span>{{ exercise.favorite ? 'Verwijder uit favorieten' : 'Markeer als favoriet' }}</span>
               </button>
-              <button @click="onDelete" class="cursor-pointer border-t border-gray-200 dark:border-gray-600 text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-100 text-red-500">
+              <button @click="onDelete" class="cursor-pointer border-t border-gray-200 dark:border-gray-600 text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-50 dark:hover:bg-gray-600 text-red-500">
                 <Trash class="w-fit h-4" />
                 Verwijderen
               </button>

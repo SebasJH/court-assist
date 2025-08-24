@@ -49,7 +49,7 @@
             v-if="!(isSmallScreen && isSearching)"
             ref="headerMenuBtnRef"
             type="button"
-            class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+            class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 dark:border-none transition-colors duration-200"
             aria-haspopup="menu"
             :aria-expanded="headerMenuOpen ? 'true' : 'false'"
             aria-label="Weergave opties"
@@ -62,13 +62,13 @@
         <div
             v-if="headerMenuOpen"
             ref="headerMenuRef"
-            class="absolute right-0 top-full mt-2 w-48 bg-white shadow-lg border border-gray-200 rounded-md z-[4500]"
+            class="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-700 dark:border-gray-600 shadow-lg border border-gray-200 rounded-md z-[4500]"
             role="menu"
             aria-label="Weergave"
         >
           <button
-              class="w-full text-left px-3 h-10 text-sm flex items-center gap-2 hover:bg-blue-50"
-              :class="viewMode === 'card' ? 'bg-blue-50' : ''"
+              class="w-full text-left px-3 h-10 text-sm flex items-center gap-2 hover:bg-blue-50 dark:hover:bg-gray-600"
+              :class="viewMode === 'card' ? 'bg-blue-50 dark:bg-gray-600' : ''"
               role="menuitemradio"
               :aria-checked="viewMode === 'card' ? 'true' : 'false'"
               @click="selectView('card')"
@@ -77,8 +77,8 @@
             Kaartweergave
           </button>
           <button
-              class="w-full text-left px-3 h-10 text-sm flex items-center gap-2 hover:bg-blue-50"
-              :class="viewMode === 'list' ? 'bg-blue-50' : ''"
+              class="w-full text-left px-3 h-10 text-sm flex items-center gap-2 hover:bg-blue-50 dark:hover:bg-gray-600"
+              :class="viewMode === 'list' ? 'bg-blue-50 bg-gray-600' : ''"
               role="menuitemradio"
               :aria-checked="viewMode === 'list' ? 'true' : 'false'"
               @click="selectView('list')"

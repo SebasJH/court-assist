@@ -54,40 +54,15 @@
     <!-- Footer -->
     <SidebarFooter 
       :collapsed="collapsed"
+      :user-initials="user.initials"
+      :user-name="user.name"
       @switch-sport="onSwitchSport"
       @open-settings="openSettings"
     />
 
     <!-- Settings Modal -->
     <modal :open="showSettings" @close="closeSettings" contentPaddingClass="p-0" :hideDefaultClose="true">
-      <div class="sticky top-0 z-[1] bg-white dark:bg-gray-700 backdrop-blur-sm px-5 sm:px-10 pt-5 pb-4 border-b border-gray-200/70 dark:border-gray-600">
-        <div class="flex items-center justify-between gap-3">
-          <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100">Instellingen</h3>
-          <button
-              type="button"
-              class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 dark:border-neutral-700 bg-white dark:bg-gray-600/40 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800"
-              aria-label="Sluiten"
-              @click="closeSettings"
-          >
-            <X class="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-      <div class="px-5 sm:px-10 py-5">
-        <div class="form-group">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Thema</label>
-          <div class="inline-flex rounded-md overflow-hidden border border-gray-300 dark:border-gray-600 h-10">
-            <button type="button"
-                    class="px-3 h-10 text-sm font-medium focus:outline-none"
-                    :class="theme === 'light' ? 'bg-blue-500 text-white' : 'bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-neutral-800 text-gray-800 dark:text-gray-200'"
-                    @click="selectTheme('light')">Light</button>
-            <button type="button"
-                    class="px-3 h-10 text-sm font-medium border-l border-gray-300 dark:border-gray-600 focus:outline-none"
-                    :class="theme === 'dark' ? 'bg-blue-500 text-white' : 'bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-neutral-800 text-gray-800 dark:text-gray-200'"
-                    @click="selectTheme('dark')">Dark</button>
-          </div>
-        </div>
-      </div>
+      <Settings @close="closeSettings" @save="onSettingsSaved" />
     </modal>
   </aside>
 </template>
@@ -98,7 +73,8 @@ import SidebarFooter from './navigation/SidebarFooter.vue'
 import NavigationItem from './navigation/NavigationItem.vue'
 import NavigationLink from './navigation/NavigationLink.vue'
 import Modal from './Modal.vue'
-import { getTheme, setTheme } from '../theme'
+import Settings from './Settings.vue'
+import { getUser } from '../user'
 
 export default {
   name: 'Sidebar',
@@ -107,13 +83,15 @@ export default {
     SidebarFooter, 
     NavigationItem, 
     NavigationLink,
-    Modal
+    Modal,
+    Settings
   },
   data() {
+    const user = getUser()
     return {
       collapsed: false,
       showSettings: false,
-      theme: getTheme()
+      user
     }
   },
   methods: {
@@ -133,14 +111,16 @@ export default {
       console.log('Switch sport clicked')
     },
     openSettings() {
+      // Refresh current user display; Settings handles its own state
+      this.user = getUser()
       this.showSettings = true
     },
     closeSettings() {
       this.showSettings = false
     },
-    selectTheme(mode) {
-      this.theme = mode === 'dark' ? 'dark' : 'light'
-      setTheme(this.theme)
+    onSettingsSaved() {
+      // Refresh sidebar user display after saving in Settings component
+      this.user = getUser()
     }
   }
 }

@@ -10,8 +10,9 @@
         {{ userInitials }}
       </div>
       <div
-        class="text-sm font-medium text-gray-700 dark:text-white transition-[opacity,max-width] duration-300 ease-in-out overflow-hidden whitespace-nowrap"
+        class="text-sm font-medium text-gray-700 dark:text-white transition-[opacity,max-width] duration-300 ease-in-out overflow-hidden whitespace-nowrap truncate"
         :class="collapsed ? 'opacity-0 max-w-0' : 'opacity-100 max-w-[160px]'"
+        :title="userName"
       >
         {{ userName }}
       </div>

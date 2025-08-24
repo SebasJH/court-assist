@@ -1,4 +1,4 @@
-<template><header class="sticky top-0 z-[4000] bg-white dark:bg-gray-700 border-b border-white/20 dark:border-gray-700/20">
+<template><header class="sticky top-0 z-[4500] bg-white dark:bg-gray-700 border-b border-white/20 dark:border-gray-700/20">
     <div class="container mx-auto px-4 py-0 flex items-center min-h-[72px]">
       <div class="flex items-center justify-between gap-4 w-full">
         <!-- Lead content with mobile hamburger before the title -->
@@ -6,7 +6,7 @@
           <button
             v-if="!(hideHamburgerWhenBack && mobileBack)"
             type="button"
-            class="xl:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+            class="xl:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 dark:border-none transition-colors duration-200"
             aria-label="Menu"
             @click="openMobileSidebar"
           >
