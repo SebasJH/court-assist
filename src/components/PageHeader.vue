@@ -6,7 +6,7 @@
           <button
             v-if="!(hideHamburgerWhenBack && mobileBack)"
             type="button"
-            class="xl:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 dark:border-none transition-colors duration-200"
+            class="xl:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 dark:border-gray-600 transition-colors duration-200"
             aria-label="Menu"
             @click="openMobileSidebar"
           >
@@ -15,7 +15,7 @@
           <button
             v-if="mobileBack"
             type="button"
-            class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 dark:border-none transition-colors duration-200"
+            class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 dark:border-gray-600 transition-colors duration-200"
             aria-label="Terug"
             title="Terug"
             @click="onMobileBack"

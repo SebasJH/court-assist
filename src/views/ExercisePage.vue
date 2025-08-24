@@ -38,7 +38,7 @@
         <button
             v-if="!(isSmallScreen && isSearching)"
             type="button"
-            class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 dark:border-none transition-colors duration-200"
+            class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 dark:border-gray-600 transition-colors duration-200"
             aria-label="Zoeken"
             @click="openHeaderSearch"
         >
@@ -49,7 +49,7 @@
             v-if="!(isSmallScreen && isSearching)"
             ref="headerMenuBtnRef"
             type="button"
-            class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 dark:border-none transition-colors duration-200"
+            class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 dark:border-gray-600 transition-colors duration-200"
             aria-haspopup="menu"
             :aria-expanded="headerMenuOpen ? 'true' : 'false'"
             aria-label="Weergave opties"
@@ -122,7 +122,7 @@
             </div>
             <button
                 type="button"
-                class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 dark:border-none"
+                class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 dark:border-gray-600"
                 aria-label="Sluiten"
                 title="Sluiten"
                 @click="showFilters = false"
