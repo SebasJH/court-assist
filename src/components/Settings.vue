@@ -63,7 +63,7 @@
 
       <!-- Weergave -->
       <div class="form-group" v-show="currentTab==='weergave'">
-        <label class="form-label mb-2">Thema</label>
+        <label class="form-label block mb-2">Thema</label>
         <div class="inline-flex rounded-md overflow-hidden border border-gray-300 dark:border-gray-600 h-10">
           <button type="button"
                   class="px-3 h-10 text-sm font-medium focus:outline-none"

@@ -17,7 +17,7 @@
             <button
                 v-if="q && q.length"
                 type="button"
-                class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-700"
+                class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-700 dark:text-gray-50 "
                 aria-label="Zoekopdracht wissen"
                 @click="clearHeaderSearch"
             >
