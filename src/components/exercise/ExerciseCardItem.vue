@@ -78,7 +78,7 @@
       <div class="exercise-details mt-6 flex-1 flex flex-col gap-y-4">
 
         <!-- Description -->
-        <div class="flex-1 text-sm leading-relaxed text-gray-600 dark:text-gray-50 clamp-3">{{ exercise.description || exercise.shortDescription }}</div>
+        <div class="flex-1 text-sm leading-relaxed text-gray-600 dark:text-gray-300 clamp-3">{{ exercise.description || exercise.shortDescription }}</div>
 
         <div class="mt-0 flex items-end justify-between gap-2">
           <div class="flex-1 min-w-0 flex flex-wrap items-center gap-y-1 gap-x-1.5">

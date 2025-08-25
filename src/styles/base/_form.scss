@@ -3,7 +3,6 @@
   @apply mb-4;
 }
 
-
 /* Standalone label utility for consistent label styling */
 .form-label {
   /* No display set to allow usage on both block and inline labels */
@@ -25,10 +24,6 @@
   &:hover {
     /* Keep light mode white, but ensure dark mode stays dark */
     @apply bg-white border-gray-300 dark:bg-gray-700 dark:border-gray-600;
-  }
-
-  &:focus {
-    @apply outline-none ring-2 ring-blue-500/40 border-blue-400;
   }
 
   &:disabled {
@@ -92,9 +87,6 @@ input.form-checkbox {
   /* Hover/focus states */
   &:hover {
     @apply border-gray-400 dark:border-gray-500;
-  }
-  &:focus {
-    @apply ring-2 ring-blue-500/40 outline-none;
   }
 
   /* Checked state: blue background with white checkmark */

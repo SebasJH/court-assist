@@ -117,7 +117,7 @@
         <div class="px-5 sm:px-10 pt-5 pb-4 border-b dark:border-gray-600">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <Filter class="w-5 h-5 text-gray-700"/>
+              <Filter class="w-5 h-5 text-gray-700 dark:text-gray-100"/>
               <h2 id="filters-title" class="text-lg font-semibold text-gray-800 dark:text-gray-100">Filters</h2>
             </div>
             <button
