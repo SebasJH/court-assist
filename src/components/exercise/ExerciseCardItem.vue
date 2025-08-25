@@ -82,37 +82,38 @@
 
         <div class="mt-0 flex items-end justify-between gap-2">
           <div class="flex-1 min-w-0 flex flex-wrap items-center gap-y-1 gap-x-1.5">
-            <!-- Players with tooltip -->
+
+            <!-- Players -->
             <div v-if="showPlayers" class="relative" ref="playersRef" @mouseenter="onEnterPlayers" @mouseleave="onLeavePlayers">
-              <div class="exercise-players bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1  hover:shadow-sm transition-colors transition-shadow duration-150">
-                <Users class="h-4 w-fit" />
+              <div class="exercise-players bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150">
+                <Users class="h-4 w-fit text-green-500 dark:text-green-300" />
                 <div>{{ playersLabel }}</div>
               </div>
               <Tooltip :title="playersTooltip.title" :body="playersTooltip.body" :open="playersOpen" :anchor="playersRef" />
             </div>
 
-            <!-- Duration with tooltip -->
+            <!-- Duration -->
             <div v-if="hasDuration" class="relative" ref="durationRef" @mouseenter="onEnterDuration" @mouseleave="onLeaveDuration">
-              <div class="exercise-duration bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors transition-shadow duration-150">
-                <TimerReset class="h-4 w-fit" />
+              <div class="exercise-duration bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150">
+                <TimerReset class="h-4 w-fit text-blue-500 dark:text-blue-300" />
                 <div>{{ exercise.duration }} min</div>
               </div>
               <Tooltip :title="durationTooltip.title" :body="durationTooltip.body" :open="durationOpen" :anchor="durationRef" />
             </div>
 
-            <!-- Intensity with tooltip -->
+            <!-- Intensity -->
             <div v-if="typeof exercise.intensity === 'number'" class="relative" ref="intensityRef" @mouseenter="onEnterIntensity" @mouseleave="onLeaveIntensity">
-              <div class="exercise-intensity bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors transition-shadow duration-150">
-                <Zap class="h-4 w-fit" />
+              <div class="exercise-intensity bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150">
+                <Zap class="h-4 w-fit text-yellow-500 dark:text-yellow-300" />
                 <div>{{ exercise.intensity }}/5</div>
               </div>
               <Tooltip :title="intensityTooltip.title" :body="intensityTooltip.body" :open="intensityOpen" :anchor="intensityRef" />
             </div>
 
-            <!-- Court with tooltip -->
+            <!-- Court -->
             <div v-if="hasCourt" class="relative" ref="courtRef" @mouseenter="onEnterCourt" @mouseleave="onLeaveCourt">
-              <div class="exercise-court bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors transition-shadow duration-150">
-                <RectangleCircle class="h-4 w-fit" />
+              <div class="exercise-court bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150">
+                <RectangleCircle class="h-4 w-fit text-red-500 dark:text-red-300" />
                 <div>{{ courtLabel }}</div>
               </div>
               <Tooltip :title="courtTooltip.title" :body="courtTooltip.body" :open="courtOpen" :anchor="courtRef" />
