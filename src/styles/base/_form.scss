@@ -7,12 +7,12 @@
 /* Standalone label utility for consistent label styling */
 .form-label {
   /* No display set to allow usage on both block and inline labels */
-  @apply block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2;
+  @apply flex text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2;
 }
 
 /* Legend utility for fieldsets */
 .form-legend {
-  @apply block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2;
+  @apply flex  text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2;
 }
 
 

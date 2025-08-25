@@ -1,9 +1,9 @@
 <template>
   <div class="">
-    <div class="grid grid-cols-1 gap-4">
+    <div class="grid grid-cols-1 gap-8">
 
       <!-- Category -->
-      <div class="flex flex-col gap-2">
+      <div class="">
         <label class="form-label" for="filter-category">
           Categorieën
         </label>
@@ -29,11 +29,11 @@
         <fieldset>
           <legend class="form-legend">Veldtype</legend>
           <div class="flex flex-col gap-2">
-            <label class="inline-flex items-center gap-2 select-none form-label">
+            <label class="text-sm inline-flex items-center gap-2 select-none">
               <input type="checkbox" class="form-checkbox w-4 h-4" :checked="isCourtSelected('halfcourt')" @change="onToggleCourt('halfcourt', $event.target.checked)" />
               <span>Half court</span>
             </label>
-            <label class="inline-flex items-center gap-2 select-none form-label">
+            <label class="text-sm inline-flex items-center gap-2 select-none">
               <input type="checkbox" class="form-checkbox w-4 h-4" :checked="isCourtSelected('fullcourt')" @change="onToggleCourt('fullcourt', $event.target.checked)" />
               <span>Full court</span>
             </label>

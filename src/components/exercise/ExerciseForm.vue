@@ -53,9 +53,10 @@
 
         <!-- Name -->
         <div class="form-group col-span-4 md:col-span-3" ref="nameGroupRef">
-          <label class="block form-label mb-1">
-            Naam <span class="text-red-500" aria-hidden="true">*</span>
-            <span v-if="errors.name" class="ml-2 text-xs font-semibold text-red-600">{{ errors.name }}</span>
+          <label class="form-label">
+            Naam
+            <span class="text-red-500" aria-hidden="true">*</span>
+            <span v-if="errors.name" class="ml-2 text-xs font-semibold text-red-500">{{ errors.name }}</span>
           </label>
           <input
               ref="nameInputRef"
