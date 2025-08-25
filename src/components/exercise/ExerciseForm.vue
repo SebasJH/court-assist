@@ -70,16 +70,16 @@
 
         <!-- Icon -->
         <div class="form-group col-span-4 md:col-span-1">
-          <label class="inline-flex items-center gap-1 form-label mb-1">
-            <Shapes class="w-4 h-4"/> Icoon
+          <label class="form-label">
+            Icoon
           </label>
           <IconPicker v-model="form.icon" :icons="placeholderIcons"/>
         </div>
 
         <!-- Description -->
         <div class="form-group col-span-4">
-          <label class="inline-flex items-center gap-1 form-label mb-1">
-            <Text class="w-4 h-4"/> Beschrijving
+          <label class="form-label">
+            Beschrijving
           </label>
           <textarea v-model="form.description" placeholder="Beschrijving"
                     class="form-input h-24 resize-none"></textarea>
@@ -87,8 +87,8 @@
 
         <!-- Exercise Categories -->
         <div class="form-group col-span-4">
-          <label class="inline-flex items-center gap-1 form-label mb-1">
-            <Tag class="w-4 h-4"/> Categorieën
+          <label class="form-label">
+            Categorieën
           </label>
 
           <div class="flex flex-wrap gap-2">
@@ -112,9 +112,9 @@
       <div v-show="currentTab==='details'" class="grid grid-cols-1 md:grid-cols-4 gap-4">
 
         <!-- Amount of players -->
-        <div class="form-group col-span-4 md:col-span-2" ref="playersGroupRef">
-          <label class="inline-flex items-center gap-1 form-label mb-1">
-            <Users class="w-4 h-4"/> Aantal spelers
+        <div class="form-group col-span-4 md:col-span-4" ref="playersGroupRef">
+          <label class="form-label">
+            Aantal spelers
             <span v-if="errors.players" class="ml-2 text-xs font-semibold text-red-600">{{ errors.players }}</span>
           </label>
           <RangeNumber
@@ -129,25 +129,24 @@
         </div>
 
         <!-- Intensity -->
-        <div class="form-group col-span-4 md:col-span-2">
-          <label class="flex items-center gap-1 form-label mb-1">
-            <Zap class="w-4 h-4"/>
+        <div class="form-group col-span-4 md:col-span-4">
+          <label class="form-label">
             Intensiteit
           </label>
           <IntensitySelector v-model="form.intensity"/>
         </div>
 
         <!-- Duration -->
-        <div class="form-group col-span-4 md:col-span-2">
-          <label class="inline-flex items-center gap-1 form-label mb-1">
-            <TimerReset class="w-4 h-4"/> Duur
+        <div class="form-group col-span-4 md:col-span-4">
+          <label class="form-label">
+            Duur
           </label>
           <div class="flex">
             <input
                 type="number"
                 v-model="form.duration"
                 min="1"
-                class="form-input !rounded-r-none !border-r-0"
+                class="form-input !rounded-r-none border-r-0 dark:!bg-gray-700 dark:!border-gray-600 dark:!text-gray-50"
             />
             <div
                 class="border border-gray-300 dark:border-gray-600 border-l rounded-r-xl px-2 flex items-center text-gray-600 dark:text-gray-50 text-sm">
@@ -157,11 +156,9 @@
         </div>
 
         <!-- Court -->
-        <div class="form-group col-span-4 md:col-span-2">
-          <label class="flex form-label mb-1">
-            <span class="inline-flex items-center gap-1">
-              <RectangleCircle class="w-4 h-4"/> Veldtype
-            </span>
+        <div class="form-group col-span-4 md:col-span-4">
+          <label class="form-label">
+              Veldtype
           </label>
           <div class="inline-flex rounded-md overflow-hidden border border-gray-300 dark:border-gray-600 h-10">
             <button
@@ -191,9 +188,8 @@
         </div>
 
         <!-- Materials -->
-        <div class="form-group col-span-4">
-          <label class="inline-flex items-center gap-1 form-label mb-1">
-            <TrafficCone class="w-4 h-4"/>
+        <div class="form-group col-span-4 md:col-span-4">
+          <label class="form-label">
             Materialen
           </label>
           <div class="flex flex-wrap gap-2">
@@ -217,20 +213,26 @@
       <div v-show="currentTab==='tekst'" class="grid grid-cols-1 md:grid-cols-4 gap-4">
 
         <!-- Coaching points -->
-        <div class="form-group col-span-4">
-          <label class="form-label mb-1">Coaching punten</label>
+        <div class="form-group col-span-4 md:col-span-4">
+          <label class="form-label">
+            Coaching punten
+          </label>
           <RichTextEditor v-model="form.coachingPoints" placeholder="Coaching punten"/>
         </div>
 
         <!-- How it works -->
-        <div class="form-group col-span-4">
-          <label class="form-label mb-1">How it works</label>
+        <div class="form-group col-span-4 md:col-span-4">
+          <label class="form-label">
+            How it works
+          </label>
           <RichTextEditor v-model="form.howItWorks" placeholder="Uitleg van de uitvoering"/>
         </div>
 
         <!-- Purpose -->
-        <div class="form-group col-span-4">
-          <label class="form-label mb-1">Purpose</label>
+        <div class="form-group col-span-4 md:col-span-4">
+          <label class="form-label">
+            Purpose
+          </label>
           <RichTextEditor v-model="form.purpose" placeholder="Doel van de oefening"/>
         </div>
 
@@ -241,14 +243,18 @@
 
         <!-- Video -->
         <div class="form-group col-span-4 md:col-span-4">
-          <label class="form-label mb-1">Video link</label>
+          <label class="form-label">
+            Video link
+          </label>
           <input v-model="form.video" placeholder="Video link" class="form-input"/>
         </div>
 
         <!-- Diagrams repeater -->
         <div class="form-group col-span-4">
           <div class="flex items-center justify-between mb-1">
-            <label class="form-label">Diagrams</label>
+            <label class="form-label">
+              Diagrams
+            </label>
             <UiButton color="secondary" class="!py-1 !px-2" @click="addDiagram">+ Voeg diagram toe</UiButton>
           </div>
           <div v-if="!form.diagrams || form.diagrams.length === 0"
