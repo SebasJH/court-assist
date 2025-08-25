@@ -4,7 +4,7 @@
 
       <!-- Category -->
       <div class="flex flex-col gap-2">
-        <label class="text-sm text-gray-700 dark:text-gray-50" for="filter-category">
+        <label class="form-label" for="filter-category">
           Categorieën
         </label>
         <div class="flex flex-wrap gap-2">
@@ -27,13 +27,13 @@
       <!-- Court -->
       <div>
         <fieldset>
-          <legend class="block text-sm text-gray-700 dark:text-gray-50 mb-2">Veldtype</legend>
+          <legend class="form-legend">Veldtype</legend>
           <div class="flex flex-col gap-2">
-            <label class="inline-flex items-center gap-2 text-sm text-gray-800 dark:text-gray-50 select-none">
+            <label class="inline-flex items-center gap-2 select-none form-label">
               <input type="checkbox" class="form-checkbox w-4 h-4" :checked="isCourtSelected('halfcourt')" @change="onToggleCourt('halfcourt', $event.target.checked)" />
               <span>Half court</span>
             </label>
-            <label class="inline-flex items-center gap-2 text-sm text-gray-800 dark:text-gray-50 select-none">
+            <label class="inline-flex items-center gap-2 select-none form-label">
               <input type="checkbox" class="form-checkbox w-4 h-4" :checked="isCourtSelected('fullcourt')" @change="onToggleCourt('fullcourt', $event.target.checked)" />
               <span>Full court</span>
             </label>
@@ -44,7 +44,7 @@
       <!-- Players -->
       <div>
         <fieldset>
-          <legend class="block text-sm text-gray-700 dark:text-gray-50 mb-2">Aantal spelers</legend>
+          <legend class="form-legend">Aantal spelers</legend>
           <RangeNumber
             idPrefix="players"
             :modelValue="players"
@@ -63,7 +63,7 @@
       <!-- Intensity -->
       <div>
         <fieldset>
-          <legend class="block text-sm text-gray-700 dark:text-gray-50 mb-2">Intensiteit</legend>
+          <legend class="form-legend">Intensiteit</legend>
           <RangeNumber
             idPrefix="intensity"
             :modelValue="intensity"
@@ -82,7 +82,7 @@
       <!-- Materials -->
       <div>
         <fieldset>
-          <legend class="block text-sm text-gray-700 dark:text-gray-50 mb-2">Materialen</legend>
+          <legend class="form-legend">Materialen</legend>
           <div class="flex flex-wrap gap-2">
             <label v-for="m in materialOptions" :key="m" class="inline-flex items-center gap-2 bg-gray-50 hover:bg-blue-100 text-gray-800  dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 rounded px-2 py-1 cursor-pointer select-none">
               <input type="checkbox" class="form-checkbox w-4 h-4" :checked="materials.includes(m)" @change="onToggleMaterial(m, $event.target.checked)" />

@@ -16,7 +16,7 @@
         </button>
       </div>
 
-      <!-- Tabs under header in sticky area -->
+      <!-- Tabs -->
       <div class="mt-4 -mb-px overflow-x-auto">
         <div role="tablist" class="inline-flex items-center gap-2 border-b border-gray-200 dark:border-gray-600">
           <button type="button" role="tab" :aria-selected="currentTab==='profiel' ? 'true' : 'false'"
@@ -45,16 +45,16 @@
         </div>
         <div class="grid grid-cols-1 gap-3">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Naam</label>
+            <label class="form-label">Naam</label>
             <input v-model="draft.name" @input="onDraftNameInput" class="form-input" placeholder="Je naam" />
           </div>
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Initialen</label>
+              <label class="form-label">Initialen</label>
               <input v-model="draft.initials" @input="onDraftInitialsInput" class="form-input" placeholder="BV" />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">E-mail (optioneel)</label>
+              <label class="form-label">E-mail (optioneel)</label>
               <input v-model="draft.email" class="form-input" placeholder="naam@voorbeeld.nl" />
             </div>
           </div>
@@ -63,7 +63,7 @@
 
       <!-- Weergave -->
       <div class="form-group" v-show="currentTab==='weergave'">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Thema</label>
+        <label class="form-label mb-2">Thema</label>
         <div class="inline-flex rounded-md overflow-hidden border border-gray-300 dark:border-gray-600 h-10">
           <button type="button"
                   class="px-3 h-10 text-sm font-medium focus:outline-none"

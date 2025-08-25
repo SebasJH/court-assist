@@ -1,14 +1,14 @@
 <template>
   <form class="flex h-full flex-col" @submit.prevent="save" novalidate>
 
-    <div class="sticky top-0 z-10 bg-white backdrop-blur-sm px-5 sm:px-10 pt-5 pb-0 border-b">
+    <div class="sticky top-0 z-10 bg-white dark:bg-gray-700 backdrop-blur-sm px-5 sm:px-10 pt-5 pb-0 border-b dark:border-gray-600">
       <div class="flex items-center justify-between gap-3">
-        <h3 class="text-xl font-bold text-gray-800">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100">
           {{ initial ? 'Wijzig oefening' : 'Nieuwe oefening' }}
         </h3>
         <button
           type="button"
-          class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+          class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300  bg-white text-gray-700  hover:bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 dark:border-gray-600"
           aria-label="Sluiten"
           @click="$emit('close')"
         >
@@ -18,29 +18,29 @@
 
       <!-- Tabs -->
       <div class="mt-4 -mb-px overflow-x-auto">
-        <div role="tablist" class="inline-flex items-center gap-2 border-b border-gray-200">
+        <div role="tablist" class="inline-flex items-center gap-2 border-b border-gray-200 dark:border-gray-600">
           <button type="button" role="tab" :aria-selected="currentTab==='basis' ? 'true' : 'false'"
                   @click="currentTab='basis'"
                   class="px-3 py-2 text-sm font-medium border-b-2"
-                  :class="currentTab==='basis' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-600 hover:text-gray-800'">
+                  :class="currentTab==='basis' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
             Basis
           </button>
           <button type="button" role="tab" :aria-selected="currentTab==='details' ? 'true' : 'false'"
                   @click="currentTab='details'"
                   class="px-3 py-2 text-sm font-medium border-b-2"
-                  :class="currentTab==='details' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-600 hover:text-gray-800'">
+                  :class="currentTab==='details' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
             Details
           </button>
           <button type="button" role="tab" :aria-selected="currentTab==='tekst' ? 'true' : 'false'"
                   @click="currentTab='tekst'"
                   class="px-3 py-2 text-sm font-medium border-b-2"
-                  :class="currentTab==='tekst' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-600 hover:text-gray-800'">
+                  :class="currentTab==='tekst' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
             Tekst
           </button>
           <button type="button" role="tab" :aria-selected="currentTab==='media' ? 'true' : 'false'"
                   @click="currentTab='media'"
                   class="px-3 py-2 text-sm font-medium border-b-2"
-                  :class="currentTab==='media' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-600 hover:text-gray-800'">
+                  :class="currentTab==='media' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
             Media
           </button>
         </div>
@@ -53,7 +53,7 @@
 
         <!-- Name -->
         <div class="form-group col-span-4 md:col-span-3" ref="nameGroupRef">
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block form-label mb-1">
             Naam <span class="text-red-500" aria-hidden="true">*</span>
             <span v-if="errors.name" class="ml-2 text-xs font-semibold text-red-600">{{ errors.name }}</span>
           </label>
@@ -70,7 +70,7 @@
 
         <!-- Icon -->
         <div class="form-group col-span-4 md:col-span-1">
-          <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+          <label class="inline-flex items-center gap-1 form-label mb-1">
             <Shapes class="w-4 h-4"/> Icoon
           </label>
           <IconPicker v-model="form.icon" :icons="placeholderIcons"/>
@@ -78,7 +78,7 @@
 
         <!-- Description -->
         <div class="form-group col-span-4">
-          <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+          <label class="inline-flex items-center gap-1 form-label mb-1">
             <Text class="w-4 h-4"/> Beschrijving
           </label>
           <textarea v-model="form.description" placeholder="Beschrijving"
@@ -87,7 +87,7 @@
 
         <!-- Exercise Categories -->
         <div class="form-group col-span-4">
-          <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+          <label class="inline-flex items-center gap-1 form-label mb-1">
             <Tag class="w-4 h-4"/> Categorieën
           </label>
 
@@ -99,7 +99,7 @@
                 @click="toggleCategory(c)"
                 :class="form.category.includes(c)
               ? 'bg-blue-500 text-white'
-              : 'bg-gray-50 hover:bg-blue-100 text-gray-800'"
+              : 'bg-gray-50 hover:bg-blue-100 text-gray-800 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50'"
                 class="px-2 py-1 rounded cursor-pointer"
             >
               {{ c }}
@@ -113,61 +113,24 @@
 
         <!-- Amount of players -->
         <div class="form-group col-span-4 md:col-span-2" ref="playersGroupRef">
-          <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+          <label class="inline-flex items-center gap-1 form-label mb-1">
             <Users class="w-4 h-4"/> Aantal spelers
             <span v-if="errors.players" class="ml-2 text-xs font-semibold text-red-600">{{ errors.players }}</span>
           </label>
-          <div class="flex gap-x-2">
-
-            <!-- Min players -->
-            <div class="flex w-full">
-              <input
-                  type="number"
-                  v-model.number="form.minPlayers"
-                  min="1"
-                  :max="50"
-                  :class="['form-input !rounded-r-none border-r-0', errors.players ? '!border-red-500 focus:!border-red-500 !ring-1 !ring-red-500 focus:!ring-red-500' : '']"
-                  :aria-invalid="errors.players ? 'true' : 'false'"
-              />
-              <div
-                  class="border border-gray-300 border-l-0 rounded-r-xl px-2 flex items-center text-gray-600 text-sm">
-                min
-              </div>
-            </div>
-
-            <!-- Max players -->
-            <div class="relative flex w-full ml-2">
-              <input
-                  ref="maxPlayersInputRef"
-                  type="number"
-                  v-model.number="form.maxPlayers"
-                  :min="(typeof form.minPlayers === 'number') ? form.minPlayers : null"
-                  :max="50"
-                  :class="['form-input !rounded-r-none border-r-0', errors.players ? '!border-red-500 focus:!border-red-500 !ring-1 !ring-red-500 focus:!ring-red-500' : '']"
-                  :aria-invalid="errors.players ? 'true' : 'false'"
-              />
-              <div
-                  class="border border-gray-300 border-l-0 rounded-r-xl px-2 flex items-center text-gray-600 text-sm">
-                max
-              </div>
-              <!-- Ephemeral tip for max cap -->
-              <div v-if="showMaxCapTip"
-                   class="pointer-events-none absolute left-1/2 -translate-x-1/2 top-full mt-2 z-[1] w-64 max-w-[18rem]">
-                <div class="relative drop-shadow-xl">
-                  <div class="bg-white border border-gray-200 rounded-lg p-2">
-                    <div class="text-xs text-gray-700">
-                      Je kunt maximaal 50 invullen. Laat het veld leeg als je geen limiet wilt.
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <RangeNumber
+            idPrefix="players"
+            v-model="playersRange"
+            :min="1"
+            :max="50"
+            :step="1"
+            :attachedLabels="true"
+            :allowEmpty="true"
+          />
         </div>
 
         <!-- Intensity -->
         <div class="form-group col-span-4 md:col-span-2">
-          <label class="flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+          <label class="flex items-center gap-1 form-label mb-1">
             <Zap class="w-4 h-4"/>
             Intensiteit
           </label>
@@ -176,7 +139,7 @@
 
         <!-- Duration -->
         <div class="form-group col-span-4 md:col-span-2">
-          <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+          <label class="inline-flex items-center gap-1 form-label mb-1">
             <TimerReset class="w-4 h-4"/> Duur
           </label>
           <div class="flex">
@@ -187,7 +150,7 @@
                 class="form-input !rounded-r-none !border-r-0"
             />
             <div
-                class="border border-gray-300 border-l rounded-r-xl px-2 flex items-center text-gray-600 text-sm">
+                class="border border-gray-300 dark:border-gray-600 border-l rounded-r-xl px-2 flex items-center text-gray-600 dark:text-gray-50 text-sm">
               minuten
             </div>
           </div>
@@ -195,24 +158,24 @@
 
         <!-- Court -->
         <div class="form-group col-span-4 md:col-span-2">
-          <label class="flex text-sm font-medium text-gray-700 mb-1">
+          <label class="flex form-label mb-1">
             <span class="inline-flex items-center gap-1">
               <RectangleCircle class="w-4 h-4"/> Veldtype
             </span>
           </label>
-          <div class="inline-flex rounded-md overflow-hidden border border-gray-300 h-10">
+          <div class="inline-flex rounded-md overflow-hidden border border-gray-300 dark:border-gray-600 h-10">
             <button
                 type="button"
                 class="px-3 h-10 text-sm font-medium focus:outline-none"
-                :class="normalizedCourt === 'halfcourt' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
+                :class="normalizedCourt === 'halfcourt' ? 'bg-blue-500 text-white' : 'bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200'"
                 @click="toggleCourt('halfcourt')"
                 :aria-pressed="normalizedCourt === 'halfcourt' ? 'true' : 'false'"
             >Half court
             </button>
             <button
                 type="button"
-                class="px-3 h-10 text-sm font-medium border-l border-gray-300 focus:outline-none"
-                :class="normalizedCourt === 'fullcourt' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'"
+                class="px-3 h-10 text-sm font-medium border-l border-gray-300 dark:border-gray-600 focus:outline-none"
+                :class="normalizedCourt === 'fullcourt' ? 'bg-blue-500 text-white' : 'bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200'"
                 @click="toggleCourt('fullcourt')"
                 :aria-pressed="normalizedCourt === 'fullcourt' ? 'true' : 'false'"
             >Full court
@@ -220,7 +183,7 @@
           </div>
           <button
               type="button"
-              class="ml-3 text-sm text-gray-600 hover:text-gray-800 underline"
+              class="ml-3 text-sm text-gray-600 hover:text-gray-800 dark:text-gray-300 underline"
               @click="form.court = ''"
               v-if="form.court"
           >Wissen
@@ -229,7 +192,7 @@
 
         <!-- Materials -->
         <div class="form-group col-span-4">
-          <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+          <label class="inline-flex items-center gap-1 form-label mb-1">
             <TrafficCone class="w-4 h-4"/>
             Materialen
           </label>
@@ -241,7 +204,7 @@
                 @click="toggleMaterial(m)"
                 :class="form.materials.includes(m)
                 ? 'bg-blue-500 text-white'
-                : 'bg-gray-50 hover:bg-blue-100 text-gray-800'"
+                : 'bg-gray-50 hover:bg-blue-100 text-gray-800 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50'"
                 class="px-2 py-1 rounded cursor-pointer"
             >
               {{ m }}
@@ -255,19 +218,19 @@
 
         <!-- Coaching points -->
         <div class="form-group col-span-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Coaching punten</label>
+          <label class="form-label mb-1">Coaching punten</label>
           <RichTextEditor v-model="form.coachingPoints" placeholder="Coaching punten"/>
         </div>
 
         <!-- How it works -->
         <div class="form-group col-span-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1">How it works</label>
+          <label class="form-label mb-1">How it works</label>
           <RichTextEditor v-model="form.howItWorks" placeholder="Uitleg van de uitvoering"/>
         </div>
 
         <!-- Purpose -->
         <div class="form-group col-span-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Purpose</label>
+          <label class="form-label mb-1">Purpose</label>
           <RichTextEditor v-model="form.purpose" placeholder="Doel van de oefening"/>
         </div>
 
@@ -278,14 +241,14 @@
 
         <!-- Video -->
         <div class="form-group col-span-4 md:col-span-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Video link</label>
+          <label class="form-label mb-1">Video link</label>
           <input v-model="form.video" placeholder="Video link" class="form-input"/>
         </div>
 
         <!-- Diagrams repeater -->
         <div class="form-group col-span-4">
           <div class="flex items-center justify-between mb-1">
-            <label class="block text-sm font-medium text-gray-700">Diagrams</label>
+            <label class="form-label">Diagrams</label>
             <UiButton color="secondary" class="!py-1 !px-2" @click="addDiagram">+ Voeg diagram toe</UiButton>
           </div>
           <div v-if="!form.diagrams || form.diagrams.length === 0"
@@ -311,7 +274,7 @@
                   </div>
                 </div>
                 <div class="flex-1">
-                  <label class="block text-sm text-gray-700 mb-1">Bijschrift</label>
+                  <label class="form-label mb-1">Bijschrift</label>
                   <input v-model="d.caption" class="form-input" placeholder="Beschrijf dit diagram"/>
                   <div class="mt-3 flex gap-2">
                     <UiButton color="secondary" class="!py-1 !px-2" @click="moveDiagram(idx, -1)" :disabled="idx === 0">
@@ -330,7 +293,7 @@
     </div>
 
     <!-- Buttons -->
-    <div class="px-5 sm:px-10 pt-5 border-t flex justify-end gap-3">
+    <div class="px-5 sm:px-10 pt-5 border-t dark:border-gray-600 flex justify-end gap-3">
       <UiButton color="cancel" @click="$emit('close')">Annuleren</UiButton>
       <UiButton :color="isEdit ? 'primary' : 'success'" type="submit" class="btn-submit">
         {{ isEdit ? 'Opslaan' : 'Aanmaken' }}
@@ -345,6 +308,7 @@ import store from '../../store'
 import RichTextEditor from '../form/RichTextEditor.vue'
 import IconPicker from '../form/IconPicker.vue'
 import IntensitySelector from '../form/IntensitySelector.vue'
+import RangeNumber from '../form/RangeNumber.vue'
 import {EXERCISE_MATERIALS} from '../../constants'
 import UiButton from '../ui/Button.vue'
 
@@ -353,7 +317,8 @@ export default {
     RichTextEditor,
     IconPicker,
     IntensitySelector,
-    UiButton
+    UiButton,
+    RangeNumber
   },
   props: {
     initial: {type: Object, default: null},
@@ -647,6 +612,18 @@ export default {
       if (maxCapTimer) clearTimeout(maxCapTimer)
     })
 
+    const playersRange = computed({
+      get(){
+        const min = (typeof form.minPlayers === 'number') ? form.minPlayers : null
+        const max = (typeof form.maxPlayers === 'number') ? form.maxPlayers : null
+        return [min, max]
+      },
+      set([min, max]){
+        form.minPlayers = (min === '' || min === null) ? null : Number(min)
+        form.maxPlayers = (max === '' || max === null) ? null : Number(max)
+      }
+    })
+
     return {
       form,
       currentTab,
@@ -671,7 +648,8 @@ export default {
       nameGroupRef,
       playersGroupRef,
       maxPlayersInputRef,
-      showMaxCapTip
+      showMaxCapTip,
+      playersRange
     }
   }
 }
