@@ -8,7 +8,7 @@
     >
       <div ref="boxRef" class="relative drop-shadow-xl">
         <div class="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl p-3 break-words">
-          <div class="text-sm font-semibold text-gray-800 dark:text-blue-400">{{ title }}</div>
+          <div class="text-sm font-semibold" :class="titleColorClass">{{ title }}</div>
           <div v-if="body" class="mt-1 text-xs text-gray-600 dark:text-gray-50">{{ body }}</div>
           <slot />
         </div>
@@ -22,11 +22,13 @@ import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
 
 // Tooltip rendered to document.body via Teleport so it escapes card stacking contexts.
 // Props: title (string), body (string), open (boolean), anchor (HTMLElement or ref-unwrapped element)
+// Added: titleColor/titlecolor (string) to override the title color classes when desired.
 const props = defineProps({
   title: { type: String, required: true },
   body: { type: String, default: '' },
   open: { type: Boolean, default: false },
-  anchor: { type: Object, default: null }
+  anchor: { type: Object, default: null },
+  titleColor: { type: String, default: '' },
 })
 
 const wrapRef = ref(null)
@@ -42,6 +44,16 @@ const anchorEl = computed(() => {
 
 const baseWidthPx = 256 // desired tooltip width (~16rem)
 const widthPx = ref(baseWidthPx)
+
+// Resolve title color class: use provided override if any, otherwise default
+const providedTitleColor = computed(() => {
+  const c1 = (props.titleColor || '').toString().trim()
+  const c2 = (props.titlecolor || '').toString().trim()
+  return c1 || c2
+})
+const titleColorClass = computed(() => {
+  return providedTitleColor.value ? providedTitleColor.value : 'text-gray-800 dark:text-blue-400'
+})
 
 const leftPx = ref(0)
 const topPx = ref(0)

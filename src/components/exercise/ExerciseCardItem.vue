@@ -80,7 +80,8 @@
         <!-- Description -->
         <div class="flex-1 text-sm leading-relaxed text-gray-600 dark:text-gray-300 clamp-3">{{ exercise.description || exercise.shortDescription }}</div>
 
-        <div class="mt-0 flex items-end justify-between gap-2">
+        <!-- Badges -->
+        <div class="mt-0">
           <div class="flex-1 min-w-0 flex flex-wrap items-center gap-y-1 gap-x-1.5">
 
             <!-- Players -->
@@ -89,7 +90,7 @@
                 <Users class="h-4 w-fit text-green-500 dark:text-green-300" />
                 <div>{{ playersLabel }}</div>
               </div>
-              <Tooltip :title="playersTooltip.title" :body="playersTooltip.body" :open="playersOpen" :anchor="playersRef" />
+              <Tooltip :title="playersTooltip.title" :body="playersTooltip.body" :open="playersOpen" :anchor="playersRef" titleColor="text-green-500 dark:text-green-300" />
             </div>
 
             <!-- Duration -->
@@ -98,7 +99,7 @@
                 <TimerReset class="h-4 w-fit text-blue-500 dark:text-blue-300" />
                 <div>{{ exercise.duration }} min</div>
               </div>
-              <Tooltip :title="durationTooltip.title" :body="durationTooltip.body" :open="durationOpen" :anchor="durationRef" />
+              <Tooltip :title="durationTooltip.title" :body="durationTooltip.body" :open="durationOpen" :anchor="durationRef" titleColor="text-blue-500 dark:text-blue-300"/>
             </div>
 
             <!-- Intensity -->
@@ -107,7 +108,7 @@
                 <Zap class="h-4 w-fit text-yellow-500 dark:text-yellow-300" />
                 <div>{{ exercise.intensity }}/5</div>
               </div>
-              <Tooltip :title="intensityTooltip.title" :body="intensityTooltip.body" :open="intensityOpen" :anchor="intensityRef" />
+              <Tooltip :title="intensityTooltip.title" :body="intensityTooltip.body" :open="intensityOpen" :anchor="intensityRef" titleColor="text-yellow-500 dark:text-yellow-300"/>
             </div>
 
             <!-- Court -->
@@ -116,9 +117,16 @@
                 <RectangleCircle class="h-4 w-fit text-red-500 dark:text-red-300" />
                 <div>{{ courtLabel }}</div>
               </div>
-              <Tooltip :title="courtTooltip.title" :body="courtTooltip.body" :open="courtOpen" :anchor="courtRef" />
+              <Tooltip :title="courtTooltip.title" :body="courtTooltip.body" :open="courtOpen" :anchor="courtRef" titleColor="text-red-500 dark:red-blue-300"/>
             </div>
           </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="mt-2 border-t border-gray-200 dark:border-gray-600"></div>
+
+        <!-- CTA -->
+        <div class="flex justify-end">
           <router-link :to="`/oefening/${slug}`" class="shrink-0 self-end whitespace-nowrap text-blue-500 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-400 hover:underline text-sm font-semibold" @click.stop>Lees meer →</router-link>
         </div>
       </div>
