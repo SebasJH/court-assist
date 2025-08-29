@@ -1,7 +1,11 @@
 .exercise-card {
 
-  .badge {
-    @apply w-fit px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full;
+  //.badge {
+  //  @apply w-fit px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full;
+  //}
+
+  .exercise-category {
+    @apply text-xs bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-400 px-2 py-1 rounded-full whitespace-nowrap ;
   }
 
   .exercise-title {

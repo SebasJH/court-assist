@@ -1,5 +1,5 @@
 <template>
-  <div class="exercise-card relative cursor-pointer bg-white dark:bg-gray-700/50 border-gray-50 dark:border-neutral-700 rounded-xl shadow-md p-8 border  transition-shadow duration-200 transform transition-transform hover:scale-[1.02] hover:shadow-lg" role="link" :aria-label="`Open ${exercise.name}`" @click="goToDetail" tabindex="0" @keydown.enter.prevent="goToDetail" :class="zClass">
+  <div class="exercise-card relative cursor-pointer bg-white dark:bg-gray-700/50 border-gray-50 dark:border-gray-700 rounded-xl shadow-md px-8 pt-8 pb-6 border duration-200 transform transition-transform hover:scale-[1.02] hover:shadow-lg" role="link" :aria-label="`Open ${exercise.name}`" @click="goToDetail" tabindex="0" @keydown.enter.prevent="goToDetail" :class="zClass">
     <div class="flex flex-col h-full">
       <div class="flex items-start gap-3">
 
@@ -26,7 +26,7 @@
             <span
                 v-for="cat in exercise.category"
                 :key="cat"
-                class="exercise-category badge small bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-400 px-2 py-1 rounded-full whitespace-nowrap"
+                class="exercise-category"
             >
               {{ cat }}
             </span>
@@ -121,16 +121,21 @@
             </div>
           </div>
         </div>
-
-        <!-- Divider -->
-        <div class="mt-2 border-t border-gray-200 dark:border-gray-600"></div>
-
-        <!-- CTA -->
-        <div class="flex justify-end">
-          <router-link :to="`/oefening/${slug}`" class="shrink-0 self-end whitespace-nowrap text-blue-500 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-400 hover:underline text-sm font-semibold" @click.stop>Lees meer →</router-link>
-        </div>
       </div>
+
+
+      <!-- CTA -->
+      <div class="flex justify-end pt-6 mt-6 border-t border-gray-200 dark:border-gray-600">
+        <router-link :to="`/oefening/${slug}`" class="shrink-0 self-end whitespace-nowrap text-blue-500 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-400 hover:underline text-sm font-semibold" @click.stop>Lees meer →</router-link>
+      </div>
+
+
     </div>
+
+
+
+
+
   </div>
 </template>
 

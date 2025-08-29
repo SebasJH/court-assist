@@ -195,7 +195,7 @@
         </transition-group>
       </template>
       <template v-else>
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="rounded-lg shadow-md overflow-hidden">
 
           <div class="lg:min-w-[48rem]">
             <div
@@ -204,8 +204,8 @@
               <div class="flex-1">Oefening</div>
               <div class="w-28">Spelers</div>
               <div class="w-28">Duur</div>
-              <div class="w-28">Veld</div>
               <div class="w-28">Intensiteit</div>
+              <div class="w-28">Veld</div>
               <div class="w-20"></div>
             </div>
             <div>

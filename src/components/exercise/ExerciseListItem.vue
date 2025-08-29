@@ -1,6 +1,6 @@
 <template>
   <div
-    class="exercise-list-item flex items-center gap-4 px-4 py-3 border-b last:border-b-0 hover:bg-gray-50 dark:hover:bg-neutral-800 dark:border-neutral-800 cursor-pointer"
+    class="exercise-list-item flex items-center gap-4 px-4 py-3 border-b last:border-b-0 bg-white dark:bg-gray-700/50 border-gray-20 dark:border-gray-700 cursor-pointer"
     role="link"
     :aria-label="`Open ${exercise.name}`"
     tabindex="0"
@@ -8,14 +8,14 @@
     @keydown.enter.prevent="goToDetail"
   >
     <!-- Icon -->
-    <div class="bg-gray-50 w-10 h-10 md:w-12 md:h-12 rounded-lg flex justify-center items-center shrink-0 relative">
-      <div v-if="exercise.favorite" class="absolute -top-1 -left-1 w-5 h-5 rounded-md bg-white shadow z-10 flex items-center justify-center pointer-events-none" aria-label="Favoriet" role="img">
+    <div class="bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 w-10 h-10 md:w-12 md:h-12 rounded-lg flex justify-center items-center shrink-0 relative">
+      <div v-if="exercise.favorite" class="absolute -top-1 -left-1 w-5 h-5 rounded-md bg-white dark:bg-gray-600 shadow z-10 flex items-center justify-center pointer-events-none" aria-label="Favoriet" role="img">
         <Star class="w-3 h-3 text-yellow-500" :fill="'currentColor'" :stroke="'currentColor'"/>
       </div>
       <component
         v-if="exercise.icon || exercise.imageIcon"
         :is="exercise.icon || exercise.imageIcon"
-        class="w-6 h-6 text-gray-700"
+        class="w-6 h-6 text-gray-700 dark:text-gray-100"
         :aria-label="`Icon ${exercise.icon || exercise.imageIcon}`"
       />
       <TrafficCone v-else class="w-6 h-6 text-gray-400" aria-label="Default icon" />
@@ -23,71 +23,70 @@
 
     <!-- Main: name + categories + mobile details -->
     <div class="flex-1 min-w-0">
-      <div class="text-base font-semibold text-gray-800 leading-tight title-2line md:truncate">{{ exercise.name }}</div>
+      <div class="text-base font-semibold text-gray-800 dark:text-gray-50 leading-tight title-2line md:truncate">{{ exercise.name }}</div>
       <div class="flex flex-wrap gap-1 mt-0.5">
         <span
           v-for="cat in exercise.category"
           :key="cat"
-          class="badge small bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-xs whitespace-nowrap"
+          class="exercise-category badge small bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-400  px-2 py-0.5 rounded-full text-xs whitespace-nowrap"
         >{{ cat }}</span>
       </div>
 
       <!-- Mobile-only compact details -->
       <div class="lg:hidden mt-1 flex flex-wrap items-center gap-1.5 text-xs text-gray-700">
-        <div v-if="showPlayers" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-50">
-          <Users class="w-3.5 h-3.5" />
+        <div v-if="showPlayers" class="exercise-players bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 inline-flex items-center gap-1 px-2 py-0.5 rounded">
+          <Users class="w-3.5 h-3.5 text-green-500 dark:text-green-300" />
           <span>{{ playersLabel }}</span>
         </div>
-        <div v-if="hasDuration" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-50">
-          <TimerReset class="w-3.5 h-3.5" />
+        <div v-if="hasDuration" class="exercise-duration bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 inline-flex items-center gap-1 px-2 py-0.5 rounded">
+          <TimerReset class="w-3.5 h-3.5 text-blue-500 dark:text-blue-300" />
           <span>{{ durationLabel }}</span>
         </div>
-        <div v-if="hasCourt" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-50">
-          <RectangleCircle class="w-3.5 h-3.5" />
-          <span>{{ courtLabel }}</span>
-        </div>
-        <div v-if="showIntensity" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-50">
-          <Zap class="w-3.5 h-3.5" />
+        <div v-if="showIntensity" class="exercise-intensity bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 inline-flex items-center gap-1 px-2 py-0.5 rounded">
+          <Zap class="w-3.5 h-3.5 text-yellow-500 dark:text-yellow-300" />
           <span>{{ intensityLabel }}</span>
+        </div>
+        <div v-if="hasCourt" class="exercise-court bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 inline-flex items-center gap-1 px-2 py-0.5 rounded">
+          <RectangleCircle class="w-3.5 h-3.5 text-red-500 dark:text-red-300" />
+          <span>{{ courtLabel }}</span>
         </div>
       </div>
     </div>
 
     <!-- Players -->
     <div class="hidden lg:block w-28">
-      <div v-if="showPlayers" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-50 text-sm text-gray-700 whitespace-nowrap truncate" :title="playersLabel">
-        <Users class="w-4 h-4" />
+      <div v-if="showPlayers" class="exercise-players w-fit bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150" :title="playersLabel">
+        <Users class="w-4 h-4 text-green-500 dark:text-green-300" />
         <span class="truncate">{{ playersLabel }}</span>
       </div>
     </div>
     <!-- Duration -->
     <div class="hidden lg:block w-28">
-      <div v-if="hasDuration" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-50 text-sm text-gray-700 whitespace-nowrap truncate" :title="durationLabel">
-        <TimerReset class="w-4 h-4" />
+      <div v-if="hasDuration" class="exercise-duration w-fit bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150" :title="durationLabel">
+        <TimerReset class="w-4 h-4 text-blue-500 dark:text-blue-300" />
         <span class="truncate">{{ durationLabel }}</span>
-      </div>
-    </div>
-    <!-- Court -->
-    <div class="hidden lg:block w-28">
-      <div v-if="hasCourt" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-50 text-sm text-gray-700 whitespace-nowrap truncate" :title="courtLabel">
-        <RectangleCircle class="w-4 h-4" />
-        <span class="truncate">{{ courtLabel }}</span>
       </div>
     </div>
     <!-- Intensity -->
     <div class="hidden lg:block w-28">
-      <div v-if="showIntensity" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-50 text-sm text-gray-700 whitespace-nowrap truncate" :title="intensityLabel">
-        <Zap class="w-4 h-4" />
+      <div v-if="showIntensity" class="exercise-intensity w-fit bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150" :title="intensityLabel">
+        <Zap class="w-4 h-4 text-yellow-500 dark:text-yellow-300" />
         <span class="truncate">{{ intensityLabel }}</span>
+      </div>
+    </div>
+    <!-- Court -->
+    <div class="hidden lg:block w-28">
+      <div v-if="hasCourt" class="exercise-court w-fit bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150" :title="courtLabel">
+        <RectangleCircle class="w-4 h-4 text-red-500 dark:text-red-300" />
+        <span class="truncate">{{ courtLabel }}</span>
       </div>
     </div>
 
     <!-- Actions -->
     <div class="flex lg:w-20 items-center justify-end gap-2 shrink-0" ref="actionsRef" @mouseenter="liftEnter" @mouseleave="liftLeave" @click.stop>
-
       <div class="relative">
         <div
-          class="w-8 h-8 flex items-center justify-center rounded-md bg-gray-50 hover:bg-gray-200 transition-colors duration-200 cursor-pointer"
+          class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 transition-colors duration-200 cursor-pointer"
           @click.stop="toggleMenu"
           ref="menuButtonRef"
         >
@@ -97,22 +96,22 @@
           v-if="menuOpen"
           ref="menuRef"
           @click.stop
-          :class="['fixed w-54 whitespace-nowrap bg-white border border-gray-200 rounded-md shadow-lg flex flex-col z-[3000]']"
+          :class="['fixed w-54 whitespace-nowrap bg-white dark:bg-gray-700 dark:border-gray-600 border border-gray-200 rounded-md shadow-lg flex flex-col z-[3000]']"
           :style="menuStyle"
         >
-          <button @click="onEdit" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-50">
+          <button @click="onEdit" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-50 dark:hover:bg-gray-600">
             <Pencil class="w-fit h-4" />
             Wijzigen
           </button>
-          <button @click="onDuplicate" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-50">
+          <button @click="onDuplicate" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-50 dark:hover:bg-gray-600">
             <Copy class="w-fit h-4" />
             Dupliceren
           </button>
-          <button @click="onToggleFavFromMenu" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-50">
+          <button @click="onToggleFavFromMenu" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-50 dark:hover:bg-gray-600">
             <Star class="w-fit h-4" :class="exercise && exercise.favorite ? 'text-yellow-500' : ''" :fill="exercise && exercise.favorite ? 'currentColor' : 'none'" :stroke="'currentColor'" />
             <span>{{ (exercise && exercise.favorite) ? 'Verwijder uit favorieten' : 'Markeer als favoriet' }}</span>
           </button>
-          <button @click="onDelete" class="cursor-pointer border-t border-gray-200 text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-50 text-red-500">
+          <button @click="onDelete" class="cursor-pointer border-t border-gray-200 dark:border-gray-600 text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-50 dark:hover:bg-gray-600 text-red-500">
             <Trash class="w-fit h-4" />
             Verwijderen
           </button>
