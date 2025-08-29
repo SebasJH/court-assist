@@ -199,7 +199,7 @@
 
           <div class="lg:min-w-[48rem]">
             <div
-                class="hidden lg:flex items-center gap-4 px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-b bg-gray-0">
+                class="hidden lg:flex items-center gap-4 px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wide border-b dark:border-gray-600 dark:bg-gray-700">
               <div class="w-12"></div>
               <div class="flex-1">Oefening</div>
               <div class="w-28">Spelers</div>
@@ -233,11 +233,11 @@
       />
     </template>
     <div v-else class="py-20">
-      <div class="bg-white dark:bg-neutral-900 border border-dashed border-gray-300 dark:border-neutral-700 rounded-xl p-10 text-center max-w-xl mx-auto">
-        <div class="text-lg font-semibold text-gray-800 mb-2">
+      <div class="bg-white dark:bg-gray-700/50 border border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-10 text-center max-w-xl mx-auto">
+        <div class="text-lg font-semibold text-gray-800 dark:text-gray-50 mb-2">
           {{ hasAny ? 'Er zijn geen oefeningen gevonden met dit filter' : 'Er zijn momenteel geen oefeningen' }}
         </div>
-        <div class="text-sm text-gray-600 mb-6" v-if="hasAny && isFilterActive">
+        <div class="text-sm text-gray-600 dark:text-gray-300 mb-6" v-if="hasAny && isFilterActive">
           Pas je zoekopdracht of filters aan, of verwijder de filters.
         </div>
         <div class="flex justify-center gap-3">

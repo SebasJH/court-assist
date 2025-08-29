@@ -1,7 +1,7 @@
 <template>
   <form class="flex h-full flex-col" @submit.prevent="save" novalidate>
 
-    <div class="sticky top-0 z-10 bg-white dark:bg-gray-700 backdrop-blur-sm px-5 sm:px-10 pt-5 pb-0 border-b dark:border-gray-600">
+    <div class="sticky top-0 z-10 bg-white dark:bg-gray-700 px-5 sm:px-10 pt-5 pb-0 border-b dark:border-gray-600">
       <div class="flex items-center justify-between gap-3">
         <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100">
           {{ initial ? 'Wijzig oefening' : 'Nieuwe oefening' }}

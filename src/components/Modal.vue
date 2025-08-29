@@ -3,7 +3,7 @@
   <teleport to="body">
     <div
           v-if="visible"
-          class="fixed inset-0 z-[5000] flex bg-black/30 dark:bg-black/60 backdrop-blur-sm"
+          class="fixed inset-0 z-[5000] flex bg-black/30 dark:bg-black/60"
           :class="overlayClass"
           @mousedown="onOverlayMouseDown"
           @click="onOverlayClick"

@@ -19,7 +19,7 @@
 
 /* Global utility to match input styling outside forms as well */
 .form-input {
-  @apply w-full px-3 py-2 border rounded-xl bg-white backdrop-blur-sm transition-modern border-gray-300 text-gray-900 placeholder:text-gray-400;
+  @apply w-full px-3 py-2 border rounded-xl bg-white transition-modern border-gray-300 text-gray-900 placeholder:text-gray-400;
 
   &:hover {
     /* Keep light mode white, but ensure dark mode stays dark */

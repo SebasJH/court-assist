@@ -1,6 +1,6 @@
 <template>
   <div
-    class="exercise-list-item flex items-center gap-4 px-4 py-3 border-b last:border-b-0 bg-white dark:bg-gray-700/50 border-gray-20 dark:border-gray-700 cursor-pointer"
+    class="exercise-list-item flex items-center gap-4 px-4 py-3 border-b last:border-b-0 bg-white dark:bg-gray-700/50 dark:hover:bg-gray-700 border-gray-20 dark:border-gray-600 cursor-pointer"
     role="link"
     :aria-label="`Open ${exercise.name}`"
     tabindex="0"

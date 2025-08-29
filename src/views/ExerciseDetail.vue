@@ -86,7 +86,7 @@
 
     <!-- Edit description modal -->
     <modal :open="showEditDescription" @close="closeEditDescription" contentPaddingClass="p-0" :hideDefaultClose="true">
-      <div class="sticky top-0 z-[1] bg-white backdrop-blur-sm px-5 sm:px-10 pt-5 pb-4 border-b">
+      <div class="sticky top-0 z-[1] bg-white px-5 sm:px-10 pt-5 pb-4 border-b">
         <div class="flex items-center justify-between gap-3">
           <h3 class="text-xl font-bold text-gray-800">
             Beschrijving bewerken
@@ -116,7 +116,7 @@
 
     <!-- Edit details modal -->
     <modal :open="showEditDetails" @close="closeEditDetails" contentPaddingClass="p-0" :hideDefaultClose="true">
-      <div class="sticky top-0 z-[1] bg-white backdrop-blur-sm px-5 sm:px-10 pt-5 pb-4 border-b">
+      <div class="sticky top-0 z-[1] bg-white px-5 sm:px-10 pt-5 pb-4 border-b">
         <div class="flex items-center justify-between gap-3">
           <h3 class="text-xl font-bold text-gray-800">
             Details bewerken

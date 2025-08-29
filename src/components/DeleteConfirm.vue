@@ -1,7 +1,7 @@
 <template>
   <div class="flex h-full flex-col">
     <!-- Sticky header -->
-    <div class="sticky top-0 z-[1] bg-white dark:bg-gray-700 px-5 sm:px-10 pt-5 pb-4 border-b dark:bg-gray-600">
+    <div class="sticky top-0 z-[1] bg-white dark:bg-gray-700 px-5 sm:px-10 pt-5 pb-4 border-b dark:border-gray-600">
       <div class="flex items-center justify-between gap-3">
         <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100">
           Bevestig verwijderen
