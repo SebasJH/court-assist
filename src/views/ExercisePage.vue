@@ -199,7 +199,7 @@
 
           <div class="lg:min-w-[48rem]">
             <div
-                class="hidden lg:flex items-center gap-4 px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wide border-b dark:border-gray-600 dark:bg-gray-700">
+                class="hidden lg:flex items-center gap-4 px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wide border-b dark:border-gray-600  bg-white dark:bg-gray-700">
               <div class="w-12"></div>
               <div class="flex-1">Oefening</div>
               <div class="w-28">Spelers</div>
