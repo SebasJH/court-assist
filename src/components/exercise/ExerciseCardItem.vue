@@ -1,11 +1,11 @@
 <template>
-  <div class="exercise-card relative cursor-pointer bg-white dark:bg-gray-700/50 border-gray-50 dark:border-gray-700 rounded-xl shadow-md px-8 pt-8 pb-5 border duration-200 transform transition-transform hover:scale-[1.02] hover:shadow-lg" role="link" :aria-label="`Open ${exercise.name}`" @click="goToDetail" tabindex="0" @keydown.enter.prevent="goToDetail" :class="zClass">
+  <div class="exercise-card-item relative cursor-pointer rounded-xl shadow-md px-8 pt-8 pb-5 border duration-200 transform transition-all hover:scale-[1.02] hover:shadow-lg" role="link" :aria-label="`Open ${exercise.name}`" @click="goToDetail" tabindex="0" @keydown.enter.prevent="goToDetail" :class="zClass">
     <div class="flex flex-col h-full">
       <div class="flex items-start gap-3">
 
         <!-- Icon -->
-        <div class="bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 w-12 h-12 md:w-16 md:h-16 rounded-lg flex justify-center items-center relative">
-          <div v-if="exercise.favorite" class="absolute -top-1 -left-1 w-5 h-5 rounded-md bg-white dark:bg-gray-600 shadow z-10 flex items-center justify-center pointer-events-none" aria-label="Favoriet" role="img">
+        <div class="exercise-icon w-12 h-12 md:w-16 md:h-16 rounded-lg flex justify-center items-center relative">
+          <div v-if="exercise.favorite" class="exercise-favorite absolute -top-1 -left-1 w-5 h-5 rounded-md shadow z-10 flex items-center justify-center pointer-events-none" aria-label="Favoriet" role="img">
             <Star class="w-3 h-3 text-yellow-500" :fill="'currentColor'" :stroke="'currentColor'"/>
           </div>
           <component
@@ -19,14 +19,14 @@
 
         <!-- Title -->
         <div class="flex-1 min-w-0 pr-8">
-          <div class="text-lg font-bold text-gray-800 dark:text-gray-50 break-words clamp-2">{{ exercise.name }}</div>
+          <div class="exercise-title text-lg font-bold  break-words clamp-2">{{ exercise.name }}</div>
 
           <!-- Categories -->
           <div class="flex flex-wrap gap-1 mt-1">
             <span
                 v-for="cat in exercise.category"
                 :key="cat"
-                class="exercise-category"
+                class="exercise-category text-xs px-2 py-1 rounded-full whitespace-nowrap"
             >
               {{ cat }}
             </span>
@@ -40,7 +40,7 @@
           <!-- Menu button wrapper is relative so dropdown anchors to the dots -->
           <div class="relative">
             <div
-              class="menu w-9 h-9 flex items-center justify-center rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 transition-colors duration-200 cursor-pointer"
+              class="menu dropdown-button w-9 h-9 flex items-center justify-center rounded-lg transition-colors duration-200 cursor-pointer"
               @click.stop="toggleMenu"
               ref="menuButtonRef"
             >
@@ -51,21 +51,21 @@
               v-if="menuOpen"
               ref="menuRef"
               @click.stop
-              :class="['absolute top-full mt-2 w-52 whitespace-nowrap bg-white dark:bg-gray-700 dark:border-gray-600 border border-gray-200 rounded-md shadow-lg flex flex-col z-[3000]', alignRight ? 'right-0' : 'left-0']"
+              :class="['dropdown-menu absolute top-full mt-2 w-52 border whitespace-nowrap rounded-md shadow-lg flex flex-col z-[3000]', alignRight ? 'right-0' : 'left-0']"
             >
-              <button @click="onEdit" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-50 dark:hover:bg-gray-600">
+              <button @click="onEdit" class="dropdown-item cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10">
                 <Pencil class="w-fit h-4" />
                 Wijzigen
               </button>
-              <button @click="onDuplicate" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-50 dark:hover:bg-gray-600">
+              <button @click="onDuplicate" class="dropdown-item cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 ">
                 <Copy class="w-fit h-4" />
                 Dupliceren
               </button>
-              <button @click="onToggleFavFromMenu" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-50 dark:hover:bg-gray-600">
+              <button @click="onToggleFavFromMenu" class="dropdown-item cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10">
                 <Star class="w-fit h-4" :class="exercise.favorite ? 'text-yellow-500' : ''" :fill="exercise.favorite ? 'currentColor' : 'none'" :stroke="'currentColor'" />
                 <span>{{ exercise.favorite ? 'Verwijder uit favorieten' : 'Markeer als favoriet' }}</span>
               </button>
-              <button @click="onDelete" class="cursor-pointer border-t border-gray-200 dark:border-gray-600 text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-50 dark:hover:bg-gray-600 text-red-500">
+              <button @click="onDelete" class="dropdown-item dropdown-delete cursor-pointer border-t text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 text-red-500">
                 <Trash class="w-fit h-4" />
                 Verwijderen
               </button>
@@ -78,7 +78,7 @@
       <div class="exercise-details mt-6 flex-1 flex flex-col gap-y-4">
 
         <!-- Description -->
-        <div class="flex-1 text-sm leading-relaxed text-gray-600 dark:text-gray-300 clamp-3">{{ exercise.description || exercise.shortDescription }}</div>
+        <div class="exercise-description mb-4 flex-1 text-sm leading-relaxed clamp-3">{{ exercise.description || exercise.shortDescription }}</div>
 
         <!-- Badges -->
         <div class="mt-0">
@@ -86,7 +86,7 @@
 
             <!-- Players -->
             <div v-if="showPlayers" class="relative" ref="playersRef" @mouseenter="onEnterPlayers" @mouseleave="onLeavePlayers">
-              <div class="exercise-players bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150">
+              <div class="exercise-badge px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150">
                 <Users class="h-4 w-fit text-green-500 dark:text-green-300" />
                 <div>{{ playersLabel }}</div>
               </div>
@@ -95,7 +95,7 @@
 
             <!-- Duration -->
             <div v-if="hasDuration" class="relative" ref="durationRef" @mouseenter="onEnterDuration" @mouseleave="onLeaveDuration">
-              <div class="exercise-duration bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150">
+              <div class="exercise-badge px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150">
                 <TimerReset class="h-4 w-fit text-blue-500 dark:text-blue-300" />
                 <div>{{ exercise.duration }} min</div>
               </div>
@@ -104,7 +104,7 @@
 
             <!-- Intensity -->
             <div v-if="typeof exercise.intensity === 'number'" class="relative" ref="intensityRef" @mouseenter="onEnterIntensity" @mouseleave="onLeaveIntensity">
-              <div class="exercise-intensity bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150">
+              <div class="exercise-badge px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150">
                 <Zap class="h-4 w-fit text-yellow-500 dark:text-yellow-300" />
                 <div>{{ exercise.intensity }}/5</div>
               </div>
@@ -113,7 +113,7 @@
 
             <!-- Court -->
             <div v-if="hasCourt" class="relative" ref="courtRef" @mouseenter="onEnterCourt" @mouseleave="onLeaveCourt">
-              <div class="exercise-court bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150">
+              <div class="exercise-badge px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150">
                 <RectangleCircle class="h-4 w-fit text-red-500 dark:text-red-300" />
                 <div>{{ courtLabel }}</div>
               </div>
@@ -123,19 +123,12 @@
         </div>
       </div>
 
-
       <!-- CTA -->
       <div class="flex justify-end pt-5 mt-6 border-t border-gray-200 dark:border-gray-600">
         <router-link :to="`/oefening/${slug}`" class="shrink-0 self-end whitespace-nowrap text-blue-500 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-400 hover:underline text-sm font-semibold" @click.stop>Lees meer →</router-link>
       </div>
 
-
     </div>
-
-
-
-
-
   </div>
 </template>
 
@@ -330,6 +323,7 @@ function goToDetail() {
 
 
 <style scoped>
+
 .clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;

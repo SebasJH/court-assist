@@ -1,12 +1,7 @@
 body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   @apply antialiased text-gray-800 bg-gradient-to-br from-indigo-50 via-sky-50 to-rose-50;
   @apply dark:text-white dark:bg-gradient-to-br dark:from-gray-800 dark:via-gray-800 dark:to-gray-800;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
-
-/* Dark mode overrides */
-.dark body {
-  @apply text-gray-200 bg-neutral-900;
 }
 
 /* Smooth scrolling */
@@ -19,30 +14,20 @@ html {
   outline: none;
 }
 
-/* Glassmorphism utilities */
 
-/* Modern animations */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Dropdown menu */
+
+.dropdown-menu {
+  @apply bg-white border-gray-200;
+  @apply dark:bg-gray-700 dark:border-gray-600;
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.6s ease-out;
-}
+.dropdown-item {
+  @apply hover:bg-gray-100;
+  @apply dark:hover:bg-gray-600;
 
-/* Hover effects */
-.hover-lift {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+  &.dropdown-delete {
+    @apply border-gray-200;
+    @apply dark:border-gray-600;
   }
 }
