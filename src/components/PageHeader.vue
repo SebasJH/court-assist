@@ -1,4 +1,4 @@
-<template><header class="sticky top-0 z-[4500] bg-white dark:bg-gray-700 border-b border-white/20 dark:border-gray-700/20">
+<template><header class="sticky top-0 z-[4500] bg-white dark:bg-gray-750 border-b border-white/20 dark:border-gray-700/20">
     <div class="container mx-auto px-4 py-0 flex items-center min-h-[72px]">
       <div class="flex items-center justify-between gap-4 w-full">
         <!-- Lead content with mobile hamburger before the title -->

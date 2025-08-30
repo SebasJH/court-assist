@@ -1,5 +1,5 @@
 <template>
-  <aside :class="['bg-white dark:bg-gray-700 border-r border-white/20 dark:border-gray-700/20 flex flex-col h-full xl:h-screen transition-all duration-300 ease-in-out', collapsed ? 'w-full xl:w-20' : 'w-full xl:w-64']">
+  <aside :class="['bg-white dark:bg-gray-750 border-r border-white/20 dark:border-gray-700/20 flex flex-col h-full xl:h-screen transition-all duration-300 ease-in-out', collapsed ? 'w-full xl:w-20' : 'w-full xl:w-64']">
     <!-- Header -->
     <SidebarHeader 
       :collapsed="collapsed" 
