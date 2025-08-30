@@ -53,19 +53,19 @@
               @click.stop
               :class="['dropdown-menu absolute top-full mt-2 w-52 border whitespace-nowrap rounded-md shadow-lg flex flex-col z-[3000]', alignRight ? 'right-0' : 'left-0']"
             >
-              <button @click="onEdit" class="dropdown-item cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10">
+              <button @click="onEdit" class="dropdown-item">
                 <Pencil class="w-fit h-4" />
                 Wijzigen
               </button>
-              <button @click="onDuplicate" class="dropdown-item cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 ">
+              <button @click="onDuplicate" class="dropdown-item">
                 <Copy class="w-fit h-4" />
                 Dupliceren
               </button>
-              <button @click="onToggleFavFromMenu" class="dropdown-item cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10">
+              <button @click="onToggleFavFromMenu" class="dropdown-item">
                 <Star class="w-fit h-4" :class="exercise.favorite ? 'text-yellow-500' : ''" :fill="exercise.favorite ? 'currentColor' : 'none'" :stroke="'currentColor'" />
                 <span>{{ exercise.favorite ? 'Verwijder uit favorieten' : 'Markeer als favoriet' }}</span>
               </button>
-              <button @click="onDelete" class="dropdown-item dropdown-delete cursor-pointer border-t text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 text-red-500">
+              <button @click="onDelete" class="dropdown-item dropdown-delete">
                 <Trash class="w-fit h-4" />
                 Verwijderen
               </button>

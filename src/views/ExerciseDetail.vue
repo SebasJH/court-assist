@@ -18,7 +18,7 @@
     <template #actions>
 
       <div v-if="exercise" class="relative flex items-center gap-2" ref="actionsRef">
-        
+
         <!-- Favorite toggle -->
         <button
           class="star hidden md:inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
@@ -29,7 +29,7 @@
           <Star :class="exercise.favorite ? 'w-5 h-5 text-yellow-500' : 'w-5 h-5 '" :fill="exercise.favorite ? 'currentColor' : 'none'" :stroke="exercise.favorite ? 'currentColor' : 'currentColor'" />
         </button>
 
-        
+
         <!-- Menu button and dropdown -->
         <div class="relative">
           <button
@@ -43,20 +43,20 @@
           >
             <MoreVertical class="w-5 h-5" />
           </button>
-          <div v-if="menuOpen" ref="menuRef" class="absolute top-full right-0 mt-2 w-64 whitespace-nowrap bg-white border border-gray-200 rounded-md shadow-lg flex flex-col z-[4000]">
-            <button @click="onEdit" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-100">
+          <div v-if="menuOpen" ref="menuRef" class="dropdown-menu absolute top-full right-0 mt-2 w-64 whitespace-nowrap border rounded-md shadow-lg flex flex-col z-[4000]">
+            <button @click="onEdit" class="dropdown-item">
               <Pencil class="w-fit h-4" />
               Wijzigen
             </button>
-            <button @click="onDuplicate" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-100">
+            <button @click="onDuplicate" class="dropdown-item">
               <Copy class="w-fit h-4" />
               Dupliceren
             </button>
-            <button @click="onToggleFavFromMenu" class="cursor-pointer text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-100 md:hidden">
+            <button @click="onToggleFavFromMenu" class="dropdown-item md:hidden">
               <Star class="w-fit h-4" :class="exercise && exercise.favorite ? 'text-yellow-500' : ''" :fill="exercise && exercise.favorite ? 'currentColor' : 'none'" :stroke="'currentColor'" />
               <span>{{ (exercise && exercise.favorite) ? 'Verwijder uit favorieten' : 'Markeer als favoriet' }}</span>
             </button>
-            <button @click="onDelete" class="cursor-pointer border-t border-gray-200 text-sm flex items-center gap-x-2 w-full text-left font-medium px-4 h-10 hover:bg-gray-100 text-red-500">
+            <button @click="onDelete" class="dropdown-item dropdown-delete">
               <Trash class="w-fit h-4" />
               Verwijderen
             </button>
