@@ -29,7 +29,6 @@
           <Star :class="exercise.favorite ? 'w-5 h-5 text-yellow-500' : 'w-5 h-5 '" :fill="exercise.favorite ? 'currentColor' : 'none'" :stroke="exercise.favorite ? 'currentColor' : 'currentColor'" />
         </button>
 
-
         <!-- Menu button and dropdown -->
         <div class="relative">
           <button
@@ -86,14 +85,14 @@
 
     <!-- Edit description modal -->
     <modal :open="showEditDescription" @close="closeEditDescription" contentPaddingClass="p-0" :hideDefaultClose="true">
-      <div class="sticky top-0 z-[1] bg-white px-5 sm:px-10 pt-5 pb-4 border-b">
+      <div class="modal-sticky-header pt-5 pb-4">
         <div class="flex items-center justify-between gap-3">
-          <h3 class="text-xl font-bold text-gray-800">
+          <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100">
             Beschrijving bewerken
           </h3>
           <button
               type="button"
-              class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+              class="close-modal-button"
               aria-label="Sluiten"
               @click="closeEditDescription"
           >
@@ -123,7 +122,7 @@
           </h3>
           <button
               type="button"
-              class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+              class="close-modal-button"
               aria-label="Sluiten"
               @click="closeEditDetails"
           >

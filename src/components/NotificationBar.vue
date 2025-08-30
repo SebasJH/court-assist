@@ -49,7 +49,15 @@ export default {
 </script>
 
 <style scoped>
-.toast-enter-active, .toast-leave-active { transition: all 180ms ease; }
-.toast-enter-from, .toast-leave-to { opacity: 0; transform: translateY(-6px) scale(0.98); }
-.toast-enter-to, .toast-leave-from { opacity: 1; transform: translateY(0) scale(1); }
+.toast-enter-active, .toast-leave-active {
+  transition: all 180ms ease;
+}
+.toast-enter-from, .toast-leave-to {
+  opacity: 0;
+  transform: translateY(-6px) scale(0.98);
+}
+.toast-enter-to, .toast-leave-from {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
 </style>

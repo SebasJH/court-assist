@@ -18,6 +18,8 @@
               role="dialog"
               aria-modal="true"
           >
+
+<!--        IK DENK DAT DIT ERUIT KAN EN STANDAARD DE ANDERE MOET WORDEN?-->
             <button
                 v-if="!hideDefaultClose"
                 class="absolute top-5 right-5 z-[10] text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-gray-200"
