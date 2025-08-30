@@ -8,33 +8,17 @@
 @import './base/_global.scss';
 @import './base/_form.scss';
 @import './base/_sidebar.scss';
+
+@import './components/modal';
+@import './components/dropdown';
 @import './components/_exercise.scss';
 
 
-
-// Smooth transitions
-.transition-modern {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-// Modern gradients
-.gradient-bg {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.gradient-bg-subtle {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-}
-
-.gradient-bg-cool {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-}
-
-// Custom animation delays
-.animation-delay-2000 {
-  animation-delay: 2s;
-}
-
-.animation-delay-4000 {
-  animation-delay: 4s;
-}
+//// Custom animation delays
+//.animation-delay-2000 {
+//  animation-delay: 2s;
+//}
+//
+//.animation-delay-4000 {
+//  animation-delay: 4s;
+//}

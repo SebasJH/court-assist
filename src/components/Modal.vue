@@ -13,7 +13,7 @@
           <div
               v-show="open"
               ref="modalContent"
-              class="relative bg-white dark:bg-gray-700 shadow-xl overflow-y-auto modal-panel"
+              class="relative bg-white dark:bg-gray-750 shadow-xl overflow-y-auto modal-panel"
               :class="contentClass"
               role="dialog"
               aria-modal="true"

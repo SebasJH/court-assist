@@ -13,21 +13,3 @@ html {
 *:focus {
   outline: none;
 }
-
-
-/* Dropdown menu */
-
-.dropdown-menu {
-  @apply bg-white border-gray-200;
-  @apply dark:bg-gray-700 dark:border-gray-600;
-}
-
-.dropdown-item {
-  @apply hover:bg-gray-100;
-  @apply dark:hover:bg-gray-600;
-
-  &.dropdown-delete {
-    @apply border-gray-200;
-    @apply dark:border-gray-600;
-  }
-}

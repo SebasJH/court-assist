@@ -1,0 +1,9 @@
+.modal {
+
+}
+
+.modal-sticky-header {
+  @apply sticky top-0 z-10 px-5 sm:px-10 border-b;
+  @apply bg-white border-gray-200;
+  @apply dark:bg-gray-750  dark:border-gray-600;
+}

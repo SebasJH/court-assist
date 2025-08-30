@@ -1,7 +1,8 @@
 <template>
   <form class="flex h-full flex-col" @submit.prevent="save" novalidate>
 
-    <div class="sticky top-0 z-10 bg-white dark:bg-gray-700 px-5 sm:px-10 pt-5 pb-0 border-b dark:border-gray-600">
+    <!-- Sticky header with tabs -->
+    <div class="modal-sticky-header pt-5 pb-0">
       <div class="flex items-center justify-between gap-3">
         <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100">
           {{ initial ? 'Wijzig oefening' : 'Nieuwe oefening' }}
@@ -150,7 +151,7 @@
                 class="form-input !rounded-r-none border-r-0 dark:!bg-gray-700 dark:!border-gray-600 dark:!text-gray-50"
             />
             <div
-                class="border border-gray-300 dark:border-gray-600 border-l rounded-r-xl px-2 flex items-center text-gray-600 dark:text-gray-50 text-sm">
+                class="border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 border-l rounded-r-xl px-2 flex items-center text-gray-600 dark:text-gray-50 text-sm">
               minuten
             </div>
           </div>

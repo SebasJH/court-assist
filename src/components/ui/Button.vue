@@ -3,7 +3,7 @@
     :type="type"
     :disabled="disabled"
     :class="[
-      'inline-flex items-center justify-center gap-2 font-medium rounded-md transition-modern focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed h-10',
+      'inline-flex items-center justify-center gap-2 font-medium rounded-md focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed h-10',
       sizeClasses[size],
       (outline ? outlineColorClasses[color] : colorClasses[color]),
       customClass
