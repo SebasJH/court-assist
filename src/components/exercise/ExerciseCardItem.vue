@@ -1,5 +1,5 @@
 <template>
-  <div class="exercise-card relative cursor-pointer bg-white dark:bg-gray-700/50 border-gray-50 dark:border-gray-700 rounded-xl shadow-md px-8 pt-8 pb-6 border duration-200 transform transition-transform hover:scale-[1.02] hover:shadow-lg" role="link" :aria-label="`Open ${exercise.name}`" @click="goToDetail" tabindex="0" @keydown.enter.prevent="goToDetail" :class="zClass">
+  <div class="exercise-card relative cursor-pointer bg-white dark:bg-gray-700/50 border-gray-50 dark:border-gray-700 rounded-xl shadow-md px-8 pt-8 pb-5 border duration-200 transform transition-transform hover:scale-[1.02] hover:shadow-lg" role="link" :aria-label="`Open ${exercise.name}`" @click="goToDetail" tabindex="0" @keydown.enter.prevent="goToDetail" :class="zClass">
     <div class="flex flex-col h-full">
       <div class="flex items-start gap-3">
 
@@ -125,7 +125,7 @@
 
 
       <!-- CTA -->
-      <div class="flex justify-end pt-6 mt-6 border-t border-gray-200 dark:border-gray-600">
+      <div class="flex justify-end pt-5 mt-6 border-t border-gray-200 dark:border-gray-600">
         <router-link :to="`/oefening/${slug}`" class="shrink-0 self-end whitespace-nowrap text-blue-500 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-400 hover:underline text-sm font-semibold" @click.stop>Lees meer →</router-link>
       </div>
 

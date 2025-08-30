@@ -1,6 +1,6 @@
 <template>
   <div
-    class="exercise-list-item flex items-center gap-4 px-4 py-3 border-b last:border-b-0 bg-white dark:bg-gray-700/50 dark:hover:bg-gray-700 border-gray-20 dark:border-gray-600 cursor-pointer"
+    class="exercise-list-item flex items-center gap-4 px-4 py-3 border-b last:border-b-0 bg-white hover:bg-gray-50 dark:bg-gray-700/50 dark:hover:bg-gray-700 border-gray-20 dark:border-gray-600 cursor-pointer"
     role="link"
     :aria-label="`Open ${exercise.name}`"
     tabindex="0"
@@ -8,7 +8,7 @@
     @keydown.enter.prevent="goToDetail"
   >
     <!-- Icon -->
-    <div class="bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 w-10 h-10 md:w-12 md:h-12 rounded-lg flex justify-center items-center shrink-0 relative">
+    <div class="bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 w-10 h-10 md:w-12 md:h-12 rounded-lg flex justify-center items-center shrink-0 relative">
       <div v-if="exercise.favorite" class="absolute -top-1 -left-1 w-5 h-5 rounded-md bg-white dark:bg-gray-600 shadow z-10 flex items-center justify-center pointer-events-none" aria-label="Favoriet" role="img">
         <Star class="w-3 h-3 text-yellow-500" :fill="'currentColor'" :stroke="'currentColor'"/>
       </div>
@@ -33,50 +33,55 @@
       </div>
 
       <!-- Mobile-only compact details -->
+      <!-- Players -->
       <div class="lg:hidden mt-1 flex flex-wrap items-center gap-1.5 text-xs text-gray-700">
-        <div v-if="showPlayers" class="exercise-players bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 inline-flex items-center gap-1 px-2 py-0.5 rounded">
+        <div v-if="showPlayers" class="exercise-players bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 inline-flex items-center gap-1 px-2 py-0.5 rounded">
           <Users class="w-3.5 h-3.5 text-green-500 dark:text-green-300" />
           <span>{{ playersLabel }}</span>
         </div>
-        <div v-if="hasDuration" class="exercise-duration bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 inline-flex items-center gap-1 px-2 py-0.5 rounded">
+        <!-- Duration -->
+        <div v-if="hasDuration" class="exercise-duration bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 inline-flex items-center gap-1 px-2 py-0.5 rounded">
           <TimerReset class="w-3.5 h-3.5 text-blue-500 dark:text-blue-300" />
           <span>{{ durationLabel }}</span>
         </div>
-        <div v-if="showIntensity" class="exercise-intensity bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 inline-flex items-center gap-1 px-2 py-0.5 rounded">
+        <!-- Intensity -->
+        <div v-if="showIntensity" class="exercise-intensity bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 inline-flex items-center gap-1 px-2 py-0.5 rounded">
           <Zap class="w-3.5 h-3.5 text-yellow-500 dark:text-yellow-300" />
           <span>{{ intensityLabel }}</span>
         </div>
-        <div v-if="hasCourt" class="exercise-court bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 inline-flex items-center gap-1 px-2 py-0.5 rounded">
+        <!-- Court -->
+        <div v-if="hasCourt" class="exercise-court bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 inline-flex items-center gap-1 px-2 py-0.5 rounded">
           <RectangleCircle class="w-3.5 h-3.5 text-red-500 dark:text-red-300" />
           <span>{{ courtLabel }}</span>
         </div>
       </div>
     </div>
 
+    <!-- Details desktop -->
     <!-- Players -->
     <div class="hidden lg:block w-28">
-      <div v-if="showPlayers" class="exercise-players w-fit bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150" :title="playersLabel">
+      <div v-if="showPlayers" class="exercise-players w-fit bg-gray-100 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 transition-colors duration-150" :title="playersLabel">
         <Users class="w-4 h-4 text-green-500 dark:text-green-300" />
         <span class="truncate">{{ playersLabel }}</span>
       </div>
     </div>
     <!-- Duration -->
     <div class="hidden lg:block w-28">
-      <div v-if="hasDuration" class="exercise-duration w-fit bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150" :title="durationLabel">
+      <div v-if="hasDuration" class="exercise-duration w-fit bg-gray-100 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 transition-colors duration-150" :title="durationLabel">
         <TimerReset class="w-4 h-4 text-blue-500 dark:text-blue-300" />
         <span class="truncate">{{ durationLabel }}</span>
       </div>
     </div>
     <!-- Intensity -->
     <div class="hidden lg:block w-28">
-      <div v-if="showIntensity" class="exercise-intensity w-fit bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150" :title="intensityLabel">
+      <div v-if="showIntensity" class="exercise-intensity w-fit bg-gray-100 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 transition-colors duration-150" :title="intensityLabel">
         <Zap class="w-4 h-4 text-yellow-500 dark:text-yellow-300" />
         <span class="truncate">{{ intensityLabel }}</span>
       </div>
     </div>
     <!-- Court -->
     <div class="hidden lg:block w-28">
-      <div v-if="hasCourt" class="exercise-court w-fit bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150" :title="courtLabel">
+      <div v-if="hasCourt" class="exercise-court w-fit bg-gray-100 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 px-2 py-1 rounded-lg text-sm flex items-center gap-1 transition-colors duration-150" :title="courtLabel">
         <RectangleCircle class="w-4 h-4 text-red-500 dark:text-red-300" />
         <span class="truncate">{{ courtLabel }}</span>
       </div>
@@ -86,7 +91,7 @@
     <div class="flex lg:w-20 items-center justify-end gap-2 shrink-0" ref="actionsRef" @mouseenter="liftEnter" @mouseleave="liftLeave" @click.stop>
       <div class="relative">
         <div
-          class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 transition-colors duration-200 cursor-pointer"
+          class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 transition-colors duration-200 cursor-pointer"
           @click.stop="toggleMenu"
           ref="menuButtonRef"
         >

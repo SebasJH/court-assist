@@ -1,14 +1,14 @@
 <template>
-  <div class="rte-wrapper border border-gray-300 rounded-xl bg-white">
+  <div class="rte-wrapper border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700">
     <!-- Toolbar -->
-    <div class="rte-toolbar flex items-center gap-2 px-2 py-1 bg-gray-50 border-b border-gray-300 rounded-t-xl">
+    <div class="rte-toolbar flex items-center gap-2 px-2 py-1 bg-gray-100 dark:bg-gray-800 border-b border-gray-300 dark:border-gray-600 rounded-t-xl">
       <button type="button" class="rte-btn" @mousedown.prevent @click="applyCmd('bold')" title="Vet">
         <strong>B</strong>
       </button>
       <button type="button" class="rte-btn" @mousedown.prevent @click="applyCmd('italic')" title="Cursief">
         <span class="italic">I</span>
       </button>
-      <div class="h-5 w-px bg-gray-300 mx-1" aria-hidden="true"></div>
+      <div class="h-5 w-px bg-gray-300 dark:bg-gray-700 mx-1" aria-hidden="true"></div>
       <button type="button" class="rte-btn" @mousedown.prevent @click="applyCmd('insertUnorderedList')" title="Opsomming">• List</button>
       <button type="button" class="rte-btn" @mousedown.prevent @click="applyCmd('insertOrderedList')" title="Genummerd">1. List</button>
     </div>
@@ -16,7 +16,7 @@
     <!-- Editable area -->
     <div
       ref="editor"
-      class="rte-editor w-full px-3 py-2 min-h-[8rem] focus:outline-none"
+      class="rte-editor w-full px-3 py-2 min-h-[8rem] focus:outline-none text-gray-100"
       :data-placeholder="placeholder"
       contenteditable="true"
       role="textbox"
@@ -114,13 +114,16 @@ export default {
 
 <style scoped>
 .rte-btn {
-  @apply px-2 py-1 text-sm rounded border border-gray-300 bg-white hover:bg-gray-50 focus:outline-none focus:ring-0;
+  @apply px-2 py-1 text-sm rounded border;
+  @apply bg-white hover:bg-gray-50 border-gray-300;
+  @apply dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600;
 }
 
 /* Placeholder for empty contenteditable */
 .rte-editor:empty:before {
   content: attr(data-placeholder);
   @apply text-gray-400;
+  @apply dark:text-gray-400;
 }
 
 /* Improve list appearance inside editor */

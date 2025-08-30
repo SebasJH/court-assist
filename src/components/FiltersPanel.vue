@@ -21,7 +21,7 @@
             <label
               v-for="c in categories"
               :key="c"
-              class="inline-flex items-center gap-2 bg-gray-50 hover:bg-blue-100 text-gray-800 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 rounded-lg px-2 py-1.5 cursor-pointer select-none hover:shadow-sm transition-colors duration-150"
+              class="inline-flex items-center gap-2 bg-gray-100 hover:bg-blue-100 text-gray-800 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 rounded-lg px-2 py-1.5 cursor-pointer select-none hover:shadow-sm transition-colors duration-150"
             >
             <input
               type="checkbox"
@@ -54,11 +54,11 @@
           </legend>
           <transition name="collapse">
                       <div id="section-court" v-show="open.court" class="flex flex-col gap-2 overflow-hidden">
-            <label class="text-sm inline-flex items-center gap-2 select-none bg-gray-50 hover:bg-blue-100 text-gray-800 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 rounded-lg px-2 py-1.5 cursor-pointer hover:shadow-sm transition-colors duration-150">
+            <label class="text-sm inline-flex items-center gap-2 select-none bg-gray-100 hover:bg-blue-100 text-gray-800 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 rounded-lg px-2 py-1.5 cursor-pointer hover:shadow-sm transition-colors duration-150">
               <input type="checkbox" class="form-checkbox w-4 h-4" :checked="isCourtSelected('halfcourt')" @change="onToggleCourt('halfcourt', $event.target.checked)" />
               <span>Half court</span>
             </label>
-            <label class="text-sm inline-flex items-center gap-2 select-none bg-gray-50 hover:bg-blue-100 text-gray-800 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 rounded-lg px-2 py-1.5 cursor-pointer hover:shadow-sm transition-colors duration-150">
+            <label class="text-sm inline-flex items-center gap-2 select-none bg-gray-100 hover:bg-blue-100 text-gray-800 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 rounded-lg px-2 py-1.5 cursor-pointer hover:shadow-sm transition-colors duration-150">
               <input type="checkbox" class="form-checkbox w-4 h-4" :checked="isCourtSelected('fullcourt')" @change="onToggleCourt('fullcourt', $event.target.checked)" />
               <span>Full court</span>
             </label>
@@ -158,7 +158,7 @@
           </legend>
           <transition name="collapse">
                     <div id="section-materials" v-show="open.materials" class="flex flex-wrap gap-2 overflow-hidden">
-            <label v-for="m in materialOptions" :key="m" class="inline-flex items-center gap-2 bg-gray-50 hover:bg-blue-100 text-gray-800 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 rounded-lg px-2 py-1.5 cursor-pointer select-none hover:shadow-sm transition-colors duration-150">
+            <label v-for="m in materialOptions" :key="m" class="inline-flex items-center gap-2 bg-gray-100 hover:bg-blue-100 text-gray-800 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 rounded-lg px-2 py-1.5 cursor-pointer select-none hover:shadow-sm transition-colors duration-150">
               <input type="checkbox" class="form-checkbox w-4 h-4" :checked="materials.includes(m)" @change="onToggleMaterial(m, $event.target.checked)" />
               <span class="text-sm">{{ m }}</span>
             </label>
