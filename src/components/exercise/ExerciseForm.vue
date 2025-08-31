@@ -226,7 +226,7 @@
               class="border rounded-md p-3 bg-gray-50 diagram-card"
               :aria-grabbed="dragIndex === idx ? 'true' : 'false'"
               @dragenter.prevent="onDragEnter(idx)"
-              @dragover.prevent
+              @dragover.prevent="onDragOver(idx, $event)"
               @drop.prevent="onDrop(idx)"
               @dragend="onDragEnd"
               :class="[
@@ -646,24 +646,55 @@ export default {
     }
     function onDragEnter(idx){
       if (idx === dragIndex.value) return
+      // Only mark the current hover index for visual feedback; do not reorder here to avoid jumpiness
       overIndex.value = idx
+    }
+    function onDragOver(idx, ev){
       if (!Array.isArray(form.diagrams)) return
       const from = dragIndex.value
-      const to = idx
-      if (from === -1 || to === -1) return
+      if (from === -1 || idx === -1 || idx === from) return
+
+      // Compute pointer position relative to hovered card
+      let card = ev && (ev.currentTarget || (ev.target && typeof ev.target.closest === 'function' ? ev.target.closest('.diagram-card') : null))
+      if (!card || typeof card.getBoundingClientRect !== 'function') return
+      const rect = card.getBoundingClientRect()
+      const y = ev.clientY - rect.top
+      const topThreshold = rect.height * 0.45
+      const bottomThreshold = rect.height * 0.55
+
+      // Update hover highlight
+      overIndex.value = idx
+
+      // Only reorder when dragging direction matches threshold crossing to reduce flicker
+      if (from < idx) {
+        // dragging downwards: wait until pointer passes the bottom threshold of the hovered card
+        if (y <= bottomThreshold) return
+      } else {
+        // dragging upwards: wait until pointer passes the top threshold of the hovered card
+        if (y >= topThreshold) return
+      }
+
       const arr = form.diagrams.slice()
       const [item] = arr.splice(from, 1)
+      let to = idx
+      // Clamp destination within bounds
+      to = Math.max(0, Math.min(arr.length, to))
       arr.splice(to, 0, item)
       form.diagrams = arr
       dragIndex.value = to
     }
     function onDrop(idx){
-      // With live reordering active on dragenter, drop should not change order.
-      // Only clear state here.
+      // Reordering is handled during dragover threshold checks; clear state on drop
       dragIndex.value = -1
       overIndex.value = -1
     }
     function onDragEnd(){
+      // Cleanup any drag image clone
+      try {
+        const el = dragImageEl && dragImageEl.value
+        if (el && el.parentNode) el.parentNode.removeChild(el)
+      } catch (_) {}
+      if (dragImageEl) dragImageEl.value = null
       dragIndex.value = -1
       overIndex.value = -1
     }
@@ -829,6 +860,7 @@ export default {
       overIndex,
       onDragStart,
       onDragEnter,
+      onDragOver,
       onDrop,
       onDragEnd,
       // play editor modal
