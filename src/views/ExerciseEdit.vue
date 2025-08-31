@@ -24,10 +24,11 @@
   </PageHeader>
 
   <div class="container mx-auto px-4 py-6">
-    <div class="bg-white dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl overflow-hidden">
-      <!-- Tabs header (keeping the same tab logic) -->
+    <div class="bg-white dark:bg-gray-750 border border-gray-200 dark:border-gray-600 rounded-xl overflow-hidden">
+
+      <!-- Tabs header -->
       <div class="px-5 sm:px-10 pt-5">
-        <div role="tablist" class="inline-flex items-center gap-2 border-b border-gray-200 dark:border-gray-600">
+        <div role="tablist" class="inline-flex items-center gap-2 w-full border-b border-gray-200 dark:border-gray-600">
           <button type="button" role="tab" :aria-selected="formTab==='basis' ? 'true' : 'false'"
                   @click="formTab='basis'"
                   class="px-3 py-2 text-sm font-medium border-b-2"

@@ -1,7 +1,6 @@
 <template>
   <form class="flex h-full flex-col" @submit.prevent="save" novalidate>
 
-
     <div class="px-5 sm:px-10 py-5 flex-1 overflow-y-auto">
       <!-- Basis -->
       <div v-show="currentTab==='basis'" class="grid grid-cols-1 md:grid-cols-4 gap-4">
