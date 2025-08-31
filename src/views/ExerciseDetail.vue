@@ -99,12 +99,14 @@
           <section v-if="Array.isArray(exercise.diagrams) && exercise.diagrams.length" class="p-6 border-t border-gray-200 dark:border-gray-600">
             <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-50 mb-3">Afbeeldingen</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div v-for="(d, i) in exercise.diagrams" :key="i" class="border rounded-md overflow-hidden bg-gray-50">
+              <div v-for="(d, i) in exercise.diagrams" :key="i" class="border dark:border-gray-600 rounded-md overflow-hidden bg-gray-50 dark:bg-gray-700">
                 <div class="bg-white">
-                  <img v-if="d && d.src" :src="d.src" alt="Diagram" class="w-full h-56 object-contain bg-white cursor-zoom-in" @click="openLightbox(i)"/>
-                  <div v-else class="w-full h-56 flex items-center justify-center text-gray-400 text-sm bg-white">Geen afbeelding</div>
+                  <img v-if="d && d.src" :src="d.src" alt="Diagram" class="w-full h-56 object-contain bg-white dark:bg-gray-750 cursor-zoom-in" @click="openLightbox(i)"/>
+                  <div v-else class="w-full h-56 flex items-center justify-center text-gray-300 text-sm bg-white dark:bg-gray-750">Geen afbeelding</div>
                 </div>
-                <div v-if="d && d.caption" class="px-3 py-2 text-sm text-gray-700 border-t"><div class="prose max-w-none" v-html="d.caption"></div></div>
+                <div v-if="d && d.caption" class="px-3 py-2 text-sm text-gray-700 dark:text-gray-300 border-t dark:border-gray-600">
+                  <div class="prose max-w-none" v-html="d.caption"></div>
+                </div>
               </div>
             </div>
           </section>
@@ -238,7 +240,7 @@
       </div>
 
       <!-- Caption (fixed at bottom, max 160px, scrollable with padding) -->
-      <div v-if="currentDiagram && currentDiagram.caption" ref="captionEl" class="fixed max-h-[160px] bottom-0 left-0 right-0 w-full p-4 sm:p-5 md:p-6 bg-white text-black border-t border-gray-200 dark:border-gray-700 overflow-y-auto">
+      <div v-if="currentDiagram && currentDiagram.caption" ref="captionEl" class="fixed max-h-[160px] bottom-0 left-0 right-0 w-full p-4 sm:p-5 md:p-6 bg-white dark:bg-gray-750 text-gray-800 dark:text-gray-50 border-t border-gray-200 dark:border-gray-700 overflow-y-auto">
         <div class="prose max-w-4xl mx-auto" v-html="currentDiagram.caption"></div>
       </div>
     </div>
