@@ -86,7 +86,7 @@
 
             <!-- Players -->
             <div v-if="showPlayers" class="relative" ref="playersRef" @mouseenter="onEnterPlayers" @mouseleave="onLeavePlayers">
-              <div class="exercise-badge px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150">
+              <div class="exercise-badge">
                 <Users class="h-4 w-fit text-green-500 dark:text-green-300" />
                 <div>{{ playersLabel }}</div>
               </div>
@@ -95,7 +95,7 @@
 
             <!-- Duration -->
             <div v-if="hasDuration" class="relative" ref="durationRef" @mouseenter="onEnterDuration" @mouseleave="onLeaveDuration">
-              <div class="exercise-badge px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150">
+              <div class="exercise-badge">
                 <TimerReset class="h-4 w-fit text-blue-500 dark:text-blue-300" />
                 <div>{{ exercise.duration }} min</div>
               </div>
@@ -104,7 +104,7 @@
 
             <!-- Intensity -->
             <div v-if="typeof exercise.intensity === 'number'" class="relative" ref="intensityRef" @mouseenter="onEnterIntensity" @mouseleave="onLeaveIntensity">
-              <div class="exercise-badge px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150">
+              <div class="exercise-badge">
                 <Zap class="h-4 w-fit text-yellow-500 dark:text-yellow-300" />
                 <div>{{ exercise.intensity }}/5</div>
               </div>
@@ -113,7 +113,7 @@
 
             <!-- Court -->
             <div v-if="hasCourt" class="relative" ref="courtRef" @mouseenter="onEnterCourt" @mouseleave="onLeaveCourt">
-              <div class="exercise-badge px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150">
+              <div class="exercise-badge">
                 <RectangleCircle class="h-4 w-fit text-red-500 dark:text-red-300" />
                 <div>{{ courtLabel }}</div>
               </div>

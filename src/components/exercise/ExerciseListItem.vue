@@ -35,22 +35,22 @@
       <!-- Mobile-only compact details -->
       <!-- Players -->
       <div class="lg:hidden mt-1 flex flex-wrap items-center gap-1.5 text-xs text-gray-700">
-        <div v-if="showPlayers" class="exercise-badge inline-flex items-center gap-1 px-2 py-0.5 rounded">
+        <div v-if="showPlayers" class="exercise-badge mobile-view">
           <Users class="w-3.5 h-3.5 text-green-500 dark:text-green-300" />
           <span>{{ playersLabel }}</span>
         </div>
         <!-- Duration -->
-        <div v-if="hasDuration" class="exercise-badge inline-flex items-center gap-1 px-2 py-0.5 rounded">
+        <div v-if="hasDuration" class="exercise-badge mobile-view">
           <TimerReset class="w-3.5 h-3.5 text-blue-500 dark:text-blue-300" />
           <span>{{ durationLabel }}</span>
         </div>
         <!-- Intensity -->
-        <div v-if="showIntensity" class="exercise-badge inline-flex items-center gap-1 px-2 py-0.5 rounded">
+        <div v-if="showIntensity" class="exercise-badge mobile-view">
           <Zap class="w-3.5 h-3.5 text-yellow-500 dark:text-yellow-300" />
           <span>{{ intensityLabel }}</span>
         </div>
         <!-- Court -->
-        <div v-if="hasCourt" class="exercise-badge  inline-flex items-center gap-1 px-2 py-0.5 rounded">
+        <div v-if="hasCourt" class="exercise-badge mobile-view">
           <RectangleCircle class="w-3.5 h-3.5 text-red-500 dark:text-red-300" />
           <span>{{ courtLabel }}</span>
         </div>
@@ -60,28 +60,28 @@
     <!-- Details desktop -->
     <!-- Players -->
     <div class="hidden lg:block w-28">
-      <div v-if="showPlayers" class="exercise-badge w-fit px-2 py-1 rounded-lg text-sm flex items-center gap-1 transition-colors duration-150" :title="playersLabel">
+      <div v-if="showPlayers" class="exercise-badge desktop-view" :title="playersLabel">
         <Users class="w-4 h-4 text-green-500 dark:text-green-300" />
         <span class="truncate">{{ playersLabel }}</span>
       </div>
     </div>
     <!-- Duration -->
     <div class="hidden lg:block w-28">
-      <div v-if="hasDuration" class="exercise-badge w-fit  px-2 py-1 rounded-lg text-sm flex items-center gap-1 transition-colors duration-150" :title="durationLabel">
+      <div v-if="hasDuration" class="exercise-badge desktop-view" :title="durationLabel">
         <TimerReset class="w-4 h-4 text-blue-500 dark:text-blue-300" />
         <span class="truncate">{{ durationLabel }}</span>
       </div>
     </div>
     <!-- Intensity -->
     <div class="hidden lg:block w-28">
-      <div v-if="showIntensity" class="exercise-badge w-fit  px-2 py-1 rounded-lg text-sm flex items-center gap-1 transition-colors duration-150" :title="intensityLabel">
+      <div v-if="showIntensity" class="exercise-badge desktop-view" :title="intensityLabel">
         <Zap class="w-4 h-4 text-yellow-500 dark:text-yellow-300" />
         <span class="truncate">{{ intensityLabel }}</span>
       </div>
     </div>
     <!-- Court -->
     <div class="hidden lg:block w-28">
-      <div v-if="hasCourt" class="exercise-badge w-fit px-2 py-1 rounded-lg text-sm flex items-center gap-1 transition-colors duration-150" :title="courtLabel">
+      <div v-if="hasCourt" class="exercise-badge desktop-view" :title="courtLabel">
         <RectangleCircle class="w-4 h-4 text-red-500 dark:text-red-300" />
         <span class="truncate">{{ courtLabel }}</span>
       </div>

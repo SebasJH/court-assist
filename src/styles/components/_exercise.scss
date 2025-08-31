@@ -30,6 +30,7 @@
   }
 
   .exercise-badge {
+    @apply  px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150;
     @apply bg-gray-100 hover:bg-gray-200;
     @apply dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-550;
   }
@@ -68,11 +69,30 @@
   }
 
   .exercise-badge {
+    &.mobile-view {
+      @apply inline-flex items-center gap-1 px-2 py-0.5 rounded hover:shadow-sm;
+    }
+
+    &.desktop-view {
+      @apply w-fit px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150;
+    }
+
     @apply bg-gray-100 hover:bg-gray-200;
     @apply dark:bg-gray-650 dark:text-gray-300 dark:hover:bg-gray-550;
   }
 
   .dropdown-button {
+    @apply bg-gray-100 hover:bg-gray-200;
+    @apply dark:bg-gray-650 dark:text-gray-300 dark:hover:bg-gray-550;
+  }
+}
+
+
+
+/* Exercise detail */
+.exercise-detail {
+  .exercise-badge {
+    @apply w-fit px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150;
     @apply bg-gray-100 hover:bg-gray-200;
     @apply dark:bg-gray-650 dark:text-gray-300 dark:hover:bg-gray-550;
   }

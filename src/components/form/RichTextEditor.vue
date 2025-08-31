@@ -16,7 +16,7 @@
     <!-- Editable area -->
     <div
       ref="editor"
-      class="rte-editor w-full px-3 py-2 min-h-[8rem] focus:outline-none text-gray-100"
+      class="rte-editor w-full px-3 py-2 min-h-[8rem] focus:outline-none dark:text-gray-100"
       :data-placeholder="placeholder"
       contenteditable="true"
       role="textbox"

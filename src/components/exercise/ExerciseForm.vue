@@ -41,6 +41,7 @@
                     class="form-input h-24 resize-none"></textarea>
         </div>
 
+
         <!-- Exercise Categories -->
         <div class="form-group col-span-4">
           <label class="form-label">
@@ -168,6 +169,14 @@
       <!-- Tekst -->
       <div v-show="currentTab==='tekst'" class="grid grid-cols-1 md:grid-cols-4 gap-4">
 
+        <!-- Uitvoering (Execution) -->
+        <div class="form-group col-span-4 md:col-span-4">
+          <label class="form-label">
+            Uitvoering
+          </label>
+          <RichTextEditor v-model="form.execution" placeholder="Beschrijf de uitvoering van de oefening"/>
+        </div>
+
         <!-- Coaching points -->
         <div class="form-group col-span-4 md:col-span-4">
           <label class="form-label">
@@ -176,20 +185,12 @@
           <RichTextEditor v-model="form.coachingPoints" placeholder="Coaching punten"/>
         </div>
 
-        <!-- How it works -->
+        <!-- Variaties -->
         <div class="form-group col-span-4 md:col-span-4">
           <label class="form-label">
-            How it works
+            Variaties
           </label>
-          <RichTextEditor v-model="form.howItWorks" placeholder="Uitleg van de uitvoering"/>
-        </div>
-
-        <!-- Purpose -->
-        <div class="form-group col-span-4 md:col-span-4">
-          <label class="form-label">
-            Purpose
-          </label>
-          <RichTextEditor v-model="form.purpose" placeholder="Doel van de oefening"/>
+          <RichTextEditor v-model="form.variations" placeholder="Variaties of aanpassingen van de oefening"/>
         </div>
 
       </div>
@@ -293,9 +294,10 @@ export default {
       id: null,
       name: '',
       description: '',
+      goal: '',
+      execution: '',
       coachingPoints: '',
-      howItWorks: '',
-      purpose: '',
+      variations: '',
       diagrams: [],
       category: [],
       minPlayers: null,
@@ -364,7 +366,10 @@ export default {
           id: v.id,
           name: v.name || '',
           description: v.description || v.shortDescription || v.short || '',
+          goal: v.goal || v.purpose || '',
+          execution: v.execution || v.howItWorks || '',
           coachingPoints: v.coachingPoints || v.fullDescription || v.full || '',
+          variations: v.variations || '',
           category: Array.isArray(v.category) ? [...v.category] : (v.category ? [v.category] : []),
           minPlayers: (typeof v.minPlayers === 'number') ? v.minPlayers : null,
           maxPlayers: (typeof v.maxPlayers === 'number') ? Math.min(50, v.maxPlayers) : null,
@@ -374,8 +379,6 @@ export default {
           duration: (typeof v.duration === 'number' ? v.duration : (typeof v.minutes === 'number' ? v.minutes : null)),
           icon: v.icon || v.imageIcon || 'TrafficCone',
           video: v.video || '',
-          howItWorks: v.howItWorks || '',
-          purpose: v.purpose || '',
           diagrams: Array.isArray(v.diagrams) ? v.diagrams.map(d => ({src: d.src || '', caption: d.caption || ''})) : []
         }
         Object.assign(form, formData)

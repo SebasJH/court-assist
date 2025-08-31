@@ -195,63 +195,157 @@
       </div>
     </modal>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Edit notes modal -->
+    <modal :open="showEditNotes" @close="closeEditNotes" contentPaddingClass="p-0">
+      <template #title>Notities bewerken</template>
+
+      <div class="px-5 sm:px-10 pt-5 flex-1">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Notities</label>
+        <RichTextEditor v-model="notesDraft" placeholder="Jouw notities" />
+      </div>
+
+      <div class="px-5 sm:px-10 pt-5 border-t flex justify-end gap-3">
+        <UiButton color="cancel" @click="closeEditNotes">Annuleren</UiButton>
+        <UiButton color="primary" @click="saveEditNotes">Opslaan</UiButton>
+      </div>
+    </modal>
+
+    <div class="exercise-detail grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
       <div class="lg:col-span-2">
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-          <div class="flex items-center justify-between mb-2">
-            <h2 class="text-lg font-semibold text-gray-800">Beschrijving</h2>
-            <button class="inline-flex justify-center items-center h-10 w-10 text-gray-500 hover:text-gray-700" @click="openEditDescription" aria-label="Beschrijving bewerken">
-              <Pencil class="w-4 h-4" />
-            </button>
-          </div>
-          <p class="text-gray-700 leading-relaxed">{{ exercise.description || exercise.shortDescription }}</p>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 class="text-lg font-semibold text-gray-800 mb-2">Coaching punten</h2>
-          <div class="prose max-w-none" v-html="exercise.coachingPoints || exercise.fullDescription"></div>
-        </div>
-
-        <div v-if="exercise.howItWorks" class="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 class="text-lg font-semibold text-gray-800 mb-2">How it works</h2>
-          <div class="prose max-w-none" v-html="exercise.howItWorks"></div>
-        </div>
-
-        <div v-if="exercise.purpose" class="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 class="text-lg font-semibold text-gray-800 mb-2">Purpose</h2>
-          <div class="prose max-w-none" v-html="exercise.purpose"></div>
-        </div>
-
-        <div v-if="Array.isArray(exercise.diagrams) && exercise.diagrams.length" class="bg-white rounded-lg shadow-md p-6">
-          <h2 class="text-lg font-semibold text-gray-800 mb-3">Diagrams</h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div v-for="(d, i) in exercise.diagrams" :key="i" class="border rounded-md overflow-hidden bg-gray-50">
-              <div class="bg-white">
-                <img v-if="d && d.src" :src="d.src" alt="Diagram" class="w-full h-56 object-contain bg-white"/>
-                <div v-else class="w-full h-56 flex items-center justify-center text-gray-400 text-sm bg-white">Geen afbeelding</div>
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <!-- Meta: icon + categories -->
+          <section class="p-6 border-b border-gray-200">
+            <div class="flex items-center gap-3 min-w-0">
+              <component :is="exercise.icon || 'TrafficCone'" class="w-8 h-8 text-gray-700" />
+              <div class="flex flex-wrap gap-1 text-xs">
+                <span v-for="c in (Array.isArray(exercise.category)?exercise.category:(exercise.category?[exercise.category]:[]))" :key="c" class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">{{ c }}</span>
+                <span v-if="(!exercise.category || (Array.isArray(exercise.category) && exercise.category.length===0))" class="text-gray-400">Geen categorie</span>
               </div>
-              <div v-if="d && d.caption" class="px-3 py-2 text-sm text-gray-700 border-t">{{ d.caption }}</div>
             </div>
-          </div>
+          </section>
+          <!-- Beschrijving -->
+          <section class="p-6">
+            <div class="flex items-center justify-between mb-2">
+              <h2 class="text-lg font-semibold text-gray-800">Beschrijving</h2>
+              <button class="inline-flex justify-center items-center h-10 w-10 text-gray-500 hover:text-gray-700" @click="openEditDescription" aria-label="Beschrijving bewerken">
+                <Pencil class="w-4 h-4" />
+              </button>
+            </div>
+            <p class="text-gray-700 leading-relaxed">{{ exercise.description || exercise.shortDescription }}</p>
+          </section>
+
+
+          <!-- Uitvoering -->
+          <section v-if="exercise.execution || exercise.howItWorks" class="p-6 border-t border-gray-200">
+            <div class="flex items-center justify-between mb-2">
+              <h2 class="text-lg font-semibold text-gray-800">Uitvoering</h2>
+              <button class="inline-flex justify-center items-center h-10 w-10 text-gray-500 hover:text-gray-700" @click="openEditText" aria-label="Uitvoering bewerken">
+                <Pencil class="w-4 h-4" />
+              </button>
+            </div>
+            <div class="prose max-w-none" v-html="exercise.execution || exercise.howItWorks"></div>
+          </section>
+
+          <!-- Coaching punten -->
+          <section v-if="exercise.coachingPoints || exercise.fullDescription" class="p-6 border-t border-gray-200">
+            <div class="flex items-center justify-between mb-2">
+              <h2 class="text-lg font-semibold text-gray-800">Coaching punten</h2>
+              <button class="inline-flex justify-center items-center h-10 w-10 text-gray-500 hover:text-gray-700" @click="openEditText" aria-label="Coaching punten bewerken">
+                <Pencil class="w-4 h-4" />
+              </button>
+            </div>
+            <div class="rounded-md border border-blue-200 bg-blue-100/60 p-4">
+              <div class="prose max-w-none" v-html="exercise.coachingPoints || exercise.fullDescription"></div>
+            </div>
+          </section>
+
+          <!-- Variaties -->
+          <section v-if="exercise.variations" class="p-6 border-t border-gray-200">
+            <div class="flex items-center justify-between mb-2">
+              <h2 class="text-lg font-semibold text-gray-800">Variaties</h2>
+              <button class="inline-flex justify-center items-center h-10 w-10 text-gray-500 hover:text-gray-700" @click="openEditText" aria-label="Variaties bewerken">
+                <Pencil class="w-4 h-4" />
+              </button>
+            </div>
+            <div class="prose max-w-none" v-html="exercise.variations"></div>
+          </section>
+
+          <!-- Diagrams -->
+          <section v-if="Array.isArray(exercise.diagrams) && exercise.diagrams.length" class="p-6 border-t border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-800 mb-3">Visuals (diagrammen)</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div v-for="(d, i) in exercise.diagrams" :key="i" class="border rounded-md overflow-hidden bg-gray-50">
+                <div class="bg-white">
+                  <img v-if="d && d.src" :src="d.src" alt="Diagram" class="w-full h-56 object-contain bg-white"/>
+                  <div v-else class="w-full h-56 flex items-center justify-center text-gray-400 text-sm bg-white">Geen afbeelding</div>
+                </div>
+                <div v-if="d && d.caption" class="px-3 py-2 text-sm text-gray-700 border-t">{{ d.caption }}</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Notities -->
+          <section class="p-6 border-t border-gray-200">
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="text-lg font-semibold text-gray-800">Notities</h2>
+              <button class="inline-flex justify-center items-center h-10 w-10 text-gray-500 hover:text-gray-700" @click="openEditNotes" aria-label="Notities bewerken">
+                <Pencil class="w-4 h-4" />
+              </button>
+            </div>
+            <div v-if="exercise.notes && exercise.notes.trim().length" class="prose max-w-none" v-html="exercise.notes"></div>
+            <div v-else class="text-gray-500 text-sm">Nog geen notities. Klik op het potlood om toe te voegen.</div>
+          </section>
         </div>
       </div>
 
-      <div class="lg:col-span-1">
-        <div class="bg-white rounded-lg shadow-md p-6">
-          <div class="flex items-center justify-between mb-3">
-            <h2 class="text-lg font-semibold text-gray-800">Details</h2>
-            <button class="inline-flex justify-center items-center h-10 w-10 text-gray-500 hover:text-gray-700" @click="openEditDetails" aria-label="Details bewerken">
-              <Pencil class="w-4 h-4" />
-            </button>
-          </div>
-          <div class="flex flex-col gap-1.5  text-gray-800">
-            <ExerciseBadge :exercise="exercise" kind="players" variant="detail" />
-            <ExerciseBadge :exercise="exercise" kind="duration" variant="detail" />
-            <ExerciseBadge :exercise="exercise" kind="court" variant="detail" />
-            <ExerciseBadge :exercise="exercise" kind="intensity" variant="detail" />
-          </div>
+      <div class="lg:col-span-1 lg:sticky lg:top-4 lg:self-start">
+        <div class="bg-white rounded-lg shadow-md overflow-hidden order-2 lg:order-none">
+          <!-- Details -->
+          <section class="p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="text-lg font-semibold text-gray-800">Details</h2>
+              <button class="inline-flex justify-center items-center h-10 w-10 text-gray-500 hover:text-gray-700" @click="openEditDetails" aria-label="Details bewerken">
+                <Pencil class="w-4 h-4" />
+              </button>
+            </div>
+            <div class="flex flex-col gap-1.5 text-gray-800">
+              <!-- Players -->
+              <div v-if="showPlayers" class="relative" ref="playersRef" @mouseenter="onEnterPlayers" @mouseleave="onLeavePlayers">
+                <div class="exercise-badge">
+                  <Users class="h-4 w-fit text-green-500 dark:text-green-300" />
+                  <div>{{ playersLabel }}</div>
+                </div>
+              </div>
 
-          <div v-if="exercise.materials && exercise.materials.length" class="mt-4">
+              <!-- Duration -->
+              <div v-if="hasDuration" class="relative" ref="durationRef" @mouseenter="onEnterDuration" @mouseleave="onLeaveDuration">
+                <div class="exercise-badge px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150">
+                  <TimerReset class="h-4 w-fit text-blue-500 dark:text-blue-300" />
+                  <div>{{ exercise.duration }} min</div>
+                </div>
+              </div>
+
+              <!-- Intensity -->
+              <div v-if="typeof exercise.intensity === 'number'" class="relative" ref="intensityRef" @mouseenter="onEnterIntensity" @mouseleave="onLeaveIntensity">
+                <div class="exercise-badge px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150">
+                  <Zap class="h-4 w-fit text-yellow-500 dark:text-yellow-300" />
+                  <div>{{ exercise.intensity }}/5</div>
+                </div>
+              </div>
+
+              <!-- Court -->
+              <div v-if="hasCourt" class="relative" ref="courtRef" @mouseenter="onEnterCourt" @mouseleave="onLeaveCourt">
+                <div class="exercise-badge px-2 py-1 rounded-lg text-sm flex items-center gap-1 hover:shadow-sm transition-colors duration-150">
+                  <RectangleCircle class="h-4 w-fit text-red-500 dark:text-red-300" />
+                  <div>{{ courtLabel }}</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+
+          <!-- Materialen -->
+          <section v-if="exercise.materials && exercise.materials.length" class="p-6 border-t border-gray-200 dark:border-gray-600">
             <div class="text-sm font-medium text-gray-700 mb-1 inline-flex items-center gap-1">
               <TrafficCone class="w-4 h-4" />
               Materialen
@@ -259,12 +353,20 @@
             <ul class="list-disc pl-5 text-gray-700">
               <li v-for="m in exercise.materials" :key="m">{{ m }}</li>
             </ul>
-          </div>
+          </section>
 
-          <div v-if="exercise.video" class="mt-4">
-            <div class="text-sm font-medium text-gray-700 mb-1">Video</div>
-            <a :href="exercise.video" target="_blank" rel="noopener" class="text-blue-600 hover:underline">Bekijk video</a>
-          </div>
+          <!-- Video embed -->
+          <section v-if="exercise.video" class="p-6 border-t border-gray-200 dark:border-gray-600">
+            <div v-if="youtubeEmbedUrl" class="aspect-video rounded-md overflow-hidden border bg-black/5">
+              <iframe :src="youtubeEmbedUrl" title="YouTube video" class="w-full h-full" frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowfullscreen></iframe>
+            </div>
+            <div v-else>
+              <a :href="exercise.video" target="_blank" rel="noopener" class="text-blue-600 hover:underline">Bekijk video</a>
+            </div>
+          </section>
+
         </div>
       </div>
     </div>
@@ -284,9 +386,11 @@ import PageHeader from '../components/PageHeader.vue'
 import Modal from '../components/Modal.vue'
 import ExerciseForm from '../components/exercise/ExerciseForm.vue'
 import DeleteConfirm from '../components/DeleteConfirm.vue'
-import ExerciseBadge from '../components/common/ExerciseBadge.vue'
 import IntensitySelector from '../components/form/IntensitySelector.vue'
 import RangeNumber from '../components/form/RangeNumber.vue'
+import RichTextEditor from '../components/form/RichTextEditor.vue'
+import Tooltip from '../components/Tooltip.vue'
+import { isNum, hasPlayers, hasDuration as hasDurationField, hasCourt as hasCourtField, formatPlayersFromExercise, formatCourtFromExercise } from '../utils/exerciseFormat'
 import { EXERCISE_CATEGORIES, EXERCISE_MATERIALS, normalizeCourt } from '../constants'
 
 function slugify(str) {
@@ -314,6 +418,82 @@ const exercise = computed(() => {
   return list.find(e => slugify(e.name) === target)
 })
 
+// Badge tooltips and labels (match ExerciseCardItem)
+const playersRef = ref(null)
+const durationRef = ref(null)
+const intensityRef = ref(null)
+const courtRef = ref(null)
+
+const playersOpen = ref(false)
+const durationOpen = ref(false)
+const intensityOpen = ref(false)
+const courtOpen = ref(false)
+
+function onEnterPlayers(){ playersOpen.value = true }
+function onLeavePlayers(){ playersOpen.value = false }
+function onEnterDuration(){ durationOpen.value = true }
+function onLeaveDuration(){ durationOpen.value = false }
+function onEnterIntensity(){ intensityOpen.value = true }
+function onLeaveIntensity(){ intensityOpen.value = false }
+function onEnterCourt(){ courtOpen.value = true }
+function onLeaveCourt(){ courtOpen.value = false }
+
+const showPlayers = computed(() => hasPlayers(exercise.value?.minPlayers, exercise.value?.maxPlayers))
+const playersLabel = computed(() => formatPlayersFromExercise(exercise.value, { variant: 'compact' }))
+const hasDuration = computed(() => hasDurationField(exercise.value?.duration))
+const hasCourt = computed(() => hasCourtField(exercise.value?.court))
+const courtLabel = computed(() => formatCourtFromExercise(exercise.value, { variant: 'compact' }))
+
+const playersTooltip = computed(() => {
+  const min = isNum(exercise.value?.minPlayers) ? exercise.value.minPlayers : null
+  const max = isNum(exercise.value?.maxPlayers) ? exercise.value.maxPlayers : null
+  let body = ''
+  if (min !== null && max !== null) {
+    body = `Geschikt voor ${min} tot ${max} spelers`
+  } else if (min !== null) {
+    body = `Minimaal ${min} spelers nodig`
+  } else if (max !== null) {
+    body = `Maximaal ${max} spelers`
+  }
+  return { title: 'Aantal spelers', body }
+})
+const durationTooltip = computed(() => {
+  const d = (typeof exercise.value?.duration === 'number' && exercise.value.duration > 0)
+    ? exercise.value.duration
+    : ((typeof exercise.value?.minutes === 'number' && exercise.value.minutes > 0) ? exercise.value.minutes : null)
+  return { title: 'Tijd van de oefening', body: d !== null ? `De oefening duurt gemiddeld ${d} minuten` : 'Aantal minuten dat de oefening duurt' }
+})
+const intensityTooltip = computed(() => ({
+  title: 'Intensiteit',
+  body: `Zwaarte van de oefening (1 = licht · 5 = zwaar) · Huidig: ${exercise.value?.intensity}/5`
+}))
+const courtTooltip = computed(() => {
+  const v = courtLabel.value
+  if (!v) return { title: 'Veldtype', body: 'Geen veldtype opgegeven' }
+  return { title: 'Veldtype', body: v === 'Half' ? 'Half court' : (v === 'Full' ? 'Full court' : v) }
+})
+
+function extractYouTubeId(url) {
+  try {
+    const u = String(url || '')
+    // Patterns: youtu.be/ID, youtube.com/watch?v=ID, youtube.com/shorts/ID, youtube.com/embed/ID
+    const short = u.match(/youtu\.be\/([\w-]{6,})/i)
+    if (short && short[1]) return short[1]
+    const watch = u.match(/[?&]v=([\w-]{6,})/i)
+    if (watch && watch[1]) return watch[1]
+    const shorts = u.match(/youtube\.com\/shorts\/([\w-]{6,})/i)
+    if (shorts && shorts[1]) return shorts[1]
+    const embed = u.match(/youtube\.com\/embed\/([\w-]{6,})/i)
+    if (embed && embed[1]) return embed[1]
+  } catch (_) {}
+  return ''
+}
+
+const youtubeEmbedUrl = computed(() => {
+  const id = extractYouTubeId(exercise.value?.video)
+  return id ? `https://www.youtube.com/embed/${id}` : ''
+})
+
 
 // Edit modal state
 const showForm = ref(false)
@@ -327,6 +507,10 @@ const materialOptions = EXERCISE_MATERIALS
 const showEditDescription = ref(false)
 const descDraft = ref('')
 
+// Notes editing state
+const showEditNotes = ref(false)
+const notesDraft = ref('')
+
 function openEditDescription() {
   const current = exercise.value
   descDraft.value = (current?.description || current?.shortDescription || '')
@@ -338,6 +522,19 @@ function saveEditDescription() {
   const payload = { id: exercise.value.id, description: String(descDraft.value || '') }
   store.updateExercise(exercise.value.id, payload)
   closeEditDescription()
+}
+
+function openEditNotes() {
+  const current = exercise.value
+  notesDraft.value = (current?.notes || '')
+  showEditNotes.value = true
+}
+function closeEditNotes() { showEditNotes.value = false }
+function saveEditNotes() {
+  if (!exercise.value) return closeEditNotes()
+  const payload = { id: exercise.value.id, notes: String(notesDraft.value || '') }
+  store.updateExercise(exercise.value.id, payload)
+  closeEditNotes()
 }
 
 const showEditDetails = ref(false)
@@ -409,6 +606,10 @@ function saveEditDetails(){
 function openForm() {
   formKey.value++
   showForm.value = true
+}
+function openEditText() {
+  try { formTab.value = 'tekst' } catch (_) {}
+  openForm()
 }
 function closeForm() {
   showForm.value = false
