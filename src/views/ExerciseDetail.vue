@@ -77,7 +77,7 @@
 
 
     <div class="exercise-detail grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-      <div class="lg:col-span-2">
+      <div :class="showRightSidebar ? 'lg:col-span-2' : 'lg:col-span-3'">
         <div class="bg-white rounded-lg shadow-md overflow-hidden">
           <!-- Meta: icon + categories -->
           <section class="p-6 border-b border-gray-200">
@@ -149,14 +149,14 @@
         </div>
       </div>
 
-      <div class="lg:col-span-1 lg:sticky lg:top-4 lg:self-start">
+      <div v-if="showRightSidebar" class="lg:col-span-1 lg:sticky lg:top-4 lg:self-start">
         <div class="bg-white rounded-lg shadow-md overflow-hidden order-2 lg:order-none">
           <!-- Details -->
-          <section class="p-6">
+          <section v-if="hasAnyDetails" class="p-6">
             <div class="flex items-center justify-between mb-3">
               <h2 class="text-lg font-semibold text-gray-800">Details</h2>
             </div>
-            <div class="flex flex-col gap-1.5 text-gray-800">
+            <div class="flex flex-row flex-wrap gap-1.5 text-gray-800">
               <!-- Players -->
               <div v-if="showPlayers" class="relative" ref="playersRef" @mouseenter="onEnterPlayers" @mouseleave="onLeavePlayers">
                 <div class="exercise-badge">
@@ -193,18 +193,20 @@
 
 
           <!-- Materialen -->
-          <section v-if="exercise.materials && exercise.materials.length" class="p-6 border-t border-gray-200 dark:border-gray-600">
-            <div class="text-sm font-medium text-gray-700 mb-1 inline-flex items-center gap-1">
-              <TrafficCone class="w-4 h-4" />
-              Materialen
+          <section v-if="exercise.materials && exercise.materials.length" class="p-6">
+            <div class="text-sm font-medium text-gray-700 mb-2 inline-flex items-center gap-1">
+              <h2 class="text-lg font-semibold text-gray-800">Materialen</h2>
             </div>
-            <ul class="list-disc pl-5 text-gray-700">
-              <li v-for="m in exercise.materials" :key="m">{{ m }}</li>
-            </ul>
+            <div class="flex flex-wrap gap-1.5">
+              <span v-for="m in exercise.materials" :key="m" class="px-2 py-1 rounded-lg text-sm bg-orange-50 text-orange-800 border border-orange-200">{{ m }}</span>
+            </div>
           </section>
 
-          <!-- Video embed -->
-          <section v-if="exercise.video" class="p-6 border-t border-gray-200 dark:border-gray-600">
+          <!-- Video -->
+          <section v-if="exercise.video" class="p-6">
+            <div class="text-sm font-medium text-gray-700 mb-2 inline-flex items-center gap-1">
+              <h2 class="text-lg font-semibold text-gray-800">Video</h2>
+            </div>
             <div v-if="youtubeEmbedUrl" class="aspect-video rounded-md overflow-hidden border bg-black/5">
               <iframe :src="youtubeEmbedUrl" title="YouTube video" class="w-full h-full" frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -214,6 +216,7 @@
               <a :href="exercise.video" target="_blank" rel="noopener" class="text-blue-600 hover:underline">Bekijk video</a>
             </div>
           </section>
+
 
         </div>
       </div>
@@ -284,6 +287,13 @@ const playersLabel = computed(() => formatPlayersFromExercise(exercise.value, { 
 const hasDuration = computed(() => hasDurationField(exercise.value?.duration))
 const hasCourt = computed(() => hasCourtField(exercise.value?.court))
 const courtLabel = computed(() => formatCourtFromExercise(exercise.value, { variant: 'compact' }))
+
+// Sidebar visibility flags
+const hasMaterials = computed(() => Array.isArray(exercise.value?.materials) && exercise.value.materials.length > 0)
+const hasIntensityField = computed(() => typeof exercise.value?.intensity === 'number')
+const hasAnyDetails = computed(() => showPlayers.value || hasDuration.value || hasIntensityField.value || hasCourt.value)
+const hasVideo = computed(() => !!exercise.value?.video)
+const showRightSidebar = computed(() => hasAnyDetails.value || hasMaterials.value || hasVideo.value)
 
 const playersTooltip = computed(() => {
   const min = isNum(exercise.value?.minPlayers) ? exercise.value.minPlayers : null

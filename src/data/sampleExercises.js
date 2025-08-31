@@ -130,7 +130,7 @@ export const SAMPLE_EXERCISES = [
         duration: 12,
         intensity: 5,
         court: 'Full Court',
-        materials: [],
+        materials: ['Pionnen'],
         video: 'https://www.youtube.com/watch?v=oYQUjUB23H8',
         dateCreated: '2025-08-17T12:00:00.000Z',
         favorite: false
