@@ -106,13 +106,13 @@
             <div class="prose max-w-none" v-html="exercise.execution || exercise.howItWorks"></div>
           </section>
 
-          <!-- Diagrams -->
+          <!-- Images -->
           <section v-if="Array.isArray(exercise.diagrams) && exercise.diagrams.length" class="p-6 border-t border-gray-200">
-            <h2 class="text-lg font-semibold text-gray-800 mb-3">Diagrammen</h2>
+            <h2 class="text-lg font-semibold text-gray-800 mb-3">Afbeeldingen</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div v-for="(d, i) in exercise.diagrams" :key="i" class="border rounded-md overflow-hidden bg-gray-50">
                 <div class="bg-white">
-                  <img v-if="d && d.src" :src="d.src" alt="Diagram" class="w-full h-56 object-contain bg-white"/>
+                  <img v-if="d && d.src" :src="d.src" alt="Diagram" class="w-full h-56 object-contain bg-white cursor-zoom-in" @click="openLightbox(i)"/>
                   <div v-else class="w-full h-56 flex items-center justify-center text-gray-400 text-sm bg-white">Geen afbeelding</div>
                 </div>
                 <div v-if="d && d.caption" class="px-3 py-2 text-sm text-gray-700 border-t"><div class="prose max-w-none" v-html="d.caption"></div></div>
@@ -223,10 +223,40 @@
     <p>Oefening niet gevonden.</p>
     <router-link to="/oefeningen" class="text-blue-600 hover:underline block mt-2">Terug</router-link>
   </div>
+
+  <!-- Lightbox overlay -->
+  <teleport to="body">
+    <div v-if="lightboxOpen" class="fixed inset-0 z-[6000] bg-black/80 text-white flex flex-col">
+      <!-- Top-right close -->
+      <button class="absolute top-4 right-4 z-10 inline-flex items-center justify-center w-10 h-10 rounded-md bg-white/10 hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/40 transition transform hover:scale-105" aria-label="Sluiten" title="Sluiten" @click="closeLightbox">
+        <X class="w-5 h-5" />
+      </button>
+
+      <!-- Image area -->
+      <div class="py-4 flex-1 flex items-center justify-center relative select-none" @click.self="closeLightbox" :style="{ paddingBottom: lightboxCaptionPadding }">
+        <!-- Prev -->
+        <button v-if="hasMultipleImages" class="fixed top-1/2 -translate-y-1/2 transform left-3 md:left-6 z-10 inline-flex items-center justify-center w-10 h-10 rounded-md bg-white/10 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/30" aria-label="Vorige afbeelding" @click.stop="prevImage">
+          <ChevronLeft class="w-6 h-6" />
+        </button>
+
+        <img v-if="currentDiagram && currentDiagram.src" :src="currentDiagram.src" alt="Diagram" class="max-w-[95vw] object-contain" :style="{ maxHeight: imageMaxHeight }" @click.stop @load="measureCaption" />
+
+        <!-- Next -->
+        <button v-if="hasMultipleImages" class="fixed top-1/2 -translate-y-1/2 transform right-3 md:right-6 z-10 inline-flex items-center justify-center w-10 h-10 rounded-md bg-white/10 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/30" aria-label="Volgende afbeelding" @click.stop="nextImage">
+          <ChevronLeft class="w-6 h-6 rotate-180" />
+        </button>
+      </div>
+
+      <!-- Caption (fixed at bottom, max 160px, scrollable with padding) -->
+      <div v-if="currentDiagram && currentDiagram.caption" ref="captionEl" class="fixed max-h-[160px] bottom-0 left-0 right-0 w-full p-4 sm:p-5 md:p-6 bg-white text-black border-t border-gray-200 dark:border-gray-700 overflow-y-auto">
+        <div class="prose max-w-4xl mx-auto" v-html="currentDiagram.caption"></div>
+      </div>
+    </div>
+  </teleport>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import store from '../store'
 import PageHeader from '../components/PageHeader.vue'
@@ -342,6 +372,93 @@ const youtubeEmbedUrl = computed(() => {
   const id = extractYouTubeId(exercise.value?.video)
   return id ? `https://www.youtube.com/embed/${id}` : ''
 })
+
+// Lightbox state for diagrams
+const lightboxOpen = ref(false)
+const currentIndex = ref(0)
+const currentDiagram = computed(() => {
+  const arr = Array.isArray(exercise.value?.diagrams) ? exercise.value.diagrams : []
+  const i = currentIndex.value
+  const d = arr[i]
+  return (d && d.src) ? d : null
+})
+
+const hasMultipleImages = computed(() => {
+  const arr = Array.isArray(exercise.value?.diagrams) ? exercise.value.diagrams : []
+  const count = arr.filter(d => d && d.src).length
+  return count >= 2
+})
+
+function openLightbox(i) {
+  try {
+    const idx = Number.isInteger(i) ? i : 0
+    currentIndex.value = Math.max(0, idx)
+    lightboxOpen.value = true
+  } catch (_) {
+    lightboxOpen.value = true
+  }
+}
+function closeLightbox() { lightboxOpen.value = false }
+
+function nextImage() {
+  const arr = Array.isArray(exercise.value?.diagrams) ? exercise.value.diagrams : []
+  if (!arr.length) return
+  let i = currentIndex.value
+  for (let step = 0; step < arr.length; step++) {
+    i = (i + 1) % arr.length
+    if (arr[i] && arr[i].src) { currentIndex.value = i; break }
+  }
+}
+function prevImage() {
+  const arr = Array.isArray(exercise.value?.diagrams) ? exercise.value.diagrams : []
+  if (!arr.length) return
+  let i = currentIndex.value
+  for (let step = 0; step < arr.length; step++) {
+    i = (i - 1 + arr.length) % arr.length
+    if (arr[i] && arr[i].src) { currentIndex.value = i; break }
+  }
+}
+
+function onLightboxKeydown(e) {
+  if (!lightboxOpen.value) return
+  if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && !hasMultipleImages.value) return
+  if (e.key === 'ArrowRight') { e.preventDefault?.(); nextImage() }
+  else if (e.key === 'ArrowLeft') { e.preventDefault?.(); prevImage() }
+  else if (e.key === 'Escape') { e.preventDefault?.(); closeLightbox() }
+}
+
+// Lightbox caption measurement and dynamic sizing
+const captionEl = ref(null)
+const captionHeight = ref(0)
+
+function measureCaption() {
+  try {
+    const el = captionEl.value
+    const h = el ? Math.round(el.getBoundingClientRect().height) : 0
+    captionHeight.value = Number.isFinite(h) ? Math.max(0, h) : 0
+  } catch (_) {
+    captionHeight.value = 0
+  }
+}
+
+const CAPTION_GAP = 16
+const lightboxCaptionPadding = computed(() => (captionHeight.value > 0 ? `${captionHeight.value + CAPTION_GAP}px` : '0px'))
+const imageMaxHeight = computed(() => `calc(100vh - ${Math.max(0, captionHeight.value + CAPTION_GAP)}px - 16px)`) // 16px = top padding (py-4)
+
+watch([lightboxOpen, currentDiagram], async ([open]) => {
+  if (open) {
+    await nextTick()
+    measureCaption()
+  } else {
+    captionHeight.value = 0
+  }
+})
+
+// Measure on resize as well
+function onWindowResizeMeasure() {
+  if (!lightboxOpen.value) return
+  measureCaption()
+}
 
 
 // Edit modal state
@@ -487,11 +604,15 @@ onMounted(() => {
   // Initialize small-screen state and listen for viewport changes
   updateSmallScreen()
   window.addEventListener('resize', updateSmallScreen)
+  window.addEventListener('resize', onWindowResizeMeasure)
   document.addEventListener('mousedown', handleClickOutside)
+  window.addEventListener('keydown', onLightboxKeydown)
 })
 onBeforeUnmount(() => {
   window.removeEventListener('resize', updateSmallScreen)
+  window.removeEventListener('resize', onWindowResizeMeasure)
   document.removeEventListener('mousedown', handleClickOutside)
+  window.removeEventListener('keydown', onLightboxKeydown)
 })
 
 function toggleFav() {
@@ -531,8 +652,14 @@ function confirmDelete() {
 </script>
 
 <style scoped>
-.badge { @apply w-fit px-2 py-1 text-xs font-medium rounded-full; }
-.prose :deep(ul) { list-style: disc; padding-left: 1.25rem; }
-.prose :deep(ol) { list-style: decimal; padding-left: 1.25rem; }
+.badge {
+  @apply w-fit px-2 py-1 text-xs font-medium rounded-full;
+}
+.prose :deep(ul) {
+  list-style: disc; padding-left: 1.25rem;
+}
+.prose :deep(ol) {
+  list-style: decimal; padding-left: 1.25rem;
+}
 
 </style>
