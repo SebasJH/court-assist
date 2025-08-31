@@ -93,22 +93,28 @@
 
   <div class="container mx-auto px-4 py-6">
 
-    <!-- Top controls component -->
-    <ExercisesTopControls
-        :q="q"
-        :favorites="filter.favorites"
-        :showFilters="showFilters"
-        :sortBy="sortBy"
-        :sortDir="sortDir"
-        :viewMode="viewMode"
-        :showViewToggle="false"
-        @update:q="val => q = val"
-        @update:favorites="val => filter.favorites = val"
-        @toggle-filters="showFilters = !showFilters"
-        @update:sortBy="val => sortBy = val"
-        @update:sortDir="val => sortDir = val"
-        @update:viewMode="setViewMode"
-    />
+    <!-- Top controls row with results count -->
+    <div class="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <div class="text-sm text-gray-600 dark:text-gray-300 order-2 md:order-1">
+        <span class="font-medium">{{ sorted.length }}</span> {{ sorted.length === 1 ? 'oefening' : 'oefeningen' }} gevonden
+      </div>
+      <ExercisesTopControls
+          class="!mb-0 order-1 md:order-2 flex-1"
+          :q="q"
+          :favorites="filter.favorites"
+          :showFilters="showFilters"
+          :sortBy="sortBy"
+          :sortDir="sortDir"
+          :viewMode="viewMode"
+          :showViewToggle="false"
+          @update:q="val => q = val"
+          @update:favorites="val => filter.favorites = val"
+          @toggle-filters="showFilters = !showFilters"
+          @update:sortBy="val => sortBy = val"
+          @update:sortDir="val => sortDir = val"
+          @update:viewMode="setViewMode"
+      />
+    </div>
 
     <!-- Filters drawer -->
     <modal :open="showFilters" @close="showFilters = false" :drawer="true" side="right" drawerWidthClass="max-w-lg"
@@ -160,7 +166,7 @@
         @clear:favorites="clearFavorites"
         @reset="resetFilters"
     />
-
+    
     <!-- Cards or Empty state -->
     <template v-if="sorted.length > 0">
       <template v-if="viewMode === 'card'">
