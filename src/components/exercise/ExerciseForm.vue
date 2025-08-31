@@ -211,7 +211,7 @@
             <label class="form-label">
               Afbeeldingen
             </label>
-            <span class="text-xs text-gray-500">Slepen om volgorde te wijzigen</span>
+            <span class="text-xs text-gray-500">Sleep om de volgorde te wijzigen</span>
           </div>
           <div v-if="!form.diagrams || form.diagrams.length === 0"
                class="text-sm text-gray-500 border border-dashed border-gray-300 rounded-md p-8 text-center flex flex-col items-center justify-center gap-3">
@@ -262,7 +262,7 @@
                   </div>
                   <div class="mt-2 flex flex-wrap items-center gap-2">
                     <label class="inline-flex items-center justify-center h-9 px-3 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600/50 cursor-pointer">
-                      Kies afbeelding(en)
+                      Kies afbeelding
                       <input type="file" accept="image/*" class="hidden" @change="onPickDiagram($event, idx)"/>
                     </label>
                     <UiButton color="secondary" class="!py-1 !px-2" @click="openPlayEditor(idx)">Teken diagram</UiButton>

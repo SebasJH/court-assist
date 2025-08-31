@@ -73,101 +73,8 @@
       <DeleteConfirm :name="deleteName" @cancel="cancelDelete" @confirm="confirmDelete"/>
     </modal>
 
-    <!-- Edit description modal -->
-    <modal :open="showEditDescription" @close="closeEditDescription" contentPaddingClass="p-0">
-          <template #title>Beschrijving bewerken</template>
 
-      <!-- Content -->
-      <div class="px-5 sm:px-10 pt-5 flex-1">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Beschrijving</label>
-        <RichTextEditor v-model="descDraft" placeholder="Beschrijving" />
-      </div>
 
-      <div class="px-5 sm:px-10 pt-5 flex justify-end gap-3">
-        <UiButton color="cancel" @click="closeEditDescription">Annuleren</UiButton>
-        <UiButton color="primary" @click="saveEditDescription">Opslaan</UiButton>
-      </div>
-    </modal>
-
-    <!-- Edit details modal -->
-    <modal :open="showEditDetails" @close="closeEditDetails" contentPaddingClass="p-0">
-          <template #title>Details bewerken</template>
-
-      <!-- Content -->
-      <div class="px-5 sm:px-10 pt-5 flex-1 grid grid-cols-4 md:grid-cols-4 gap-4">
-
-        <!-- Players -->
-        <div class="form-group col-span-4 md:col-span-2">
-          <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1"><Users class="w-4 h-4" /> Aantal spelers</label>
-          <RangeNumber
-            idPrefix="details-players"
-            :modelValue="[(typeof detailsDraft.minPlayers === 'number' ? detailsDraft.minPlayers : 1), (typeof detailsDraft.maxPlayers === 'number' ? detailsDraft.maxPlayers : 50)]"
-            :min="1"
-            :max="50"
-            :step="1"
-            :attachedLabels="true"
-            minLabel="min"
-            maxLabel="max"
-            @update:modelValue="([lo, hi]) => { detailsDraft.minPlayers = lo; detailsDraft.maxPlayers = hi }"
-          />
-        </div>
-
-        <!-- Duration -->
-        <div class="form-group col-span-4 md:col-span-2">
-          <label class="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1"><TimerReset class="w-4 h-4" /> Duur</label>
-          <div class="flex">
-            <input type="number" v-model.number="detailsDraft.duration" min="1" class="form-input !rounded-r-none border-r-0" aria-label="Duur" />
-            <div class="border border-gray-300 border-l-0 rounded-r-xl px-2 flex items-center text-gray-600 text-sm">minuten</div>
-          </div>
-        </div>
-
-        <!-- Intensity -->
-        <div class="form-group col-span-4 md:col-span-2">
-          <label class="block text-sm font-medium text-gray-700 mb-1"><span class="inline-flex items-center gap-1"><Zap class="w-4 h-4" /> Intensiteit</span></label>
-          <IntensitySelector v-model="detailsDraft.intensity" />
-        </div>
-
-        <!-- Court -->
-        <div class="form-group col-span-4 md:col-span-2">
-          <label class="block text-sm font-medium text-gray-700 mb-1"><span class="inline-flex items-center gap-1"><RectangleCircle class="w-4 h-4" /> Veld</span></label>
-          <div class="inline-flex rounded-md overflow-hidden border border-gray-300 h-10">
-            <button type="button" class="px-3 h-10 text-sm font-medium focus:outline-none" :class="detailsDraft.courtNorm === 'halfcourt' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'" @click="toggleCourt('halfcourt')">Half court</button>
-            <button type="button" class="px-3 h-10 text-sm font-medium border-l border-gray-300 focus:outline-none" :class="detailsDraft.courtNorm === 'fullcourt' ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-50 text-gray-800'" @click="toggleCourt('fullcourt')">Full court</button>
-          </div>
-          <button v-if="detailsDraft.courtNorm" type="button" class="ml-3 text-sm text-gray-600 hover:text-gray-800 underline" @click="toggleCourt('')">Wissen</button>
-        </div>
-
-        <!-- Materials -->
-        <div class="form-group col-span-4 md:col-span-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1 inline-flex items-center gap-1"><TrafficCone class="w-4 h-4" /> Materialen</label>
-          <div class="flex flex-wrap gap-2">
-            <button v-for="m in materialOptions" :key="m" type="button" @click="toggleMaterial(m)" :class="detailsDraft.materials.includes(m) ? 'bg-green-500 text-white' : 'bg-gray-100 hover:bg-green-100 text-gray-800'" class="px-2 py-1 rounded cursor-pointer text-sm">
-              {{ m }}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="px-5 sm:px-10 pt-5 border-t flex justify-end gap-3">
-        <UiButton color="cancel" @click="closeEditDetails">Annuleren</UiButton>
-        <UiButton color="primary" @click="saveEditDetails">Opslaan</UiButton>
-      </div>
-    </modal>
-
-    <!-- Edit notes modal -->
-    <modal :open="showEditNotes" @close="closeEditNotes" contentPaddingClass="p-0">
-      <template #title>Notities bewerken</template>
-
-      <div class="px-5 sm:px-10 pt-5 flex-1">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Notities</label>
-        <RichTextEditor v-model="notesDraft" placeholder="Jouw notities" />
-      </div>
-
-      <div class="px-5 sm:px-10 pt-5 border-t flex justify-end gap-3">
-        <UiButton color="cancel" @click="closeEditNotes">Annuleren</UiButton>
-        <UiButton color="primary" @click="saveEditNotes">Opslaan</UiButton>
-      </div>
-    </modal>
 
     <div class="exercise-detail grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
       <div class="lg:col-span-2">
@@ -186,9 +93,6 @@
           <section class="p-6">
             <div class="flex items-center justify-between mb-2">
               <h2 class="text-lg font-semibold text-gray-800">Beschrijving</h2>
-              <button class="inline-flex justify-center items-center h-10 w-10 text-gray-500 hover:text-gray-700" @click="openEditDescription" aria-label="Beschrijving bewerken">
-                <Pencil class="w-4 h-4" />
-              </button>
             </div>
             <div class="prose max-w-none" v-html="exercise.description || exercise.shortDescription"></div>
           </section>
@@ -198,9 +102,6 @@
           <section v-if="exercise.execution || exercise.howItWorks" class="p-6 border-t border-gray-200">
             <div class="flex items-center justify-between mb-2">
               <h2 class="text-lg font-semibold text-gray-800">Uitvoering</h2>
-              <button class="inline-flex justify-center items-center h-10 w-10 text-gray-500 hover:text-gray-700" @click="openEditText" aria-label="Uitvoering bewerken">
-                <Pencil class="w-4 h-4" />
-              </button>
             </div>
             <div class="prose max-w-none" v-html="exercise.execution || exercise.howItWorks"></div>
           </section>
@@ -223,9 +124,6 @@
           <section v-if="exercise.coachingPoints || exercise.fullDescription" class="p-6 border-t border-gray-200">
             <div class="flex items-center justify-between mb-2">
               <h2 class="text-lg font-semibold text-gray-800">Coaching punten</h2>
-              <button class="inline-flex justify-center items-center h-10 w-10 text-gray-500 hover:text-gray-700" @click="openEditText" aria-label="Coaching punten bewerken">
-                <Pencil class="w-4 h-4" />
-              </button>
             </div>
             <div class="rounded-md border border-blue-200 bg-blue-100/60 p-4">
               <div class="prose max-w-none" v-html="exercise.coachingPoints || exercise.fullDescription"></div>
@@ -236,9 +134,6 @@
           <section v-if="exercise.variations" class="p-6 border-t border-gray-200">
             <div class="flex items-center justify-between mb-2">
               <h2 class="text-lg font-semibold text-gray-800">Variaties</h2>
-              <button class="inline-flex justify-center items-center h-10 w-10 text-gray-500 hover:text-gray-700" @click="openEditText" aria-label="Variaties bewerken">
-                <Pencil class="w-4 h-4" />
-              </button>
             </div>
             <div class="prose max-w-none" v-html="exercise.variations"></div>
           </section>
@@ -247,9 +142,6 @@
           <section class="p-6 border-t border-gray-200">
             <div class="flex items-center justify-between mb-3">
               <h2 class="text-lg font-semibold text-gray-800">Notities</h2>
-              <button class="inline-flex justify-center items-center h-10 w-10 text-gray-500 hover:text-gray-700" @click="openEditNotes" aria-label="Notities bewerken">
-                <Pencil class="w-4 h-4" />
-              </button>
             </div>
             <div v-if="exercise.notes && exercise.notes.trim().length" class="prose max-w-none" v-html="exercise.notes"></div>
             <div v-else class="text-gray-500 text-sm">Nog geen notities. Klik op het potlood om toe te voegen.</div>
@@ -263,9 +155,6 @@
           <section class="p-6">
             <div class="flex items-center justify-between mb-3">
               <h2 class="text-lg font-semibold text-gray-800">Details</h2>
-              <button class="inline-flex justify-center items-center h-10 w-10 text-gray-500 hover:text-gray-700" @click="openEditDetails" aria-label="Details bewerken">
-                <Pencil class="w-4 h-4" />
-              </button>
             </div>
             <div class="flex flex-col gap-1.5 text-gray-800">
               <!-- Players -->
@@ -337,19 +226,13 @@
 </template>
 
 <script setup>
-import UiButton from '../components/ui/Button.vue'
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import store from '../store'
 import PageHeader from '../components/PageHeader.vue'
 import Modal from '../components/Modal.vue'
 import DeleteConfirm from '../components/DeleteConfirm.vue'
-import IntensitySelector from '../components/form/IntensitySelector.vue'
-import RangeNumber from '../components/form/RangeNumber.vue'
-import RichTextEditor from '../components/form/RichTextEditor.vue'
-import Tooltip from '../components/Tooltip.vue'
 import { isNum, hasPlayers, hasDuration as hasDurationField, hasCourt as hasCourtField, formatPlayersFromExercise, formatCourtFromExercise } from '../utils/exerciseFormat'
-import { EXERCISE_CATEGORIES, EXERCISE_MATERIALS, normalizeCourt } from '../constants'
 
 function slugify(str) {
   return String(str || '')
@@ -457,12 +340,8 @@ const youtubeEmbedUrl = computed(() => {
 // Removed modal edit state in favor of dedicated edit page
 const formTab = ref('basis')
 const showDeleteModal = ref(false)
-const categories = EXERCISE_CATEGORIES
-const materialOptions = EXERCISE_MATERIALS
 
 // Edit specific sections state
-const showEditDescription = ref(false)
-const descDraft = ref('')
 
 // Notes editing state
 const showEditNotes = ref(false)
