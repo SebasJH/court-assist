@@ -75,13 +75,47 @@ export default {
       }
     }
 
+    function isEffectivelyEmpty(html) {
+      try {
+        if (!html) return true
+        // Remove zero-width spaces and non-breaking spaces
+        let s = String(html)
+          .replace(/\u200B|\u200C|\u200D|\uFEFF/g, '')
+          .replace(/&nbsp;/gi, ' ')
+        // Strip common empty block patterns
+        s = s
+          .replace(/<p><br\s*\/?><\/p>/gi, '')
+          .replace(/<div><br\s*\/?><\/div>/gi, '')
+          .replace(/<br\s*\/?>(\s|\n|\r)*/gi, '')
+          .replace(/<(p|div)>\s*<\/\1>/gi, '')
+        // Remove all tags to check for text content
+        const text = s.replace(/<[^>]*>/g, '').trim()
+        return text.length === 0
+      } catch (_) {
+        // Fallback: if parsing fails, treat as non-empty only if contains alphanumerics
+        try { return !/[\p{L}\p{N}]/u.test(String(html)) } catch { return !/[A-Za-z0-9]/.test(String(html || '')) }
+      }
+    }
+
+    function normalizeHtml(html) {
+      // If effectively empty, return '' so editor becomes truly empty
+      if (isEffectivelyEmpty(html)) return ''
+      return html
+    }
+
     function onFocus() {
       // placeholder handling is CSS-based; nothing required here
     }
 
     function onInput() {
       if (!editor.value) return
-      emit('update:modelValue', editor.value.innerHTML)
+      const raw = editor.value.innerHTML
+      const cleaned = normalizeHtml(raw)
+      if (cleaned === '') {
+        // Ensure DOM is empty so :empty placeholder shows
+        editor.value.innerHTML = ''
+      }
+      emit('update:modelValue', cleaned)
     }
 
     function onSelectionChange() {
@@ -91,7 +125,8 @@ export default {
 
     onMounted(() => {
       if (editor.value) {
-        editor.value.innerHTML = props.modelValue || ''
+        const init = normalizeHtml(props.modelValue || '')
+        editor.value.innerHTML = init
       }
       document.addEventListener('selectionchange', onSelectionChange)
     })
@@ -102,8 +137,9 @@ export default {
     // Update content when v-model changes from outside
     watch(() => props.modelValue, (val) => {
       if (!editor.value) return
-      if (editor.value.innerHTML !== (val || '')) {
-        editor.value.innerHTML = val || ''
+      const next = normalizeHtml(val || '')
+      if (editor.value.innerHTML !== next) {
+        editor.value.innerHTML = next
       }
     })
 
