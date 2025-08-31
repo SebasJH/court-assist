@@ -282,7 +282,7 @@
                   <div class="flex items-center justify-between">
                     <label class="form-label mb-1">Bijschrift</label>
                   </div>
-                  <RichTextEditor v-model="d.caption" placeholder="Beschrijf dit diagram"/>
+                  <RichTextEditor v-model="d.caption" placeholder="Beschrijf deze afbeelding"/>
                 </div>
               </div>
             </div>
