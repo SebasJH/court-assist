@@ -1,10 +1,10 @@
 <template>
-  <PageHeader :title="pageTitle">
+  <PageHeader :title="pageTitle" :hideHamburger="true">
     <template #lead>
       <div class="flex items-center gap-3 min-w-0 w-full">
         <button
           type="button"
-          class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 dark:border-gray-600"
+          class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 dark:border-gray-600 flex-shrink-0"
           aria-label="Terug"
           title="Terug"
           @click="goBack"

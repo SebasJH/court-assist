@@ -4,7 +4,7 @@
         <!-- Lead content with mobile hamburger before the title -->
         <div class="flex items-center gap-3 flex-1 min-w-0">
           <button
-            v-if="!(hideHamburgerWhenBack && mobileBack)"
+            v-if="!hideHamburger && !(hideHamburgerWhenBack && mobileBack)"
             type="button"
             class="xl:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 dark:border-gray-600 transition-colors duration-200"
             aria-label="Menu"
@@ -49,7 +49,8 @@ export default {
     tall: { type: Boolean, default: false },
     mobileBack: { type: Boolean, default: false },
     mobileBackEmitOnly: { type: Boolean, default: false },
-    hideHamburgerWhenBack: { type: Boolean, default: false }
+    hideHamburgerWhenBack: { type: Boolean, default: false },
+    hideHamburger: { type: Boolean, default: false }
   },
   methods: {
     openMobileSidebar() {
