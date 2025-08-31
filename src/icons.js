@@ -4,6 +4,8 @@ import {
     Pencil,
     Trash,
     Star,
+    Image,
+    PencilRuler,
 
     ArrowLeft,
     ArrowLeftToLine,
@@ -58,6 +60,8 @@ export function registerIcons(app) {
     app.component('Pencil', Pencil)
     app.component('Trash', Trash)
     app.component('Star', Star)
+    app.component('Image', Image)
+    app.component('PencilRuler', PencilRuler)
 
     app.component('ArrowLeft', ArrowLeft)
     app.component('ArrowLeftToLine', ArrowLeftToLine)

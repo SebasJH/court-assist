@@ -216,26 +216,38 @@
                class="text-sm text-gray-500 border border-dashed border-gray-300 rounded-md p-8 text-center flex flex-col items-center justify-center gap-3">
             <div>Nog geen afbeeldingen. Klik op “Voeg afbeelding toe”.</div>
             <div>
-              <UiButton color="secondary" class="!py-1 !px-2" @click="addDiagram">+ Voeg afbeelding toe</UiButton>
+              <UiButton color="primary" class="!py-1 !px-2" icon="Plus" @click="addDiagram">Voeg afbeelding toe</UiButton>
             </div>
           </div>
           <transition-group v-else name="diagram" tag="div" class="flex flex-col gap-3">
             <div
               v-for="(d, idx) in form.diagrams"
               :key="d.uid || idx"
-              class="border rounded-md p-3 bg-gray-50"
-              draggable="true"
+              class="border rounded-md p-3 bg-gray-50 diagram-card"
               :aria-grabbed="dragIndex === idx ? 'true' : 'false'"
-              @dragstart="onDragStart(idx, $event)"
               @dragenter.prevent="onDragEnter(idx)"
               @dragover.prevent
               @drop.prevent="onDrop(idx)"
               @dragend="onDragEnd"
-              :class="overIndex === idx && dragIndex !== idx ? 'ring-2 ring-blue-300' : ''"
+              :class="[
+                (overIndex === idx && dragIndex !== idx) ? 'ring-2 ring-blue-300' : '',
+                (dragIndex === idx) ? 'opacity-70' : ''
+              ]"
             >
-              <!-- Item header: index + bundled actions -->
+              <!-- Item header: drag handle + index + actions -->
               <div class="flex items-center justify-between mb-2">
                 <div class="inline-flex items-center gap-2">
+                  <!-- Drag handle -->
+                  <div class="inline-flex items-center justify-center w-8 h-8 rounded-md text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-200 cursor-grab active:cursor-grabbing select-none" draggable="true" @dragstart="onDragStart(idx, $event)" :title="'Sleep om te verplaatsen'" aria-label="Sleep om te verplaatsen">
+                    <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <circle cx="7" cy="5" r="1.5"/>
+                      <circle cx="13" cy="5" r="1.5"/>
+                      <circle cx="7" cy="10" r="1.5"/>
+                      <circle cx="13" cy="10" r="1.5"/>
+                      <circle cx="7" cy="15" r="1.5"/>
+                      <circle cx="13" cy="15" r="1.5"/>
+                    </svg>
+                  </div>
                   <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200 text-sm font-semibold">{{ idx + 1 }}</span>
                 </div>
                 <div class="flex items-center gap-1">
@@ -254,17 +266,16 @@
                 </div>
               </div>
               <div class="flex flex-col md:flex-row gap-3">
-                <div class="w-full md:w-48">
-                  <div class="aspect-video bg-white border rounded flex items-center justify-center overflow-hidden cursor-move select-none">
+                <div class="w-full md:w-64">
+                  <div class="aspect-video bg-white border rounded flex items-center justify-center overflow-hidden select-none">
                     <img v-if="d.src" :src="d.src" alt="Diagram preview" class="w-full h-full object-contain"/>
                     <div v-else class="text-gray-400 text-sm">Geen afbeelding</div>
                   </div>
-                  <div class="mt-2 flex flex-wrap items-center gap-2">
-                    <label class="inline-flex items-center justify-center h-9 px-3 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600/50 cursor-pointer">
-                      Kies afbeelding
-                      <input type="file" accept="image/*" class="hidden" @change="onPickDiagram($event, idx)"/>
-                    </label>
-                    <UiButton color="secondary" class="!py-1 !px-2" @click="openPlayEditor(idx)">Teken diagram</UiButton>
+                  <div class="mt-2 flex flex-wrap md:flex-nowrap items-center gap-2">
+                    <!-- Hidden file input + trigger button with same styling as 'Teken diagram' -->
+                    <input :ref="el => setFileInputRef(el, idx)" type="file" accept="image/*" class="hidden" @change="onPickDiagram($event, idx)"/>
+                    <UiButton color="secondary" size="sm" icon="Image" @click="triggerPick(idx)">Afbeelding</UiButton>
+                    <UiButton color="secondary" size="sm" icon="PencilRuler" @click="openPlayEditor(idx)">Creeer</UiButton>
                   </div>
                 </div>
                 <div class="flex-1">
@@ -275,8 +286,8 @@
                 </div>
               </div>
             </div>
-            <div class="pt-1">
-              <UiButton color="secondary" class="!py-1 !px-2" @click="addDiagram">+ Voeg afbeelding toe</UiButton>
+            <div class="pt-1 flex justify-center">
+              <UiButton color="primary" class="!py-1 !px-2" icon="Plus" @click="addDiagram">Voeg afbeelding toe</UiButton>
             </div>
           </transition-group>
         </div>
@@ -550,6 +561,23 @@ export default {
       reader.readAsDataURL(file)
     }
 
+    // File input refs per diagram index
+    const fileInputs = ref({})
+    function setFileInputRef(el, idx) {
+      if (el) {
+        const map = fileInputs.value || {}
+        map[idx] = el
+        fileInputs.value = map
+      }
+    }
+    function triggerPick(idx) {
+      const elMap = fileInputs.value || {}
+      const el = elMap[idx]
+      if (el && typeof el.click === 'function') {
+        try { el.click() } catch (_) {}
+      }
+    }
+
     // In-app Play Editor modal state and handlers
     const showPlayEditor = ref(false)
     const playEditorIndex = ref(-1)
@@ -587,17 +615,38 @@ export default {
     // Drag & drop reorder state and handlers for diagrams
     const dragIndex = ref(-1)
     const overIndex = ref(-1)
+    const dragImageEl = ref(null)
 
     function onDragStart(idx, ev){
       dragIndex.value = idx
       overIndex.value = -1
       try { ev.dataTransfer && ev.dataTransfer.setData('text/plain', String(idx)) } catch(_) {}
       try { ev.dataTransfer && (ev.dataTransfer.effectAllowed = 'move') } catch(_) {}
+      // Create a custom drag image from the whole card, so it follows the cursor
+      try {
+        const target = ev && ev.target
+        const card = target && typeof target.closest === 'function' ? target.closest('.diagram-card') : null
+        if (card) {
+          const clone = card.cloneNode(true)
+          // Match size and make it invisible to hit-testing
+          clone.style.width = card.offsetWidth + 'px'
+          clone.style.height = card.offsetHeight + 'px'
+          clone.style.position = 'absolute'
+          clone.style.top = '-9999px'
+          clone.style.left = '-9999px'
+          clone.style.pointerEvents = 'none'
+          clone.style.boxShadow = '0 10px 30px rgba(0,0,0,0.25)'
+          document.body.appendChild(clone)
+          dragImageEl.value = clone
+          if (ev.dataTransfer && typeof ev.dataTransfer.setDragImage === 'function') {
+            ev.dataTransfer.setDragImage(clone, 16, 16)
+          }
+        }
+      } catch (_) {}
     }
     function onDragEnter(idx){
       if (idx === dragIndex.value) return
       overIndex.value = idx
-      // Live reorder to push items while dragging
       if (!Array.isArray(form.diagrams)) return
       const from = dragIndex.value
       const to = idx
@@ -609,16 +658,10 @@ export default {
       dragIndex.value = to
     }
     function onDrop(idx){
-      const from = dragIndex.value
-      const to = idx
+      // With live reordering active on dragenter, drop should not change order.
+      // Only clear state here.
       dragIndex.value = -1
       overIndex.value = -1
-      if (from === -1 || to === -1 || from === to) return
-      if (!Array.isArray(form.diagrams)) return
-      const arr = form.diagrams.slice()
-      const [item] = arr.splice(from, 1)
-      arr.splice(to, 0, item)
-      form.diagrams = arr
     }
     function onDragEnd(){
       dragIndex.value = -1
@@ -779,6 +822,8 @@ export default {
       moveDiagram,
       onPickDiagram,
       duplicateDiagram,
+      setFileInputRef,
+      triggerPick,
       // drag & drop
       dragIndex,
       overIndex,
