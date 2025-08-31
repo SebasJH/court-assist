@@ -142,6 +142,21 @@
 
       <div v-if="showRightSidebar" class="relative lg:col-span-1 lg:sticky lg:top-24 lg:self-start">
         <div class="bg-white dark:bg-gray-750 rounded-lg shadow-md overflow-hidden order-2 lg:order-none p-6 space-y-6">
+          <!-- Video (moved to top) -->
+          <section v-if="exercise.video">
+            <div class="text-sm font-medium text-gray-700 mb-2 inline-flex items-center gap-1">
+              <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-50">Video</h2>
+            </div>
+            <div v-if="youtubeEmbedUrl" class="aspect-video rounded-md overflow-hidden border dark:border-gray-600 bg-black/5">
+              <iframe :src="youtubeEmbedUrl" title="YouTube video" class="w-full h-full" frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowfullscreen></iframe>
+            </div>
+            <div v-else>
+              <a :href="exercise.video" target="_blank" rel="noopener" class="text-blue-500 hover:underline">Bekijk video</a>
+            </div>
+          </section>
+
           <!-- Details -->
           <section v-if="hasAnyDetails">
             <div class="flex items-center justify-between mb-3">
@@ -192,18 +207,24 @@
             </div>
           </section>
 
-          <!-- Video -->
-          <section v-if="exercise.video">
-            <div class="text-sm font-medium text-gray-700 mb-2 inline-flex items-center gap-1">
-              <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-50">Video</h2>
+          <!-- Informatie -->
+          <section class="pt-5 border-t border-gray-200 dark:border-gray-600">
+            <div class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 inline-flex items-center gap-1">
+              <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-50">Informatie</h2>
             </div>
-            <div v-if="youtubeEmbedUrl" class="aspect-video rounded-md overflow-hidden border dark:border-gray-600 bg-black/5">
-              <iframe :src="youtubeEmbedUrl" title="YouTube video" class="w-full h-full" frameborder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowfullscreen></iframe>
-            </div>
-            <div v-else>
-              <a :href="exercise.video" target="_blank" rel="noopener" class="text-blue-500 hover:underline">Bekijk video</a>
+            <div class="space-y-2 text-sm">
+              <div class="flex items-center justify-between gap-3">
+                <span class="text-gray-600 dark:text-gray-300">Auteur</span>
+                <span class="text-gray-800 dark:text-gray-50 font-medium truncate">{{ authorName }}</span>
+              </div>
+              <div class="flex items-center justify-between gap-3">
+                <span class="text-gray-600 dark:text-gray-300">Datum</span>
+                <span class="text-gray-800 dark:text-gray-50 font-medium">{{ createdDateText }}</span>
+              </div>
+              <div class="flex items-center justify-between gap-3">
+                <span class="text-gray-600 dark:text-gray-300">Aantal keren gebruikt in trainingen</span>
+                <span class="text-gray-800 dark:text-gray-50 font-medium">{{ usageCount }}</span>
+              </div>
             </div>
           </section>
         </div>
@@ -329,8 +350,30 @@ const hasMaterials = computed(() => Array.isArray(exercise.value?.materials) && 
 const hasIntensityField = computed(() => typeof exercise.value?.intensity === 'number')
 const hasAnyDetails = computed(() => showPlayers.value || hasDuration.value || hasIntensityField.value || hasCourt.value)
 const hasVideo = computed(() => !!exercise.value?.video)
-const showRightSidebar = computed(() => hasAnyDetails.value || hasMaterials.value || hasVideo.value)
 
+// Meta info visibility (Auteur/Datum/Gebruik) — we always show this section with fallbacks
+const hasMetaInfo = computed(() => true)
+const showRightSidebar = computed(() => hasAnyDetails.value || hasMaterials.value || hasVideo.value || hasMetaInfo.value)
+
+// Meta fields
+const authorName = computed(() => {
+  const e = exercise.value || {}
+  const name = e.authorName || e.author || e.createdByName || e.createdBy || ''
+  const s = String(name || '').trim()
+  return s.length ? s : 'Onbekend'
+})
+const createdDateText = computed(() => {
+  const e = exercise.value || {}
+  const raw = e.dateCreated || e.createdAt || ''
+  const d = new Date(raw)
+  if (!raw || isNaN(d.getTime())) return 'Onbekend'
+  try {
+    return d.toLocaleDateString('nl-NL', { year: 'numeric', month: 'long', day: 'numeric' })
+  } catch (_) {
+    return d.toISOString().slice(0, 10)
+  }
+})
+const usageCount = computed(() => 0)
 
 const playersTooltip = computed(() => {
   const min = isNum(exercise.value?.minPlayers) ? exercise.value.minPlayers : null
