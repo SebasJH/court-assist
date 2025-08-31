@@ -115,7 +115,7 @@
            contentPaddingClass="p-0">
       <template #title><span class="inline-flex items-center gap-2"><Filter class="w-5 h-5 text-gray-700 dark:text-gray-100"/> Filters</span></template>
       <div class="flex h-full flex-col">
-        <div class="px-5 sm:px-10 py-8 flex-1 overflow-y-auto">
+        <div class="px-5 sm:px-10 py-8 flex-1 overflow-y-auto pb-24">
           <FiltersPanel
               :categories="categories"
               :category="filter.category"
@@ -131,7 +131,7 @@
               :materialOptions="materialOptions"
           />
         </div>
-        <div class="px-5 py-4 border-t flex items-center justify-end gap-2 dark:border-gray-600">
+        <div class="sticky bottom-0 z-10 px-5 py-4 border-t flex items-center justify-end gap-2 bg-white dark:bg-gray-750 dark:border-gray-600">
           <UiButton color="cancel" @click="resetFilters">Alles wissen</UiButton>
           <UiButton color="primary" @click="showFilters = false">Toepassen</UiButton>
         </div>

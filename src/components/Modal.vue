@@ -3,7 +3,7 @@
   <teleport to="body">
     <div
           v-if="visible"
-          class="fixed inset-0 z-[5000] flex bg-black/30 dark:bg-black/60"
+          class="backdrop fixed inset-0 z-[5000] flex bg-black/30 dark:bg-black/60"
           :class="overlayClass"
           @mousedown="onOverlayMouseDown"
           @click="onOverlayClick"
@@ -13,7 +13,7 @@
           <div
               v-show="open"
               ref="modalContent"
-              class="relative bg-white dark:bg-gray-750 shadow-xl overflow-y-auto modal-panel"
+              class="modal bg-white dark:bg-gray-750 shadow-xl overflow-y-auto relative modal-panel"
               :class="contentClass"
               role="dialog"
               aria-modal="true"

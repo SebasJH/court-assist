@@ -1,6 +1,7 @@
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  @apply antialiased text-gray-800 bg-gradient-to-br from-indigo-50 via-sky-50 to-rose-50;
+  @apply antialiased text-gray-800;
+  @apply bg-gradient-to-br from-indigo-50 via-sky-50 to-rose-50;
   @apply dark:text-white dark:bg-gradient-to-br dark:from-gray-800 dark:via-gray-800 dark:to-gray-800;
 }
 
