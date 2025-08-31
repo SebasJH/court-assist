@@ -149,7 +149,7 @@
         </div>
       </div>
 
-      <div v-if="showRightSidebar" class="lg:col-span-1 lg:sticky lg:top-4 lg:self-start">
+      <div v-if="showRightSidebar" class="lg:col-span-1 lg:sticky lg:top-24 lg:self-start">
         <div class="bg-white rounded-lg shadow-md overflow-hidden order-2 lg:order-none">
           <!-- Details -->
           <section v-if="hasAnyDetails" class="p-6">
