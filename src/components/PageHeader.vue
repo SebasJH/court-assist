@@ -30,7 +30,7 @@
         </div>
 
         <!-- Actions -->
-        <div class="flex items-center gap-3 flex-shrink-0">
+        <div class="flex items-center gap-3 flex-shrink-0" :class="hideActionsOnMobile ? 'hidden md:flex' : ''">
           <slot name="actions" />
         </div>
       </div>
@@ -50,7 +50,8 @@ export default {
     mobileBack: { type: Boolean, default: false },
     mobileBackEmitOnly: { type: Boolean, default: false },
     hideHamburgerWhenBack: { type: Boolean, default: false },
-    hideHamburger: { type: Boolean, default: false }
+    hideHamburger: { type: Boolean, default: false },
+    hideActionsOnMobile: { type: Boolean, default: false }
   },
   methods: {
     openMobileSidebar() {

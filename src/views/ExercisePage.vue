@@ -1,6 +1,6 @@
 <template>
   <PageHeader title="Oefeningen" :mobileBack="isSmallScreen && isSearching" :mobileBackEmitOnly="true"
-              :hideHamburgerWhenBack="true" @mobile-back="closeHeaderSearch">
+              :hideHamburgerWhenBack="true" :hideActionsOnMobile="isSmallScreen && isSearching" @mobile-back="closeHeaderSearch">
     <template #lead>
       <div class="flex items-center gap-3 min-w-0 w-full">
         <transition name="header-search" mode="out-in" @after-enter="onHeaderSearchAfterEnter">
