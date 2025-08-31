@@ -710,8 +710,41 @@ export default {
       emit('save', saveData)
     }
 
+    // Normalization helper used for dirty-checking and saving equivalence
+    function buildNormalized() {
+      const min = (typeof form.minPlayers === 'number') ? form.minPlayers : null
+      const max = (typeof form.maxPlayers === 'number') ? form.maxPlayers : null
+      const cappedMin = (typeof min === 'number') ? Math.max(1, Math.min(50, min)) : null
+      const cappedMax = (typeof max === 'number') ? Math.min(50, max) : null
+      const saveData = { ...form }
+      if (Array.isArray(saveData.diagrams)) {
+        saveData.diagrams = saveData.diagrams.map(d => ({ src: d.src || '', caption: d.caption || '' }))
+      }
+      saveData.minPlayers = cappedMin
+      saveData.maxPlayers = cappedMax
+      const dur = parseInt(form.duration, 10)
+      saveData.duration = (Number.isFinite(dur) && dur > 0) ? dur : null
+      if (props.initial && props.initial.id) {
+        saveData.id = props.initial.id
+      } else {
+        delete saveData.id
+      }
+      return saveData
+    }
+
+    const initialSnapshot = ref(null)
+    nextTick(() => { try { initialSnapshot.value = JSON.parse(JSON.stringify(buildNormalized())) } catch (_) { initialSnapshot.value = null } })
+
+    function isDirty() {
+      try {
+        const cur = JSON.stringify(buildNormalized())
+        const init = JSON.stringify(initialSnapshot.value)
+        return cur !== init
+      } catch (_) { return false }
+    }
+
     // Expose save so parents (like ExerciseEdit page) can trigger save from header
-    expose({ save })
+    expose({ save, isDirty })
 
     const isEdit = computed(() => !!(props.initial && props.initial.id))
 

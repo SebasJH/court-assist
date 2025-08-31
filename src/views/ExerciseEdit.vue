@@ -75,14 +75,27 @@
       <router-link to="/oefeningen" class="text-blue-600 hover:underline block mt-2">Terug</router-link>
     </div>
   </div>
+
+  <!-- Leave confirm modal -->
+  <modal :open="showLeaveConfirm" @close="cancelLeave" contentPaddingClass="p-0">
+    <template #title>Wijzigingen niet opgeslagen</template>
+    <div class="px-5 sm:px-10 pt-5">
+      <p>Je hebt wijzigingen aangebracht die nog niet zijn opgeslagen. Weet je zeker dat je deze pagina wilt verlaten?</p>
+    </div>
+    <div class="px-5 sm:px-10 pt-5 flex justify-end gap-3">
+      <UiButton color="cancel" @click="cancelLeave">Terug naar bewerken</UiButton>
+      <UiButton color="danger" @click="confirmLeave">Ja, verlaten</UiButton>
+    </div>
+  </modal>
 </template>
 
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
 import PageHeader from '../components/PageHeader.vue'
 import ExerciseForm from '../components/exercise/ExerciseForm.vue'
 import UiButton from '../components/ui/Button.vue'
+import Modal from '../components/Modal.vue'
 import { EXERCISE_CATEGORIES } from '../constants'
 import store from '../store'
 
@@ -104,6 +117,11 @@ const formTab = ref('basis')
 const formKey = ref(0)
 const formRef = ref(null)
 
+// Leave guard state
+const showLeaveConfirm = ref(false)
+const pendingRoute = ref(null)
+const allowLeaveOnce = ref(false)
+
 function normalizeTab(t){
   const v = String(t || '').toLowerCase()
   return ['basis','details','tekst','media'].includes(v) ? v : 'basis'
@@ -123,8 +141,14 @@ const initialExercise = computed(() => {
 
 const pageTitle = computed(() => isEditMode.value ? 'Wijzig oefening' : 'Nieuwe oefening')
 
+function hasUnsaved(){
+  try { return !!(formRef.value && typeof formRef.value.isDirty === 'function' && formRef.value.isDirty()) } catch(_) { return false }
+}
+
 function goBack() {
-  try { router.back() } catch (_) { router.push('/oefeningen') }
+  if (!hasUnsaved()) { try { router.back() } catch (_) { router.push('/oefeningen') } return }
+  showLeaveConfirm.value = true
+  pendingRoute.value = null
 }
 
 function triggerSave() {
@@ -135,6 +159,8 @@ function triggerSave() {
 
 function onSave(payload) {
   const from = String(route.query.from || '')
+  // Allow the next navigation (redirect after save) to pass without confirmation
+  allowLeaveOnce.value = true
   if (payload.id) {
     store.updateExercise(payload.id, payload)
     const cur = initialExercise.value
@@ -156,6 +182,31 @@ function onSave(payload) {
     }
   }
 }
+
+function confirmLeave(){
+  allowLeaveOnce.value = true
+  showLeaveConfirm.value = false
+  const to = pendingRoute.value
+  pendingRoute.value = null
+  if (to && typeof to === 'object') {
+    try { router.push(to.fullPath || to) } catch(_) { try { router.back() } catch(__) { router.push('/oefeningen') } }
+  } else {
+    try { router.back() } catch(_) { router.push('/oefeningen') }
+  }
+}
+
+function cancelLeave(){
+  showLeaveConfirm.value = false
+  pendingRoute.value = null
+}
+
+onBeforeRouteLeave((to, from, next) => {
+  if (allowLeaveOnce.value) { next(); return }
+  if (!hasUnsaved()) { next(); return }
+  showLeaveConfirm.value = true
+  pendingRoute.value = to
+  next(false)
+})
 
 watch(() => route.fullPath, () => { formKey.value++ })
 watch(() => route.query.tab, (t) => { try { formTab.value = normalizeTab(t) } catch(_) {} })
