@@ -94,12 +94,12 @@
   <div class="container mx-auto px-4 py-6">
 
     <!-- Top controls row with results count -->
-    <div class="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-      <div class="text-sm text-gray-600 dark:text-gray-300 order-2 md:order-1">
+    <div class="mb-4 flex flex-row-reverse md:flex-row items-center justify-between gap-3">
+      <div class="text-sm text-gray-600 dark:text-gray-300 shrink-0">
         <span class="font-medium">{{ sorted.length }}</span> {{ sorted.length === 1 ? 'oefening' : 'oefeningen' }} gevonden
       </div>
       <ExercisesTopControls
-          class="!mb-0 order-1 md:order-2 flex-1"
+          class="!mb-0 flex-1"
           :q="q"
           :favorites="filter.favorites"
           :showFilters="showFilters"
