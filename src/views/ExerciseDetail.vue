@@ -20,14 +20,14 @@
       <div v-if="exercise" class="relative flex items-center gap-2" ref="actionsRef">
 
         <!-- Favorite toggle -->
-        <button
-          class="star hidden md:inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
-          :aria-pressed="exercise.favorite ? 'true' : 'false'"
-          :title="exercise.favorite ? 'Verwijder uit favorieten' : 'Markeer als favoriet'"
-          @click.stop="toggleFav"
-        >
-          <Star :class="exercise.favorite ? 'w-5 h-5 text-yellow-500' : 'w-5 h-5 '" :fill="exercise.favorite ? 'currentColor' : 'none'" :stroke="exercise.favorite ? 'currentColor' : 'currentColor'" />
-        </button>
+<!--        <button-->
+<!--          class="star hidden md:inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"-->
+<!--          :aria-pressed="exercise.favorite ? 'true' : 'false'"-->
+<!--          :title="exercise.favorite ? 'Verwijder uit favorieten' : 'Markeer als favoriet'"-->
+<!--          @click.stop="toggleFav"-->
+<!--        >-->
+<!--          <Star :class="exercise.favorite ? 'w-5 h-5 text-yellow-500' : 'w-5 h-5 '" :fill="exercise.favorite ? 'currentColor' : 'none'" :stroke="exercise.favorite ? 'currentColor' : 'currentColor'" />-->
+<!--        </button>-->
 
         <!-- Menu button and dropdown -->
         <div class="relative">
@@ -51,7 +51,7 @@
               <Copy class="w-fit h-4" />
               Dupliceren
             </button>
-            <button @click="onToggleFavFromMenu" class="dropdown-item md:hidden">
+            <button @click="onToggleFavFromMenu" class="dropdown-item">
               <Star class="w-fit h-4" :class="exercise && exercise.favorite ? 'text-yellow-500' : ''" :fill="exercise && exercise.favorite ? 'currentColor' : 'none'" :stroke="'currentColor'" />
               <span>{{ (exercise && exercise.favorite) ? 'Verwijder uit favorieten' : 'Markeer als favoriet' }}</span>
             </button>
@@ -149,10 +149,10 @@
         </div>
       </div>
 
-      <div v-if="showRightSidebar" class="lg:col-span-1 lg:sticky lg:top-24 lg:self-start">
-        <div class="bg-white rounded-lg shadow-md overflow-hidden order-2 lg:order-none">
+      <div v-if="showRightSidebar" class="relative lg:col-span-1 lg:sticky lg:top-24 lg:self-start">
+        <div class="bg-white rounded-lg shadow-md overflow-hidden order-2 lg:order-none p-6 space-y-6">
           <!-- Details -->
-          <section v-if="hasAnyDetails" class="p-6">
+          <section v-if="hasAnyDetails">
             <div class="flex items-center justify-between mb-3">
               <h2 class="text-lg font-semibold text-gray-800">Details</h2>
             </div>
@@ -191,9 +191,8 @@
             </div>
           </section>
 
-
           <!-- Materialen -->
-          <section v-if="exercise.materials && exercise.materials.length" class="p-6">
+          <section v-if="exercise.materials && exercise.materials.length">
             <div class="text-sm font-medium text-gray-700 mb-2 inline-flex items-center gap-1">
               <h2 class="text-lg font-semibold text-gray-800">Materialen</h2>
             </div>
@@ -203,7 +202,7 @@
           </section>
 
           <!-- Video -->
-          <section v-if="exercise.video" class="p-6">
+          <section v-if="exercise.video">
             <div class="text-sm font-medium text-gray-700 mb-2 inline-flex items-center gap-1">
               <h2 class="text-lg font-semibold text-gray-800">Video</h2>
             </div>
@@ -216,11 +215,9 @@
               <a :href="exercise.video" target="_blank" rel="noopener" class="text-blue-600 hover:underline">Bekijk video</a>
             </div>
           </section>
-
-
         </div>
       </div>
-    </div>
+  </div>
   </div>
   <div v-else class="container mx-auto px-4 py-12 text-center text-gray-600">
     <p>Oefening niet gevonden.</p>
@@ -294,6 +291,7 @@ const hasIntensityField = computed(() => typeof exercise.value?.intensity === 'n
 const hasAnyDetails = computed(() => showPlayers.value || hasDuration.value || hasIntensityField.value || hasCourt.value)
 const hasVideo = computed(() => !!exercise.value?.video)
 const showRightSidebar = computed(() => hasAnyDetails.value || hasMaterials.value || hasVideo.value)
+
 
 const playersTooltip = computed(() => {
   const min = isNum(exercise.value?.minPlayers) ? exercise.value.minPlayers : null
@@ -536,4 +534,5 @@ function confirmDelete() {
 .badge { @apply w-fit px-2 py-1 text-xs font-medium rounded-full; }
 .prose :deep(ul) { list-style: disc; padding-left: 1.25rem; }
 .prose :deep(ol) { list-style: decimal; padding-left: 1.25rem; }
+
 </style>
