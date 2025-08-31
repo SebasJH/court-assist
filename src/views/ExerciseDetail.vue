@@ -5,7 +5,7 @@
         <!-- Desktop back button (chevron) -->
         <router-link
           to="/oefeningen"
-          class="hidden md:inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+          class="hidden md:inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 dark:border-gray-600 flex-shrink-0"
           aria-label="Terug"
           title="Terug naar oefeningen"
         >
@@ -19,22 +19,12 @@
 
       <div v-if="exercise" class="relative flex items-center gap-2" ref="actionsRef">
 
-        <!-- Favorite toggle -->
-<!--        <button-->
-<!--          class="star hidden md:inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"-->
-<!--          :aria-pressed="exercise.favorite ? 'true' : 'false'"-->
-<!--          :title="exercise.favorite ? 'Verwijder uit favorieten' : 'Markeer als favoriet'"-->
-<!--          @click.stop="toggleFav"-->
-<!--        >-->
-<!--          <Star :class="exercise.favorite ? 'w-5 h-5 text-yellow-500' : 'w-5 h-5 '" :fill="exercise.favorite ? 'currentColor' : 'none'" :stroke="exercise.favorite ? 'currentColor' : 'currentColor'" />-->
-<!--        </button>-->
-
         <!-- Menu button and dropdown -->
         <div class="relative">
           <button
             ref="menuButtonRef"
             type="button"
-            class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+            class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-600/40 dark:text-gray-300 dark:hover:bg-gray-500/50 dark:border-gray-600 transition-colors duration-200"
             aria-haspopup="menu"
             :aria-expanded="menuOpen ? 'true' : 'false'"
             aria-label="Acties"
@@ -74,17 +64,16 @@
     </modal>
 
 
-
-
     <div class="exercise-detail grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
       <div :class="showRightSidebar ? 'lg:col-span-2' : 'lg:col-span-3'">
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="bg-white dark:bg-gray-750 rounded-lg shadow-md overflow-hidden">
+
           <!-- Meta: icon + categories -->
-          <section class="p-6 border-b border-gray-200">
+          <section class="p-6 border-b border-gray-200 dark:border-gray-600">
             <div class="flex items-center gap-3 min-w-0">
-              <component :is="exercise.icon || 'TrafficCone'" class="w-8 h-8 text-gray-700" />
+              <component :is="exercise.icon || 'TrafficCone'" class="w-8 h-8 text-gray-700 dark:text-gray-100" />
               <div class="flex flex-wrap gap-1 text-xs">
-                <span v-for="c in (Array.isArray(exercise.category)?exercise.category:(exercise.category?[exercise.category]:[]))" :key="c" class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">{{ c }}</span>
+                <span v-for="c in (Array.isArray(exercise.category)?exercise.category:(exercise.category?[exercise.category]:[]))" :key="c" class="exercise-category text-xs px-2 py-1 rounded-full whitespace-nowrap bg-blue-100 text-blue-800  dark:bg-blue-500/20 dark:text-blue-300">{{ c }}</span>
                 <span v-if="(!exercise.category || (Array.isArray(exercise.category) && exercise.category.length===0))" class="text-gray-400">Geen categorie</span>
               </div>
             </div>
@@ -92,23 +81,23 @@
           <!-- Beschrijving -->
           <section v-if="hasDescription" class="p-6">
             <div class="flex items-center justify-between mb-2">
-              <h2 class="text-lg font-semibold text-gray-800">Beschrijving</h2>
+              <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-50">Beschrijving</h2>
             </div>
-            <div class="prose max-w-none" v-html="descriptionHtml"></div>
+            <div class="prose max-w-none text-gray-600 dark:text-gray-300" v-html="descriptionHtml"></div>
           </section>
 
 
           <!-- Uitvoering -->
-          <section v-if="exercise.execution || exercise.howItWorks" class="p-6 border-t border-gray-200">
+          <section v-if="exercise.execution || exercise.howItWorks" class="p-6 border-t border-gray-200 dark:border-gray-600">
             <div class="flex items-center justify-between mb-2">
-              <h2 class="text-lg font-semibold text-gray-800">Uitvoering</h2>
+              <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-50">Uitvoering</h2>
             </div>
-            <div class="prose max-w-none" v-html="exercise.execution || exercise.howItWorks"></div>
+            <div class="prose max-w-none text-gray-600 dark:text-gray-300" v-html="exercise.execution || exercise.howItWorks"></div>
           </section>
 
           <!-- Images -->
-          <section v-if="Array.isArray(exercise.diagrams) && exercise.diagrams.length" class="p-6 border-t border-gray-200">
-            <h2 class="text-lg font-semibold text-gray-800 mb-3">Afbeeldingen</h2>
+          <section v-if="Array.isArray(exercise.diagrams) && exercise.diagrams.length" class="p-6 border-t border-gray-200 dark:border-gray-600">
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-50 mb-3">Afbeeldingen</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div v-for="(d, i) in exercise.diagrams" :key="i" class="border rounded-md overflow-hidden bg-gray-50">
                 <div class="bg-white">
@@ -121,40 +110,40 @@
           </section>
 
           <!-- Coaching punten -->
-          <section v-if="exercise.coachingPoints || exercise.fullDescription" class="p-6 border-t border-gray-200">
+          <section v-if="exercise.coachingPoints || exercise.fullDescription" class="p-6 border-t border-gray-200 dark:border-gray-600">
             <div class="flex items-center justify-between mb-2">
-              <h2 class="text-lg font-semibold text-gray-800">Coaching punten</h2>
+              <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-50">Coaching punten</h2>
             </div>
-            <div class="rounded-md border border-blue-200 bg-blue-100/60 p-4">
+            <div class="rounded-md border border-blue-200 bg-blue-100/60 dark:bg-blue-500/20 dark:text-blue-300  dark:border-blue-500/20 p-4">
               <div class="prose max-w-none" v-html="exercise.coachingPoints || exercise.fullDescription"></div>
             </div>
           </section>
 
           <!-- Variaties -->
-          <section v-if="exercise.variations" class="p-6 border-t border-gray-200">
+          <section v-if="exercise.variations" class="p-6 border-t border-gray-200 dark:border-gray-600">
             <div class="flex items-center justify-between mb-2">
-              <h2 class="text-lg font-semibold text-gray-800">Variaties</h2>
+              <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-50">Variaties</h2>
             </div>
-            <div class="prose max-w-none" v-html="exercise.variations"></div>
+            <div class="prose max-w-none text-gray-600 dark:text-gray-300" v-html="exercise.variations"></div>
           </section>
 
           <!-- Notities -->
-          <section class="p-6 border-t border-gray-200">
+          <section class="p-6 border-t border-gray-200 dark:border-gray-600">
             <div class="flex items-center justify-between mb-3">
-              <h2 class="text-lg font-semibold text-gray-800">Notities</h2>
+              <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-50">Notities</h2>
             </div>
-            <div v-if="exercise.notes && exercise.notes.trim().length" class="prose max-w-none" v-html="exercise.notes"></div>
+            <div v-if="exercise.notes && exercise.notes.trim().length" class="prose max-w-none text-gray-600 dark:text-gray-300" v-html="exercise.notes"></div>
             <div v-else class="text-gray-500 text-sm">Nog geen notities. Klik op het potlood om toe te voegen.</div>
           </section>
         </div>
       </div>
 
       <div v-if="showRightSidebar" class="relative lg:col-span-1 lg:sticky lg:top-24 lg:self-start">
-        <div class="bg-white rounded-lg shadow-md overflow-hidden order-2 lg:order-none p-6 space-y-6">
+        <div class="bg-white dark:bg-gray-750 rounded-lg shadow-md overflow-hidden order-2 lg:order-none p-6 space-y-6">
           <!-- Details -->
           <section v-if="hasAnyDetails">
             <div class="flex items-center justify-between mb-3">
-              <h2 class="text-lg font-semibold text-gray-800">Details</h2>
+              <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-50">Details</h2>
             </div>
             <div class="flex flex-row flex-wrap gap-1.5 text-gray-800">
               <!-- Players -->
@@ -194,7 +183,7 @@
           <!-- Materialen -->
           <section v-if="exercise.materials && exercise.materials.length">
             <div class="text-sm font-medium text-gray-700 mb-2 inline-flex items-center gap-1">
-              <h2 class="text-lg font-semibold text-gray-800">Materialen</h2>
+              <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-50">Materialen</h2>
             </div>
             <div class="flex flex-wrap gap-1.5">
               <span v-for="m in exercise.materials" :key="m" class="px-2 py-1 rounded-lg text-sm bg-orange-50 text-orange-800 border border-orange-200">{{ m }}</span>
@@ -204,24 +193,25 @@
           <!-- Video -->
           <section v-if="exercise.video">
             <div class="text-sm font-medium text-gray-700 mb-2 inline-flex items-center gap-1">
-              <h2 class="text-lg font-semibold text-gray-800">Video</h2>
+              <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-50">Video</h2>
             </div>
-            <div v-if="youtubeEmbedUrl" class="aspect-video rounded-md overflow-hidden border bg-black/5">
+            <div v-if="youtubeEmbedUrl" class="aspect-video rounded-md overflow-hidden border dark:border-gray-600 bg-black/5">
               <iframe :src="youtubeEmbedUrl" title="YouTube video" class="w-full h-full" frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowfullscreen></iframe>
             </div>
             <div v-else>
-              <a :href="exercise.video" target="_blank" rel="noopener" class="text-blue-600 hover:underline">Bekijk video</a>
+              <a :href="exercise.video" target="_blank" rel="noopener" class="text-blue-500 hover:underline">Bekijk video</a>
             </div>
           </section>
         </div>
       </div>
   </div>
   </div>
+
   <div v-else class="container mx-auto px-4 py-12 text-center text-gray-600">
     <p>Oefening niet gevonden.</p>
-    <router-link to="/oefeningen" class="text-blue-600 hover:underline block mt-2">Terug</router-link>
+    <router-link to="/oefeningen" class="text-blue-500 hover:underline block mt-2">Terug</router-link>
   </div>
 
   <!-- Lightbox overlay -->
