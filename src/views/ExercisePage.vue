@@ -165,7 +165,7 @@
     <template v-if="sorted.length > 0">
       <template v-if="viewMode === 'card'">
         <transition-group name="exercise-list" tag="div"
-                          class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-6"
+                          class="grid w-full gap-6 [grid-template-columns:repeat(auto-fit,minmax(380px,1fr))]"
                           :css="!pageSwitching">
           <ExerciseCardItem
               v-for="ex in pageItems"

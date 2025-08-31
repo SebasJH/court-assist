@@ -9,7 +9,7 @@
       <div ref="boxRef" class="relative drop-shadow-xl">
         <div class="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl p-3 break-words">
           <div class="text-sm font-semibold" :class="titleColorClass">{{ title }}</div>
-          <div v-if="body" class="mt-1 text-xs text-gray-600 dark:text-gray-50">{{ body }}</div>
+          <div v-if="body" class="mt-1 text-xs text-gray-600 dark:text-gray-300">{{ body }}</div>
           <slot />
         </div>
       </div>
@@ -20,9 +20,6 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
 
-// Tooltip rendered to document.body via Teleport so it escapes card stacking contexts.
-// Props: title (string), body (string), open (boolean), anchor (HTMLElement or ref-unwrapped element)
-// Added: titleColor/titlecolor (string) to override the title color classes when desired.
 const props = defineProps({
   title: { type: String, required: true },
   body: { type: String, default: '' },
