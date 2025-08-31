@@ -285,7 +285,7 @@
     </div>
 
     <!-- Buttons -->
-    <div class="px-5 sm:px-10 pt-5 border-t dark:border-gray-600 flex justify-end gap-3">
+    <div v-if="!hideFooterActions" class="px-5 sm:px-10 pt-5 border-t dark:border-gray-600 flex justify-end gap-3">
       <UiButton color="cancel" @click="$emit('close')">Annuleren</UiButton>
       <UiButton :color="isEdit ? 'primary' : 'success'" type="submit" class="btn-submit">
         {{ isEdit ? 'Opslaan' : 'Aanmaken' }}
@@ -330,10 +330,11 @@ export default {
   props: {
     initial: {type: Object, default: null},
     categories: {type: Array, default: () => []},
-    currentTab: {type: String, default: 'basis'}
+    currentTab: {type: String, default: 'basis'},
+    hideFooterActions: { type: Boolean, default: false }
   },
   emits: ['save','close','update:currentTab'],
-  setup(props, {emit}) {
+  setup(props, {emit, expose}) {
     const emptyForm = () => ({
       id: null,
       name: '',
@@ -708,6 +709,9 @@ export default {
 
       emit('save', saveData)
     }
+
+    // Expose save so parents (like ExerciseEdit page) can trigger save from header
+    expose({ save })
 
     const isEdit = computed(() => !!(props.initial && props.initial.id))
 

@@ -67,47 +67,6 @@
 
   <div class="container mx-auto px-4 py-6" v-if="exercise">
 
-    <!-- Edit exercise modal -->
-    <modal :open="showForm" @close="closeForm" contentPaddingClass="p-0" :hasTabs="true">
-      <template #title>{{ exercise ? 'Wijzig oefening' : 'Nieuwe oefening' }}</template>
-      <template #tabs>
-        <div role="tablist" class="inline-flex items-center gap-2 border-b border-gray-200 dark:border-gray-600">
-          <button type="button" role="tab" :aria-selected="formTab==='basis' ? 'true' : 'false'"
-                  @click="formTab='basis'"
-                  class="px-3 py-2 text-sm font-medium border-b-2"
-                  :class="formTab==='basis' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
-            Basis
-          </button>
-          <button type="button" role="tab" :aria-selected="formTab==='details' ? 'true' : 'false'"
-                  @click="formTab='details'"
-                  class="px-3 py-2 text-sm font-medium border-b-2"
-                  :class="formTab==='details' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
-            Details
-          </button>
-          <button type="button" role="tab" :aria-selected="formTab==='tekst' ? 'true' : 'false'"
-                  @click="formTab='tekst'"
-                  class="px-3 py-2 text-sm font-medium border-b-2"
-                  :class="formTab==='tekst' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
-            Tekst
-          </button>
-          <button type="button" role="tab" :aria-selected="formTab==='media' ? 'true' : 'false'"
-                  @click="formTab='media'"
-                  class="px-3 py-2 text-sm font-medium border-b-2"
-                  :class="formTab==='media' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
-            Media
-          </button>
-        </div>
-      </template>
-      <exercise-form
-        :key="formKey"
-        :initial="exercise"
-        :categories="categories"
-        v-model:currentTab="formTab"
-        @close="closeForm"
-        @save="onSave"
-      />
-    </modal>
-
     <!-- Delete confirm modal -->
     <modal :open="showDeleteModal" @close="cancelDelete" contentPaddingClass="p-0">
           <template #title>Bevestig verwijderen</template>
@@ -384,7 +343,6 @@ import { useRoute, useRouter } from 'vue-router'
 import store from '../store'
 import PageHeader from '../components/PageHeader.vue'
 import Modal from '../components/Modal.vue'
-import ExerciseForm from '../components/exercise/ExerciseForm.vue'
 import DeleteConfirm from '../components/DeleteConfirm.vue'
 import IntensitySelector from '../components/form/IntensitySelector.vue'
 import RangeNumber from '../components/form/RangeNumber.vue'
@@ -496,8 +454,7 @@ const youtubeEmbedUrl = computed(() => {
 
 
 // Edit modal state
-const showForm = ref(false)
-const formKey = ref(0)
+// Removed modal edit state in favor of dedicated edit page
 const formTab = ref('basis')
 const showDeleteModal = ref(false)
 const categories = EXERCISE_CATEGORIES
@@ -604,25 +561,17 @@ function saveEditDetails(){
 }
 
 function openForm() {
-  formKey.value++
-  showForm.value = true
+  try {
+    const s = String(slug.value || '')
+    const q = (formTab && formTab.value) ? `?tab=${formTab.value}` : ''
+    router.push(`/oefening/${s}/bewerken${q}`)
+  } catch (_) {
+    // no-op fallback
+  }
 }
 function openEditText() {
   try { formTab.value = 'tekst' } catch (_) {}
   openForm()
-}
-function closeForm() {
-  showForm.value = false
-}
-
-function onSave(payload) {
-  if (payload.id) {
-    store.updateExercise(payload.id, payload)
-  } else if (exercise.value) {
-    // Fallback: if no id, treat as update of current exercise
-    store.updateExercise(exercise.value.id, payload)
-  }
-  closeForm()
 }
 
 // Header actions: favorite + menu

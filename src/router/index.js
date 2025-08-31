@@ -2,10 +2,13 @@ import { createRouter, createWebHistory } from 'vue-router'
 import ExercisesPage from '../views/ExercisePage.vue'
 import TrainingsPage from '../views/TrainingsPage.vue'
 import ExerciseDetail from '../views/ExerciseDetail.vue'
+import ExerciseEdit from '../views/ExerciseEdit.vue'
 
 const routes = [
     { path: '/', redirect: '/oefeningen' },
     { path: '/oefeningen', component: ExercisesPage },
+    { path: '/oefeningen/nieuw', component: ExerciseEdit },
+    { path: '/oefening/:slug/bewerken', component: ExerciseEdit },
     { path: '/trainingen', component: TrainingsPage },
     { path: '/oefening/:slug', component: ExerciseDetail }
 ]

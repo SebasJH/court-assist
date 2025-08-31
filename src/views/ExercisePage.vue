@@ -241,46 +241,6 @@
       </div>
     </div>
 
-    <!-- Modal -->
-    <modal :open="showForm" @close="closeForm" contentPaddingClass="p-0" :hasTabs="true">
-      <template #title>{{ editItem ? 'Wijzig oefening' : 'Nieuwe oefening' }}</template>
-      <template #tabs>
-        <div role="tablist" class="inline-flex items-center gap-2 border-b border-gray-200 dark:border-gray-600">
-          <button type="button" role="tab" :aria-selected="formTab==='basis' ? 'true' : 'false'"
-                  @click="formTab='basis'"
-                  class="px-3 py-2 text-sm font-medium border-b-2"
-                  :class="formTab==='basis' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
-            Basis
-          </button>
-          <button type="button" role="tab" :aria-selected="formTab==='details' ? 'true' : 'false'"
-                  @click="formTab='details'"
-                  class="px-3 py-2 text-sm font-medium border-b-2"
-                  :class="formTab==='details' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
-            Details
-          </button>
-          <button type="button" role="tab" :aria-selected="formTab==='tekst' ? 'true' : 'false'"
-                  @click="formTab='tekst'"
-                  class="px-3 py-2 text-sm font-medium border-b-2"
-                  :class="formTab==='tekst' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
-            Tekst
-          </button>
-          <button type="button" role="tab" :aria-selected="formTab==='media' ? 'true' : 'false'"
-                  @click="formTab='media'"
-                  class="px-3 py-2 text-sm font-medium border-b-2"
-                  :class="formTab==='media' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
-            Media
-          </button>
-        </div>
-      </template>
-      <exercise-form
-          :key="formKey"
-          :initial="editItem"
-          :categories="categories"
-          v-model:currentTab="formTab"
-          @close="closeForm"
-          @save="onSave"
-      />
-    </modal>
 
     <!-- Delete confirm modal -->
     <modal :open="showDeleteModal" @close="cancelDelete" contentPaddingClass="p-0">
@@ -327,7 +287,6 @@
 <script>
 import ExerciseCardItem from '../components/exercise/ExerciseCardItem.vue'
 import ExerciseListItem from '../components/exercise/ExerciseListItem.vue'
-import ExerciseForm from '../components/exercise/ExerciseForm.vue'
 import Modal from '../components/Modal.vue'
 import PageHeader from '../components/PageHeader.vue'
 import FiltersPanel from '../components/FiltersPanel.vue'
@@ -338,7 +297,7 @@ import FiltersChips from '../components/FiltersChips.vue'
 import {EXERCISE_CATEGORIES, EXERCISE_MATERIALS, normalizeCourt} from '../constants'
 import store from '../store'
 import {ref, computed, watch, nextTick, onMounted, onBeforeUnmount} from 'vue'
-import {useRoute} from 'vue-router'
+import {useRoute, useRouter} from 'vue-router'
 import {ensureSampleExercises} from '../data/sampleExercises'
 import UiButton from '../components/ui/Button.vue'
 
@@ -346,7 +305,6 @@ export default {
   components: {
     ExerciseCardItem,
     ExerciseListItem,
-    ExerciseForm,
     Modal,
     PageHeader,
     FiltersPanel,
@@ -423,6 +381,7 @@ export default {
     }
 
     const route = useRoute()
+    const router = useRouter()
     const isSmallScreen = ref(false)
 
     function updateSmallScreen() {
@@ -457,10 +416,6 @@ export default {
         return {category: [], players: [null, null], intensity: [null, null], favorites: false, court: [], materials: []}
       }
     })())
-    const showForm = ref(false)
-    const editItem = ref(null)
-    const formKey = ref(0)
-    const formTab = ref('basis')
     const showFilters = ref(false)
     const showDeleteModal = ref(false)
 
@@ -522,25 +477,29 @@ export default {
     const categories = EXERCISE_CATEGORIES
     const materialOptions = EXERCISE_MATERIALS
 
+    function slugify(str) {
+      return String(str || '')
+        .normalize('NFKD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+    }
+
     function openForm(item = null) {
-      editItem.value = item
-      formKey.value++
-      showForm.value = true
-    }
-
-    function closeForm() {
-      editItem.value = null
-      showForm.value = false
-    }
-
-    function onSave(payload) {
-      if (payload.id) {
-        store.updateExercise(payload.id, payload)
-      } else {
-        store.addExercise(payload)
+      try {
+        if (item && (item.name || item.id)) {
+          const s = slugify(item.name || '')
+          router.push(`/oefening/${s}/bewerken`)
+        } else {
+          router.push('/oefeningen/nieuw')
+        }
+      } catch (_) {
+        // no-op fallback
       }
-      closeForm()
     }
+
 
     function onDelete(id) {
       pendingDeleteId.value = id
@@ -962,12 +921,6 @@ export default {
       headerMenuBtnRef,
       selectView,
       openForm,
-      showForm,
-      editItem,
-      formKey,
-      formTab,
-      closeForm,
-      onSave,
       onDelete,
       onDuplicate,
       onToggleFav,

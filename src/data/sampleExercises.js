@@ -15,7 +15,7 @@ export const SAMPLE_EXERCISES = [
         maxPlayers: 3,
         duration: 5,
         intensity: 2,
-        court: '',
+        court: 'Half Court',
         materials: [],
         video: 'https://www.youtube.com/watch?v=u-eeORGpMb0',
         dateCreated: '2025-08-16T20:00:00.000Z',
