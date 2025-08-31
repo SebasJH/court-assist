@@ -90,11 +90,11 @@
             </div>
           </section>
           <!-- Beschrijving -->
-          <section class="p-6">
+          <section v-if="hasDescription" class="p-6">
             <div class="flex items-center justify-between mb-2">
               <h2 class="text-lg font-semibold text-gray-800">Beschrijving</h2>
             </div>
-            <div class="prose max-w-none" v-html="exercise.description || exercise.shortDescription"></div>
+            <div class="prose max-w-none" v-html="descriptionHtml"></div>
           </section>
 
 
@@ -288,6 +288,23 @@ const exercise = computed(() => {
   const target = String(slug.value || '')
   return list.find(e => slugify(e.name) === target)
 })
+
+// Beschrijving helpers
+const descriptionHtml = computed(() => (exercise.value?.description || exercise.value?.shortDescription || ''))
+function stripHtmlLikeText(html) {
+  try {
+    return String(html || '')
+      .replace(/<[^>]*>/g, ' ') // remove tags
+      .replace(/&nbsp;|&#160;/g, ' ') // non-breaking spaces
+      .replace(/&amp;/g, '&')
+      .replace(/[\u200B-\u200D\uFEFF]/g, '') // zero-width chars
+      .replace(/\s+/g, ' ') // collapse whitespace
+      .trim()
+  } catch (_) {
+    return ''
+  }
+}
+const hasDescription = computed(() => stripHtmlLikeText(descriptionHtml.value).length > 0)
 
 // Badge tooltips and labels (match ExerciseCardItem)
 const playersRef = ref(null)
