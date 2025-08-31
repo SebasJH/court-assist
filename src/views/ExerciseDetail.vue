@@ -246,6 +246,20 @@
             <div class="prose max-w-none" v-html="exercise.execution || exercise.howItWorks"></div>
           </section>
 
+          <!-- Diagrams -->
+          <section v-if="Array.isArray(exercise.diagrams) && exercise.diagrams.length" class="p-6 border-t border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-800 mb-3">Diagrammen</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div v-for="(d, i) in exercise.diagrams" :key="i" class="border rounded-md overflow-hidden bg-gray-50">
+                <div class="bg-white">
+                  <img v-if="d && d.src" :src="d.src" alt="Diagram" class="w-full h-56 object-contain bg-white"/>
+                  <div v-else class="w-full h-56 flex items-center justify-center text-gray-400 text-sm bg-white">Geen afbeelding</div>
+                </div>
+                <div v-if="d && d.caption" class="px-3 py-2 text-sm text-gray-700 border-t">{{ d.caption }}</div>
+              </div>
+            </div>
+          </section>
+
           <!-- Coaching punten -->
           <section v-if="exercise.coachingPoints || exercise.fullDescription" class="p-6 border-t border-gray-200">
             <div class="flex items-center justify-between mb-2">
@@ -268,20 +282,6 @@
               </button>
             </div>
             <div class="prose max-w-none" v-html="exercise.variations"></div>
-          </section>
-
-          <!-- Diagrams -->
-          <section v-if="Array.isArray(exercise.diagrams) && exercise.diagrams.length" class="p-6 border-t border-gray-200">
-            <h2 class="text-lg font-semibold text-gray-800 mb-3">Visuals (diagrammen)</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div v-for="(d, i) in exercise.diagrams" :key="i" class="border rounded-md overflow-hidden bg-gray-50">
-                <div class="bg-white">
-                  <img v-if="d && d.src" :src="d.src" alt="Diagram" class="w-full h-56 object-contain bg-white"/>
-                  <div v-else class="w-full h-56 flex items-center justify-center text-gray-400 text-sm bg-white">Geen afbeelding</div>
-                </div>
-                <div v-if="d && d.caption" class="px-3 py-2 text-sm text-gray-700 border-t">{{ d.caption }}</div>
-              </div>
-            </div>
           </section>
 
           <!-- Notities -->
