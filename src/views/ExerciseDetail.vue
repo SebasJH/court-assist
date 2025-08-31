@@ -443,7 +443,8 @@ function openForm() {
   try {
     const s = String(slug.value || '')
     const q = (formTab && formTab.value) ? `?tab=${formTab.value}` : ''
-    router.push(`/oefening/${s}/bewerken${q}`)
+    const sep = q ? '&' : '?'
+    router.push(`/oefening/${s}/bewerken${q}${sep}from=detail`)
   } catch (_) {
     // no-op fallback
   }

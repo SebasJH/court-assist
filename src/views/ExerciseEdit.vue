@@ -134,17 +134,26 @@ function triggerSave() {
 }
 
 function onSave(payload) {
+  const from = String(route.query.from || '')
   if (payload.id) {
     store.updateExercise(payload.id, payload)
     const cur = initialExercise.value
     const name = (payload && payload.name) ? payload.name : (cur ? cur.name : '')
     const s = slugify(name)
-    router.push(`/oefening/${s}`)
+    if (from === 'list') {
+      router.push('/oefeningen')
+    } else {
+      router.push(`/oefening/${s}`)
+    }
   } else {
     const created = store.addExercise(payload)
     const name = (created && created.name) ? created.name : (payload.name || '')
     const s = slugify(name)
-    router.push(`/oefening/${s}`)
+    if (from === 'list') {
+      router.push('/oefeningen')
+    } else {
+      router.push(`/oefening/${s}`)
+    }
   }
 }
 

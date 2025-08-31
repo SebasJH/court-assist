@@ -491,9 +491,9 @@ export default {
       try {
         if (item && (item.name || item.id)) {
           const s = slugify(item.name || '')
-          router.push(`/oefening/${s}/bewerken`)
+          router.push(`/oefening/${s}/bewerken?from=list`)
         } else {
-          router.push('/oefeningen/nieuw')
+          router.push('/oefeningen/nieuw?from=list')
         }
       } catch (_) {
         // no-op fallback
