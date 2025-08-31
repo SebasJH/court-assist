@@ -28,7 +28,7 @@
         <span
           v-for="cat in exercise.category"
           :key="cat"
-          class="exercise-category text-xs px-2 py-1 rounded-full whitespace-nowrap"
+          class="exercise-category"
         >{{ cat }}</span>
       </div>
 

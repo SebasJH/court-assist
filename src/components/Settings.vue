@@ -33,11 +33,11 @@
         <div class="inline-flex rounded-md overflow-hidden border border-gray-300 dark:border-gray-600 h-10">
           <button type="button"
                   class="px-3 h-10 text-sm font-medium focus:outline-none"
-                  :class="theme === 'light' ? 'bg-blue-500 text-white' : 'bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-neutral-800 text-gray-800 dark:text-gray-200'"
+                  :class="theme === 'light' ? 'bg-blue-500 text-white' : 'bg-white dark:bg-gray-750 hover:bg-blue-50 dark:hover:bg-gray-650 text-gray-800 dark:text-gray-200'"
                   @click="selectTheme('light')">Licht</button>
           <button type="button"
                   class="px-3 h-10 text-sm font-medium border-l border-gray-300 dark:border-gray-600 focus:outline-none"
-                  :class="theme === 'dark' ? 'bg-blue-500 text-white' : 'bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-neutral-800 text-gray-800 dark:text-gray-200'"
+                  :class="theme === 'dark' ? 'bg-blue-500 text-white' : 'bg-white dark:bg-gray-750 hover:bg-blue-50 dark:hover:bg-gray-650 text-gray-800 dark:text-gray-200'"
                   @click="selectTheme('dark')">Donker</button>
         </div>
       </div>

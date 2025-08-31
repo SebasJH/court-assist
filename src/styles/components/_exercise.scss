@@ -64,6 +64,7 @@
   }
 
   .exercise-category {
+    @apply text-xs px-2 py-1 rounded-full whitespace-nowrap;
     @apply bg-blue-100 text-blue-800;
     @apply dark:bg-blue-500/20 dark:text-blue-300;
   }

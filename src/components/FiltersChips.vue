@@ -38,12 +38,12 @@
       </span>
     </template>
     <!-- Favorites -->
-    <span v-if="favorites" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
+    <span v-if="favorites" class="inline-flex items-center gap-2 text-sm bg-blue-50 text-blue-800 border border-blue-200 rounded-full pl-3 pr-2 h-8 dark:bg-blue-800/20 dark:text-blue-200 dark:border-blue-800">
       Favorieten
       <button class="hover:text-blue-900" @click="$emit('clear:favorites')" aria-label="Verwijder favorieten filter">×</button>
     </span>
     <!-- Reset all -->
-    <button class="text-sm h-8 px-3 rounded-full border border-gray-300 bg-white hover:bg-gray-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-gray-200 dark:hover:bg-neutral-800" @click="$emit('reset')">Alles wissen</button>
+    <button class="text-sm h-8 px-3 rounded-full border border-gray-300 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-800" @click="$emit('reset')">Alles wissen</button>
   </div>
 </template>
 

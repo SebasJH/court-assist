@@ -8,7 +8,7 @@
             <Search class="w-4 h-4 !text-gray-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10"/>
             <input
                 ref="searchInputRef"
-                class="form-input w-full !pl-9 !pr-10 !bg-white !border-gray-300 !text-gray-900 placeholder:text-gray-400 shadow-sm dark:!bg-gray-600/40 dark:!border-gray-600 dark:!text-gray-50 dark:placeholder:text-gray-400"
+                class="form-input !rounded-md w-full !pl-9 !pr-10 !bg-white !border-gray-300 !text-gray-900 placeholder:text-gray-400 shadow-sm dark:!bg-gray-600/40 dark:!border-gray-600 dark:!text-gray-50 dark:placeholder:text-gray-400"
                 :value="q"
                 @input="e => q = (e && e.target ? e.target.value : '')"
                 placeholder="Zoek oefeningen..."
@@ -94,12 +94,9 @@
   <div class="container mx-auto px-4 py-6">
 
     <!-- Top controls row with results count -->
-    <div class="mb-4 flex flex-row-reverse md:flex-row items-center justify-between gap-3">
-      <div class="text-sm text-gray-600 dark:text-gray-300 shrink-0">
-        <span class="font-medium">{{ sorted.length }}</span> {{ sorted.length === 1 ? 'oefening' : 'oefeningen' }} gevonden
-      </div>
+    <div class="mb-4 flex flex-wrap items-center gap-3">
       <ExercisesTopControls
-          class="!mb-0 flex-1"
+          class="!mb-0 flex-1 order-1 md:order-2"
           :q="q"
           :favorites="filter.favorites"
           :showFilters="showFilters"
@@ -114,6 +111,9 @@
           @update:sortDir="val => sortDir = val"
           @update:viewMode="setViewMode"
       />
+      <div class="text-sm text-gray-600 dark:text-gray-300 shrink-0 order-2 md:order-1 ml-auto md:ml-0">
+        <span class="font-medium">{{ sorted.length }}</span> {{ sorted.length === 1 ? 'oefening' : 'oefeningen' }} gevonden
+      </div>
     </div>
 
     <!-- Filters drawer -->
@@ -171,7 +171,7 @@
     <template v-if="sorted.length > 0">
       <template v-if="viewMode === 'card'">
         <transition-group name="exercise-list" tag="div"
-                          class="grid w-full gap-6 [grid-template-columns:repeat(auto-fit,minmax(380px,1fr))]"
+                          class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-6"
                           :css="!pageSwitching">
           <ExerciseCardItem
               v-for="ex in pageItems"
