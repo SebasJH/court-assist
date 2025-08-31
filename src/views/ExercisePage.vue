@@ -112,25 +112,9 @@
 
     <!-- Filters drawer -->
     <modal :open="showFilters" @close="showFilters = false" :drawer="true" side="right" drawerWidthClass="max-w-lg"
-           contentPaddingClass="p-0" :hideDefaultClose="true">
+           contentPaddingClass="p-0">
+      <template #title><span class="inline-flex items-center gap-2"><Filter class="w-5 h-5 text-gray-700 dark:text-gray-100"/> Filters</span></template>
       <div class="flex h-full flex-col">
-        <div class="px-5 sm:px-10 pt-5 pb-4 border-b dark:border-gray-600">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <Filter class="w-5 h-5 text-gray-700 dark:text-gray-100"/>
-              <h2 id="filters-title" class="text-lg font-semibold text-gray-800 dark:text-gray-100">Filters</h2>
-            </div>
-            <button
-                type="button"
-                class="close-modal-button"
-                aria-label="Sluiten"
-                title="Sluiten"
-                @click="showFilters = false"
-            >
-              <X class="w-4 h-4"/>
-            </button>
-          </div>
-        </div>
         <div class="px-5 sm:px-10 py-8 flex-1 overflow-y-auto">
           <FiltersPanel
               :categories="categories"
@@ -258,18 +242,49 @@
     </div>
 
     <!-- Modal -->
-    <modal :open="showForm" @close="closeForm" contentPaddingClass="p-0" :hideDefaultClose="true">
+    <modal :open="showForm" @close="closeForm" contentPaddingClass="p-0" :hasTabs="true">
+      <template #title>{{ editItem ? 'Wijzig oefening' : 'Nieuwe oefening' }}</template>
+      <template #tabs>
+        <div role="tablist" class="inline-flex items-center gap-2 border-b border-gray-200 dark:border-gray-600">
+          <button type="button" role="tab" :aria-selected="formTab==='basis' ? 'true' : 'false'"
+                  @click="formTab='basis'"
+                  class="px-3 py-2 text-sm font-medium border-b-2"
+                  :class="formTab==='basis' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
+            Basis
+          </button>
+          <button type="button" role="tab" :aria-selected="formTab==='details' ? 'true' : 'false'"
+                  @click="formTab='details'"
+                  class="px-3 py-2 text-sm font-medium border-b-2"
+                  :class="formTab==='details' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
+            Details
+          </button>
+          <button type="button" role="tab" :aria-selected="formTab==='tekst' ? 'true' : 'false'"
+                  @click="formTab='tekst'"
+                  class="px-3 py-2 text-sm font-medium border-b-2"
+                  :class="formTab==='tekst' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
+            Tekst
+          </button>
+          <button type="button" role="tab" :aria-selected="formTab==='media' ? 'true' : 'false'"
+                  @click="formTab='media'"
+                  class="px-3 py-2 text-sm font-medium border-b-2"
+                  :class="formTab==='media' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
+            Media
+          </button>
+        </div>
+      </template>
       <exercise-form
           :key="formKey"
           :initial="editItem"
           :categories="categories"
+          v-model:currentTab="formTab"
           @close="closeForm"
           @save="onSave"
       />
     </modal>
 
     <!-- Delete confirm modal -->
-    <modal :open="showDeleteModal" @close="cancelDelete" contentPaddingClass="p-0" :hideDefaultClose="true">
+    <modal :open="showDeleteModal" @close="cancelDelete" contentPaddingClass="p-0">
+      <template #title>Bevestig verwijderen</template>
       <DeleteConfirm :name="deleteName" @cancel="cancelDelete" @confirm="confirmDelete"/>
     </modal>
   </div>
@@ -445,6 +460,7 @@ export default {
     const showForm = ref(false)
     const editItem = ref(null)
     const formKey = ref(0)
+    const formTab = ref('basis')
     const showFilters = ref(false)
     const showDeleteModal = ref(false)
 
@@ -949,6 +965,7 @@ export default {
       showForm,
       editItem,
       formKey,
+      formTab,
       closeForm,
       onSave,
       onDelete,

@@ -19,17 +19,30 @@
               aria-modal="true"
           >
 
-<!--        IK DENK DAT DIT ERUIT KAN EN STANDAARD DE ANDERE MOET WORDEN?-->
-            <button
-                v-if="!hideDefaultClose"
-                class="absolute top-5 right-5 z-[10] text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-gray-200"
-                aria-label="Sluiten"
-                @click="$emit('close')"
-            >
-              <X />
-            </button>
+            <div class="flex h-full flex-col">
+              <div class="modal-sticky-header" :class="hasTabs ? 'pt-5 pb-0 border-b-0' : 'pt-5 pb-4'">
+                <div class="flex items-center justify-between gap-3">
+                  <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100">
+                    <slot name="title">Titel</slot>
+                  </h3>
+                  <button
+                    type="button"
+                    class="close-modal-button"
+                    aria-label="Sluiten"
+                    @click="emitCancel"
+                  >
+                    <X class="w-4 h-4" />
+                  </button>
+                </div>
+                <div v-if="$slots.tabs" class="mt-4 -mb-px overflow-x-auto">
+                  <slot name="tabs" />
+                </div>
+              </div>
 
-            <slot />
+              <div class="flex-1">
+                <slot />
+              </div>
+            </div>
           </div>
         </transition>
       </div>
@@ -46,9 +59,11 @@ export default {
     side: { type: String, default: 'right' },
     drawerWidthClass: { type: String, default: 'max-w-md' },
     contentPaddingClass: { type: String, default: 'p-8' },
+    hasTabs: { type: Boolean, default: false },
+    // Deprecated: kept for backward compatibility, no longer used
     hideDefaultClose: { type: Boolean, default: false }
   },
-  emits: ['close'],
+  emits: ['close','cancel'],
   data() {
     return {
       mouseStartedOnOverlay: false,
@@ -102,6 +117,11 @@ export default {
     },
     onKeyDown(e) {
       if (e.key === 'Escape') this.$emit('close')
+    },
+    emitCancel() {
+      // Emit both for compatibility: new 'cancel' and legacy 'close'
+      this.$emit('cancel')
+      this.$emit('close')
     },
     clearTimer() {
       if (this.closeTimer) {

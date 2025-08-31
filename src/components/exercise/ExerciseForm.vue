@@ -1,52 +1,6 @@
 <template>
   <form class="flex h-full flex-col" @submit.prevent="save" novalidate>
 
-    <!-- Sticky header with tabs -->
-    <div class="modal-sticky-header pt-5 pb-0">
-      <div class="flex items-center justify-between gap-3">
-        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100">
-          {{ initial ? 'Wijzig oefening' : 'Nieuwe oefening' }}
-        </h3>
-        <button
-          type="button"
-          class="close-modal-button"
-          aria-label="Sluiten"
-          @click="$emit('close')"
-        >
-          <X class="w-4 h-4" />
-        </button>
-      </div>
-
-      <!-- Tabs -->
-      <div class="mt-4 -mb-px overflow-x-auto">
-        <div role="tablist" class="inline-flex items-center gap-2 border-b border-gray-200 dark:border-gray-600">
-          <button type="button" role="tab" :aria-selected="currentTab==='basis' ? 'true' : 'false'"
-                  @click="currentTab='basis'"
-                  class="px-3 py-2 text-sm font-medium border-b-2"
-                  :class="currentTab==='basis' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
-            Basis
-          </button>
-          <button type="button" role="tab" :aria-selected="currentTab==='details' ? 'true' : 'false'"
-                  @click="currentTab='details'"
-                  class="px-3 py-2 text-sm font-medium border-b-2"
-                  :class="currentTab==='details' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
-            Details
-          </button>
-          <button type="button" role="tab" :aria-selected="currentTab==='tekst' ? 'true' : 'false'"
-                  @click="currentTab='tekst'"
-                  class="px-3 py-2 text-sm font-medium border-b-2"
-                  :class="currentTab==='tekst' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
-            Tekst
-          </button>
-          <button type="button" role="tab" :aria-selected="currentTab==='media' ? 'true' : 'false'"
-                  @click="currentTab='media'"
-                  class="px-3 py-2 text-sm font-medium border-b-2"
-                  :class="currentTab==='media' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
-            Media
-          </button>
-        </div>
-      </div>
-    </div>
 
     <div class="px-5 sm:px-10 py-5 flex-1 overflow-y-auto">
       <!-- Basis -->
@@ -330,8 +284,10 @@ export default {
   },
   props: {
     initial: {type: Object, default: null},
-    categories: {type: Array, default: () => []}
+    categories: {type: Array, default: () => []},
+    currentTab: {type: String, default: 'basis'}
   },
+  emits: ['save','close','update:currentTab'],
   setup(props, {emit}) {
     const emptyForm = () => ({
       id: null,
@@ -354,8 +310,11 @@ export default {
 
     const form = reactive(emptyForm())
 
-    // Tabs state
-    const currentTab = ref('basis')
+    // Tabs state controlled by parent via prop
+    const currentTab = computed({
+      get(){ return props.currentTab || 'basis' },
+      set(val){ emit('update:currentTab', val) }
+    })
 
     // Validation state and refs
     const errors = reactive({

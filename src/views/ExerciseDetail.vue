@@ -68,38 +68,55 @@
   <div class="container mx-auto px-4 py-6" v-if="exercise">
 
     <!-- Edit exercise modal -->
-    <modal :open="showForm" @close="closeForm" contentPaddingClass="p-0" :hideDefaultClose="true">
+    <modal :open="showForm" @close="closeForm" contentPaddingClass="p-0" :hasTabs="true">
+      <template #title>{{ exercise ? 'Wijzig oefening' : 'Nieuwe oefening' }}</template>
+      <template #tabs>
+        <div role="tablist" class="inline-flex items-center gap-2 border-b border-gray-200 dark:border-gray-600">
+          <button type="button" role="tab" :aria-selected="formTab==='basis' ? 'true' : 'false'"
+                  @click="formTab='basis'"
+                  class="px-3 py-2 text-sm font-medium border-b-2"
+                  :class="formTab==='basis' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
+            Basis
+          </button>
+          <button type="button" role="tab" :aria-selected="formTab==='details' ? 'true' : 'false'"
+                  @click="formTab='details'"
+                  class="px-3 py-2 text-sm font-medium border-b-2"
+                  :class="formTab==='details' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
+            Details
+          </button>
+          <button type="button" role="tab" :aria-selected="formTab==='tekst' ? 'true' : 'false'"
+                  @click="formTab='tekst'"
+                  class="px-3 py-2 text-sm font-medium border-b-2"
+                  :class="formTab==='tekst' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
+            Tekst
+          </button>
+          <button type="button" role="tab" :aria-selected="formTab==='media' ? 'true' : 'false'"
+                  @click="formTab='media'"
+                  class="px-3 py-2 text-sm font-medium border-b-2"
+                  :class="formTab==='media' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
+            Media
+          </button>
+        </div>
+      </template>
       <exercise-form
         :key="formKey"
         :initial="exercise"
         :categories="categories"
+        v-model:currentTab="formTab"
         @close="closeForm"
         @save="onSave"
       />
     </modal>
 
     <!-- Delete confirm modal -->
-    <modal :open="showDeleteModal" @close="cancelDelete" contentPaddingClass="p-0" :hideDefaultClose="true">
+    <modal :open="showDeleteModal" @close="cancelDelete" contentPaddingClass="p-0">
+          <template #title>Bevestig verwijderen</template>
       <DeleteConfirm :name="deleteName" @cancel="cancelDelete" @confirm="confirmDelete"/>
     </modal>
 
     <!-- Edit description modal -->
-    <modal :open="showEditDescription" @close="closeEditDescription" contentPaddingClass="p-0" :hideDefaultClose="true">
-      <div class="modal-sticky-header pt-5 pb-4">
-        <div class="flex items-center justify-between gap-3">
-          <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100">
-            Beschrijving bewerken
-          </h3>
-          <button
-              type="button"
-              class="close-modal-button"
-              aria-label="Sluiten"
-              @click="closeEditDescription"
-          >
-            <X class="w-4 h-4" />
-          </button>
-        </div>
-      </div>
+    <modal :open="showEditDescription" @close="closeEditDescription" contentPaddingClass="p-0">
+          <template #title>Beschrijving bewerken</template>
 
       <!-- Content -->
       <div class="px-5 sm:px-10 pt-5 flex-1">
@@ -114,22 +131,8 @@
     </modal>
 
     <!-- Edit details modal -->
-    <modal :open="showEditDetails" @close="closeEditDetails" contentPaddingClass="p-0" :hideDefaultClose="true">
-      <div class="sticky top-0 z-[1] bg-white px-5 sm:px-10 pt-5 pb-4 border-b">
-        <div class="flex items-center justify-between gap-3">
-          <h3 class="text-xl font-bold text-gray-800">
-            Details bewerken
-          </h3>
-          <button
-              type="button"
-              class="close-modal-button"
-              aria-label="Sluiten"
-              @click="closeEditDetails"
-          >
-            <X class="w-4 h-4" />
-          </button>
-        </div>
-      </div>
+    <modal :open="showEditDetails" @close="closeEditDetails" contentPaddingClass="p-0">
+          <template #title>Details bewerken</template>
 
       <!-- Content -->
       <div class="px-5 sm:px-10 pt-5 flex-1 grid grid-cols-4 md:grid-cols-4 gap-4">
@@ -315,6 +318,7 @@ const exercise = computed(() => {
 // Edit modal state
 const showForm = ref(false)
 const formKey = ref(0)
+const formTab = ref('basis')
 const showDeleteModal = ref(false)
 const categories = EXERCISE_CATEGORIES
 const materialOptions = EXERCISE_MATERIALS

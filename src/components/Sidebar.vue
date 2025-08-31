@@ -61,8 +61,25 @@
     />
 
     <!-- Settings Modal -->
-    <modal :open="showSettings" @close="closeSettings" contentPaddingClass="p-0" :hideDefaultClose="true">
-      <Settings @close="closeSettings" @save="onSettingsSaved" />
+    <modal :open="showSettings" @close="closeSettings" contentPaddingClass="p-0" :hasTabs="true">
+      <template #title>Instellingen</template>
+      <template #tabs>
+        <div role="tablist" class="inline-flex items-center gap-2 border-b border-gray-200 dark:border-gray-600">
+          <button type="button" role="tab" :aria-selected="settingsTab==='profiel' ? 'true' : 'false'"
+                  @click="settingsTab='profiel'"
+                  class="px-3 py-2 text-sm font-medium border-b-2"
+                  :class="settingsTab==='profiel' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
+            Profiel
+          </button>
+          <button type="button" role="tab" :aria-selected="settingsTab==='weergave' ? 'true' : 'false'"
+                  @click="settingsTab='weergave'"
+                  class="px-3 py-2 text-sm font-medium border-b-2"
+                  :class="settingsTab==='weergave' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100'">
+            Weergave
+          </button>
+        </div>
+      </template>
+      <Settings v-model:currentTab="settingsTab" @close="closeSettings" @save="onSettingsSaved" />
     </modal>
   </aside>
 </template>
@@ -91,6 +108,7 @@ export default {
     return {
       collapsed: false,
       showSettings: false,
+      settingsTab: 'profiel',
       user
     }
   },
