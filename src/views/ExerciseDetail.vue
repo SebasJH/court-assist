@@ -73,7 +73,7 @@
             <div class="flex items-center gap-3 min-w-0">
               <component :is="exercise.icon || 'TrafficCone'" class="w-8 h-8 text-gray-700 dark:text-gray-100" />
               <div class="flex flex-wrap gap-1 text-xs">
-                <span v-for="c in (Array.isArray(exercise.category)?exercise.category:(exercise.category?[exercise.category]:[]))" :key="c" class="exercise-category text-xs px-2 py-1 rounded-full whitespace-nowrap bg-blue-100 text-blue-800  dark:bg-blue-500/20 dark:text-blue-300">{{ c }}</span>
+                <span v-for="c in (Array.isArray(exercise.category)?exercise.category:(exercise.category?[exercise.category]:[]))" :key="c" class="exercise-category text-xs px-2 py-1 rounded-full whitespace-nowrap bg-blue-100 text-blue-800  dark:bg-blue-500/20 dark:text-blue-200">{{ c }}</span>
                 <span v-if="(!exercise.category || (Array.isArray(exercise.category) && exercise.category.length===0))" class="text-gray-400">Geen categorie</span>
               </div>
             </div>
@@ -116,7 +116,7 @@
             <div class="flex items-center justify-between mb-2">
               <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-50">Coaching punten</h2>
             </div>
-            <div class="rounded-md border border-blue-200 bg-blue-100/60 dark:bg-blue-500/20 dark:text-blue-300  dark:border-blue-500/20 p-4">
+            <div class="rounded-md border border-blue-200 bg-blue-100/60 dark:bg-blue-500/20 dark:text-blue-200  dark:border-blue-500/20 p-4">
               <div class="prose max-w-none" v-html="exercise.coachingPoints || exercise.fullDescription"></div>
             </div>
           </section>
