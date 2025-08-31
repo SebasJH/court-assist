@@ -121,7 +121,7 @@
       <!-- Content -->
       <div class="px-5 sm:px-10 pt-5 flex-1">
         <label class="block text-sm font-medium text-gray-700 mb-1">Beschrijving</label>
-        <textarea v-model="descDraft" class="form-input h-40 w-full resize-none" placeholder="Beschrijving"></textarea>
+        <RichTextEditor v-model="descDraft" placeholder="Beschrijving" />
       </div>
 
       <div class="px-5 sm:px-10 pt-5 flex justify-end gap-3">
@@ -231,7 +231,7 @@
                 <Pencil class="w-4 h-4" />
               </button>
             </div>
-            <p class="text-gray-700 leading-relaxed">{{ exercise.description || exercise.shortDescription }}</p>
+            <div class="prose max-w-none" v-html="exercise.description || exercise.shortDescription"></div>
           </section>
 
 
@@ -255,7 +255,7 @@
                   <img v-if="d && d.src" :src="d.src" alt="Diagram" class="w-full h-56 object-contain bg-white"/>
                   <div v-else class="w-full h-56 flex items-center justify-center text-gray-400 text-sm bg-white">Geen afbeelding</div>
                 </div>
-                <div v-if="d && d.caption" class="px-3 py-2 text-sm text-gray-700 border-t">{{ d.caption }}</div>
+                <div v-if="d && d.caption" class="px-3 py-2 text-sm text-gray-700 border-t"><div class="prose max-w-none" v-html="d.caption"></div></div>
               </div>
             </div>
           </section>

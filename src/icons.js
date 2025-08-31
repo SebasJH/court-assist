@@ -11,6 +11,7 @@ import {
     ArrowUpToLine,
     ArrowUpDown,
     ArrowUp,
+    ArrowDown,
     ChevronLeft,
 
     TrafficCone,
@@ -64,6 +65,7 @@ export function registerIcons(app) {
     app.component('ArrowUpToLine', ArrowUpToLine)
     app.component('ArrowUpDown', ArrowUpDown)
     app.component('ArrowUp', ArrowUp)
+    app.component('ArrowDown', ArrowDown)
     app.component('ChevronLeft', ChevronLeft)
 
     app.component('TrafficCone', TrafficCone)

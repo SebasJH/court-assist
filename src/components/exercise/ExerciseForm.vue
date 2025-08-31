@@ -37,8 +37,7 @@
           <label class="form-label">
             Beschrijving
           </label>
-          <textarea v-model="form.description" placeholder="Beschrijving"
-                    class="form-input h-24 resize-none"></textarea>
+          <RichTextEditor v-model="form.description" placeholder="Beschrijving" />
         </div>
 
 
@@ -210,47 +209,77 @@
         <div class="form-group col-span-4">
           <div class="flex items-center justify-between mb-1">
             <label class="form-label">
-              Diagrams
+              Afbeeldingen
             </label>
-            <UiButton color="secondary" class="!py-1 !px-2" @click="addDiagram">+ Voeg diagram toe</UiButton>
+            <span class="text-xs text-gray-500">Slepen om volgorde te wijzigen</span>
           </div>
           <div v-if="!form.diagrams || form.diagrams.length === 0"
-               class="text-sm text-gray-500 border border-dashed border-gray-300 rounded-md p-4">
-            Nog geen diagrams. Klik op “Voeg diagram toe”.
+               class="text-sm text-gray-500 border border-dashed border-gray-300 rounded-md p-8 text-center flex flex-col items-center justify-center gap-3">
+            <div>Nog geen afbeeldingen. Klik op “Voeg afbeelding toe”.</div>
+            <div>
+              <UiButton color="secondary" class="!py-1 !px-2" @click="addDiagram">+ Voeg afbeelding toe</UiButton>
+            </div>
           </div>
-          <div v-else class="flex flex-col gap-3">
-            <div v-for="(d, idx) in form.diagrams" :key="idx" class="border rounded-md p-3 bg-gray-50">
+          <transition-group v-else name="diagram" tag="div" class="flex flex-col gap-3">
+            <div
+              v-for="(d, idx) in form.diagrams"
+              :key="d.uid || idx"
+              class="border rounded-md p-3 bg-gray-50"
+              draggable="true"
+              :aria-grabbed="dragIndex === idx ? 'true' : 'false'"
+              @dragstart="onDragStart(idx, $event)"
+              @dragenter.prevent="onDragEnter(idx)"
+              @dragover.prevent
+              @drop.prevent="onDrop(idx)"
+              @dragend="onDragEnd"
+              :class="overIndex === idx && dragIndex !== idx ? 'ring-2 ring-blue-300' : ''"
+            >
+              <!-- Item header: index + bundled actions -->
+              <div class="flex items-center justify-between mb-2">
+                <div class="inline-flex items-center gap-2">
+                  <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200 text-sm font-semibold">{{ idx + 1 }}</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <button type="button" class="inline-flex items-center justify-center w-9 h-9 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600/50" @click="duplicateDiagram(idx)" aria-label="Dupliceren" title="Dupliceren">
+                    <Copy class="w-4 h-4" />
+                  </button>
+                  <button type="button" class="inline-flex items-center justify-center w-9 h-9 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600/50 disabled:opacity-50" @click="moveDiagram(idx, -1)" :disabled="idx === 0" aria-label="Omhoog" title="Omhoog">
+                    <ArrowUp class="w-4 h-4" />
+                  </button>
+                  <button type="button" class="inline-flex items-center justify-center w-9 h-9 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600/50 disabled:opacity-50" @click="moveDiagram(idx, 1)" :disabled="idx === form.diagrams.length - 1" aria-label="Omlaag" title="Omlaag">
+                    <ArrowDown class="w-4 h-4" />
+                  </button>
+                  <button type="button" class="inline-flex items-center justify-center w-9 h-9 rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50 dark:bg-gray-700 dark:text-red-400 dark:border-gray-600 dark:hover:bg-gray-600/50" @click="removeDiagram(idx)" aria-label="Verwijderen" title="Verwijderen">
+                    <Trash class="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
               <div class="flex flex-col md:flex-row gap-3">
                 <div class="w-full md:w-48">
-                  <div class="aspect-video bg-white border rounded flex items-center justify-center overflow-hidden">
+                  <div class="aspect-video bg-white border rounded flex items-center justify-center overflow-hidden cursor-move select-none">
                     <img v-if="d.src" :src="d.src" alt="Diagram preview" class="w-full h-full object-contain"/>
                     <div v-else class="text-gray-400 text-sm">Geen afbeelding</div>
                   </div>
-                  <div class="mt-2 flex items-center gap-2">
-                    <label class="btn-secondary !py-1 !px-2 cursor-pointer">
-                      Kies afbeelding
+                  <div class="mt-2 flex flex-wrap items-center gap-2">
+                    <label class="inline-flex items-center justify-center h-9 px-3 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600/50 cursor-pointer">
+                      Kies afbeelding(en)
                       <input type="file" accept="image/*" class="hidden" @change="onPickDiagram($event, idx)"/>
                     </label>
-                    <button type="button" class="text-sm text-red-600 hover:underline" @click="removeDiagram(idx)">
-                      Verwijderen
-                    </button>
+                    <UiButton color="secondary" class="!py-1 !px-2" @click="openPlayEditor(idx)">Teken diagram</UiButton>
                   </div>
                 </div>
                 <div class="flex-1">
-                  <label class="form-label mb-1">Bijschrift</label>
-                  <input v-model="d.caption" class="form-input" placeholder="Beschrijf dit diagram"/>
-                  <div class="mt-3 flex gap-2">
-                    <UiButton color="secondary" class="!py-1 !px-2" @click="moveDiagram(idx, -1)" :disabled="idx === 0">
-                      Omhoog
-                    </UiButton>
-                    <UiButton color="secondary" class="!py-1 !px-2" @click="moveDiagram(idx, 1)"
-                              :disabled="idx === form.diagrams.length - 1">Omlaag
-                    </UiButton>
+                  <div class="flex items-center justify-between">
+                    <label class="form-label mb-1">Bijschrift</label>
                   </div>
+                  <RichTextEditor v-model="d.caption" placeholder="Beschrijf dit diagram"/>
                 </div>
               </div>
             </div>
-          </div>
+            <div class="pt-1">
+              <UiButton color="secondary" class="!py-1 !px-2" @click="addDiagram">+ Voeg afbeelding toe</UiButton>
+            </div>
+          </transition-group>
         </div>
       </div>
     </div>
@@ -262,6 +291,17 @@
         {{ isEdit ? 'Opslaan' : 'Aanmaken' }}
       </UiButton>
     </div>
+
+    <!-- Play editor modal -->
+    <modal :open="showPlayEditor" @close="closePlayEditor" contentPaddingClass="p-0">
+      <template #title>Diagram tekenen</template>
+      <PlayEditor
+        :initial="playEditorStates[playEditorIndex] || null"
+        :suggestedCourt="normalizedCourt"
+        @cancel="closePlayEditor"
+        @save="onPlayEditorSave"
+      />
+    </modal>
   </form>
 </template>
 
@@ -274,6 +314,8 @@ import IntensitySelector from '../form/IntensitySelector.vue'
 import RangeNumber from '../form/RangeNumber.vue'
 import {EXERCISE_MATERIALS} from '../../constants'
 import UiButton from '../ui/Button.vue'
+import Modal from '../Modal.vue'
+import PlayEditor from '../diagram/PlayEditor.vue'
 
 export default {
   components: {
@@ -281,7 +323,9 @@ export default {
     IconPicker,
     IntensitySelector,
     UiButton,
-    RangeNumber
+    RangeNumber,
+    Modal,
+    PlayEditor
   },
   props: {
     initial: {type: Object, default: null},
@@ -379,7 +423,7 @@ export default {
           duration: (typeof v.duration === 'number' ? v.duration : (typeof v.minutes === 'number' ? v.minutes : null)),
           icon: v.icon || v.imageIcon || 'TrafficCone',
           video: v.video || '',
-          diagrams: Array.isArray(v.diagrams) ? v.diagrams.map(d => ({src: d.src || '', caption: d.caption || ''})) : []
+          diagrams: Array.isArray(v.diagrams) ? v.diagrams.map(d => ({ uid: d.uid || genUid(), src: d.src || '', caption: d.caption || ''})) : []
         }
         Object.assign(form, formData)
       } else {
@@ -467,9 +511,12 @@ export default {
     }
 
     // Diagrams helpers
+    function genUid(){
+      try { return 'd' + Math.random().toString(36).slice(2) + Date.now().toString(36) } catch(_) { return String(Date.now()) }
+    }
     function addDiagram() {
       if (!Array.isArray(form.diagrams)) form.diagrams = []
-      form.diagrams.push({src: '', caption: ''})
+      form.diagrams.push({ uid: genUid(), src: '', caption: '' })
     }
 
     function removeDiagram(idx) {
@@ -496,10 +543,96 @@ export default {
       reader.onload = () => {
         const url = String(reader.result || '')
         if (!Array.isArray(form.diagrams)) form.diagrams = []
-        if (!form.diagrams[idx]) form.diagrams[idx] = {src: '', caption: ''}
+        if (!form.diagrams[idx]) form.diagrams[idx] = { uid: genUid(), src: '', caption: '' }
+        if (!form.diagrams[idx].uid) form.diagrams[idx].uid = genUid()
         form.diagrams[idx].src = url
       }
       reader.readAsDataURL(file)
+    }
+
+    // In-app Play Editor modal state and handlers
+    const showPlayEditor = ref(false)
+    const playEditorIndex = ref(-1)
+    const playEditorStates = ref([]) // store serialized editor states by index for re-editing
+
+    function openPlayEditor(idx){
+      if (!Array.isArray(form.diagrams)) form.diagrams = []
+      if (!form.diagrams[idx]) form.diagrams[idx] = { src: '', caption: '' }
+      playEditorIndex.value = idx
+      showPlayEditor.value = true
+    }
+    function closePlayEditor(){
+      showPlayEditor.value = false
+      playEditorIndex.value = -1
+    }
+    function onPlayEditorSave(payload){
+      try {
+        const { dataUrl, state } = payload || {}
+        const idx = playEditorIndex.value
+        if (idx >= 0) {
+          if (!Array.isArray(form.diagrams)) form.diagrams = []
+          if (!form.diagrams[idx]) form.diagrams[idx] = { src: '', caption: '' }
+          if (typeof dataUrl === 'string' && dataUrl.startsWith('data:image/')) {
+            form.diagrams[idx].src = dataUrl
+          }
+          const states = Array.isArray(playEditorStates.value) ? playEditorStates.value : []
+          states[idx] = state || null
+          playEditorStates.value = states
+        }
+      } finally {
+        closePlayEditor()
+      }
+    }
+
+    // Drag & drop reorder state and handlers for diagrams
+    const dragIndex = ref(-1)
+    const overIndex = ref(-1)
+
+    function onDragStart(idx, ev){
+      dragIndex.value = idx
+      overIndex.value = -1
+      try { ev.dataTransfer && ev.dataTransfer.setData('text/plain', String(idx)) } catch(_) {}
+      try { ev.dataTransfer && (ev.dataTransfer.effectAllowed = 'move') } catch(_) {}
+    }
+    function onDragEnter(idx){
+      if (idx === dragIndex.value) return
+      overIndex.value = idx
+      // Live reorder to push items while dragging
+      if (!Array.isArray(form.diagrams)) return
+      const from = dragIndex.value
+      const to = idx
+      if (from === -1 || to === -1) return
+      const arr = form.diagrams.slice()
+      const [item] = arr.splice(from, 1)
+      arr.splice(to, 0, item)
+      form.diagrams = arr
+      dragIndex.value = to
+    }
+    function onDrop(idx){
+      const from = dragIndex.value
+      const to = idx
+      dragIndex.value = -1
+      overIndex.value = -1
+      if (from === -1 || to === -1 || from === to) return
+      if (!Array.isArray(form.diagrams)) return
+      const arr = form.diagrams.slice()
+      const [item] = arr.splice(from, 1)
+      arr.splice(to, 0, item)
+      form.diagrams = arr
+    }
+    function onDragEnd(){
+      dragIndex.value = -1
+      overIndex.value = -1
+    }
+
+    function duplicateDiagram(idx){
+      if (!Array.isArray(form.diagrams)) return
+      const item = form.diagrams[idx]
+      if (!item) return
+      const copy = { uid: genUid(), src: item.src || '', caption: item.caption || '' }
+      const arr = form.diagrams.slice()
+      arr.splice(idx + 1, 0, copy)
+      form.diagrams = arr
     }
 
     function validate() {
@@ -609,6 +742,21 @@ export default {
       removeDiagram,
       moveDiagram,
       onPickDiagram,
+      duplicateDiagram,
+      // drag & drop
+      dragIndex,
+      overIndex,
+      onDragStart,
+      onDragEnter,
+      onDrop,
+      onDragEnd,
+      // play editor modal
+      showPlayEditor,
+      playEditorIndex,
+      playEditorStates,
+      openPlayEditor,
+      closePlayEditor,
+      onPlayEditorSave,
       placeholderIcons,
       isEdit,
       normalizedCourt,
@@ -626,4 +774,22 @@ export default {
 </script>
 
 <style scoped>
+/* Smooth movement for diagrams reordering */
+.diagram-move {
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+.diagram-enter-active,
+.diagram-leave-active {
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+.diagram-enter-from,
+.diagram-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+.diagram-enter-to,
+.diagram-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
 </style>
