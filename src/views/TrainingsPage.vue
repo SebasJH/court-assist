@@ -160,8 +160,47 @@ export default {
       headerMenuOpen.value = false
     }
 
-    onMounted(() => { document.addEventListener('mousedown', handleClickOutside) })
-    onBeforeUnmount(() => { document.removeEventListener('mousedown', handleClickOutside) })
+    // Mobile/small-screen detection for header search/back button
+    const isSmallScreen = ref(false)
+    function updateSmallScreen(){
+      try { isSmallScreen.value = (window.innerWidth || document.documentElement.clientWidth) < 768 } catch(_) { isSmallScreen.value = false }
+    }
+
+    // Header search animation state/handlers
+    const isSearching = ref(false)
+    const searchInputRef = ref(null)
+    function openHeaderSearch(){
+      isSearching.value = true
+      try { headerMenuOpen.value = false } catch(_) {}
+      nextTick(() => { try { searchInputRef.value && searchInputRef.value.focus() } catch(_) {} })
+    }
+    function clearHeaderSearch(){
+      q.value = ''
+      nextTick(() => {
+        try {
+          const el = searchInputRef.value
+          if (el && typeof el.focus === 'function') {
+            el.focus()
+            try { if (typeof el.setSelectionRange === 'function') el.setSelectionRange(el.value.length, el.value.length) } catch(_) {}
+          }
+        } catch(_) {}
+      })
+    }
+    function closeHeaderSearch(){ isSearching.value = false }
+    function onHeaderSearchAfterEnter(){
+      if (!isSearching.value) return
+      nextTick(() => { try { searchInputRef.value && searchInputRef.value.focus() } catch(_) {} })
+    }
+
+    onMounted(() => {
+      document.addEventListener('mousedown', handleClickOutside)
+      window.addEventListener('resize', updateSmallScreen)
+      updateSmallScreen()
+    })
+    onBeforeUnmount(() => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      window.removeEventListener('resize', updateSmallScreen)
+    })
 
     // View mode persistence
     const viewMode = ref(localStorage.getItem('training_viewMode') || 'grid')
@@ -263,6 +302,9 @@ export default {
     return { 
       // header menu
       headerMenuOpen, headerMenuRef, headerMenuBtnRef, toggleHeaderMenu, selectView,
+      // header search + responsive
+      isSmallScreen, isSearching, searchInputRef, openHeaderSearch, clearHeaderSearch, closeHeaderSearch, onHeaderSearchAfterEnter,
+      actionsRef,
       // top controls
       q, favorites, showFilters, sortBy, sortDir,
       // list + view
@@ -277,5 +319,9 @@ export default {
 </script>
 
 <style scoped>
-
+.header-search-enter-active, .header-search-leave-active { transition: all 200ms ease; }
+.header-search-enter-from { opacity: 0; transform: translateX(8px); }
+.header-search-enter-to { opacity: 1; transform: translateX(0); }
+.header-search-leave-from { opacity: 1; transform: translateX(0); }
+.header-search-leave-to { opacity: 0; transform: translateX(8px); }
 </style>

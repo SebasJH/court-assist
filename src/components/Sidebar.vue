@@ -21,7 +21,7 @@
         to="/trainingen"
         icon="Dumbbell"
         label="Trainingen"
-        :is-active="$route.path.startsWith('/trainingen')"
+        :is-active="$route.path.startsWith('/trainingen') || $route.path.startsWith('/training')"
         :collapsed="collapsed"
         @click="onNavClick"
       />
