@@ -48,11 +48,21 @@
     padding: 0 !important;
   }
 
-  /* Exercise detail content: avoid breaking images/captions */
+  /* Force single column layout for detail view */
+  .exercise-detail { display: block !important; }
+
+  /* Prevent clipping in print */
+  .overflow-hidden, .overflow-x-hidden, .overflow-y-hidden { overflow: visible !important; }
+  /* Ensure generic overflow utilities don't clip print content */
+  [class*="overflow-"] { overflow: visible !important; }
+
+  /* Exercise detail content: allow natural page breaks; only avoid splitting images */
   .exercise-detail section {
-    break-inside: avoid;
-    page-break-inside: avoid;
+    break-inside: auto;
+    page-break-inside: auto;
   }
+  /* Prevent orphaned headings at page bottom */
+  .exercise-detail h2 { break-after: avoid-page; page-break-after: avoid; }
   .exercise-detail img {
     max-width: 100% !important;
     height: auto !important;
