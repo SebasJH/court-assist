@@ -267,15 +267,18 @@
               </div>
               <div class="flex flex-col md:flex-row gap-3">
                 <div class="w-full md:w-64">
-                  <div class="aspect-video bg-white border rounded flex items-center justify-center overflow-hidden select-none">
+                  <div class="relative aspect-video bg-white border rounded flex items-center justify-center overflow-hidden select-none">
                     <img v-if="d.src" :src="d.src" alt="Diagram preview" class="w-full h-full object-contain"/>
                     <div v-else class="text-gray-400 text-sm">Geen afbeelding</div>
+                    <button v-if="d.src" type="button" class="absolute top-1 right-1 inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/90 text-gray-700 hover:bg-red-50 hover:text-red-600 shadow border border-gray-300 dark:bg-gray-700/90 dark:text-gray-200 dark:hover:bg-gray-600/90 dark:border-gray-600" @click="clearDiagramImage(idx)" aria-label="Afbeelding verwijderen" title="Afbeelding verwijderen">
+                      <Trash class="w-4 h-4" />
+                    </button>
                   </div>
                   <div class="mt-2 flex flex-wrap md:flex-nowrap items-center gap-2">
                     <!-- Hidden file input + trigger button with same styling as 'Teken diagram' -->
                     <input :ref="el => setFileInputRef(el, idx)" type="file" accept="image/*" class="hidden" @change="onPickDiagram($event, idx)"/>
                     <UiButton color="secondary" size="sm" icon="Image" @click="triggerPick(idx)">Afbeelding</UiButton>
-                    <UiButton color="secondary" size="sm" icon="PencilRuler" @click="openPlayEditor(idx)">{{ (d.src || playEditorStates[idx]) ? 'Bewerken' : 'Creëer' }}</UiButton>
+                    <UiButton color="secondary" size="sm" icon="PencilRuler" @click="openPlayEditor(idx)">{{ playEditorStates[idx] ? 'Bewerken' : 'Creëer' }}</UiButton>
                   </div>
                 </div>
                 <div class="flex-1">
@@ -531,12 +534,26 @@ export default {
     function addDiagram() {
       if (!Array.isArray(form.diagrams)) form.diagrams = []
       form.diagrams.push({ uid: genUid(), src: '', caption: '' })
+      // Keep editor states aligned
+      try {
+        const states = Array.isArray(playEditorStates.value) ? playEditorStates.value.slice() : []
+        states.push(null)
+        playEditorStates.value = states
+      } catch(_) {}
     }
 
     function removeDiagram(idx) {
       if (!Array.isArray(form.diagrams)) return
       if (idx < 0 || idx >= form.diagrams.length) return
       form.diagrams.splice(idx, 1)
+      // Keep editor states aligned
+      try {
+        const states = Array.isArray(playEditorStates.value) ? playEditorStates.value.slice() : []
+        if (idx >= 0 && idx < states.length) {
+          states.splice(idx, 1)
+          playEditorStates.value = states
+        }
+      } catch(_) {}
     }
 
     function moveDiagram(idx, delta) {
@@ -546,6 +563,16 @@ export default {
       const item = form.diagrams[idx]
       form.diagrams.splice(idx, 1)
       form.diagrams.splice(to, 0, item)
+      // Move corresponding state as well
+      try {
+        const states = Array.isArray(playEditorStates.value) ? playEditorStates.value.slice() : []
+        if (idx >= 0 && idx < states.length) {
+          const sItem = states[idx]
+          states.splice(idx, 1)
+          states.splice(to, 0, sItem)
+          playEditorStates.value = states
+        }
+      } catch(_) {}
     }
 
     function onPickDiagram(event, idx) {
@@ -560,8 +587,38 @@ export default {
         if (!form.diagrams[idx]) form.diagrams[idx] = { uid: genUid(), src: '', caption: '' }
         if (!form.diagrams[idx].uid) form.diagrams[idx].uid = genUid()
         form.diagrams[idx].src = url
+        // Clear any PlayEditor state for this index, since it's now an uploaded image
+        try {
+          const states = Array.isArray(playEditorStates.value) ? playEditorStates.value.slice() : []
+          states[idx] = null
+          playEditorStates.value = states
+        } catch(_) {}
+        // Reset the file input to allow uploading the same file again if needed
+        try {
+          const map = fileInputs.value || {}
+          const inp = map[idx]
+          if (inp) inp.value = ''
+        } catch(_) {}
       }
       reader.readAsDataURL(file)
+    }
+
+    function clearDiagramImage(idx) {
+      if (!Array.isArray(form.diagrams)) return
+      if (!form.diagrams[idx]) return
+      form.diagrams[idx].src = ''
+      // Also clear any PlayEditor state for this diagram
+      try {
+        const states = Array.isArray(playEditorStates.value) ? playEditorStates.value.slice() : []
+        states[idx] = null
+        playEditorStates.value = states
+      } catch(_) {}
+      // Reset file input if present
+      try {
+        const map = fileInputs.value || {}
+        const inp = map[idx]
+        if (inp) inp.value = ''
+      } catch(_) {}
     }
 
     // File input refs per diagram index
@@ -735,6 +792,15 @@ export default {
       to = Math.max(0, Math.min(arr.length, to))
       arr.splice(to, 0, item)
       form.diagrams = arr
+      // Reorder corresponding PlayEditor states to keep indices aligned
+      try {
+        const states = Array.isArray(playEditorStates.value) ? playEditorStates.value.slice() : []
+        if (from >= 0 && from < states.length) {
+          const [sItem] = states.splice(from, 1)
+          states.splice(to, 0, sItem)
+          playEditorStates.value = states
+        }
+      } catch(_) {}
       dragIndex.value = to
     }
     function onDrop(idx){
@@ -761,6 +827,13 @@ export default {
       const arr = form.diagrams.slice()
       arr.splice(idx + 1, 0, copy)
       form.diagrams = arr
+      // Duplicate corresponding PlayEditor state to maintain editability status
+      try {
+        const states = Array.isArray(playEditorStates.value) ? playEditorStates.value.slice() : []
+        const sItem = (idx >= 0 && idx < states.length) ? states[idx] : null
+        states.splice(idx + 1, 0, sItem || null)
+        playEditorStates.value = states
+      } catch(_) {}
     }
 
     function validate() {
@@ -951,6 +1024,7 @@ export default {
       removeDiagram,
       moveDiagram,
       onPickDiagram,
+      clearDiagramImage,
       duplicateDiagram,
       setFileInputRef,
       triggerPick,
