@@ -45,6 +45,14 @@
               <Star class="w-fit h-4" :class="exercise && exercise.favorite ? 'text-yellow-500' : ''" :fill="exercise && exercise.favorite ? 'currentColor' : 'none'" :stroke="'currentColor'" />
               <span>{{ (exercise && exercise.favorite) ? 'Verwijder uit favorieten' : 'Markeer als favoriet' }}</span>
             </button>
+            <button @click="onDownloadPdf" class="dropdown-item">
+              <Download class="w-fit h-4" />
+              Download als PDF
+            </button>
+            <button @click="onShare" class="dropdown-item">
+              <Share class="w-fit h-4" />
+              Delen
+            </button>
             <button @click="onDelete" class="dropdown-item dropdown-delete">
               <Trash class="w-fit h-4" />
               Verwijderen
@@ -680,6 +688,53 @@ function onDuplicate() {
   if (!exercise.value) return
   store.duplicateExercise(exercise.value.id)
   menuOpen.value = false
+}
+
+function onDownloadPdf() {
+  menuOpen.value = false
+  try {
+    const origTitle = document.title
+    const restore = () => {
+      try { document.title = origTitle } catch(_) {}
+      try { document.body && document.body.classList && document.body.classList.remove('print-mode') } catch(_) {}
+      try { window.removeEventListener('afterprint', restore) } catch(_) {}
+    }
+    try { window.addEventListener('afterprint', restore, { once: true }) } catch(_) { try { window.addEventListener('afterprint', restore) } catch(__) {} }
+    try { document.body && document.body.classList && document.body.classList.add('print-mode') } catch(_) {}
+    try {
+      const name = exercise.value?.name
+      document.title = name ? String(name) : ''
+    } catch(_) {}
+    setTimeout(() => { try { window.print() } catch(__) {} }, 50)
+  } catch(_) {
+    try { window.print() } catch(__) {}
+  }
+}
+
+async function onShare() {
+  menuOpen.value = false
+  try {
+    const title = exercise.value?.name || 'Oefening'
+    const url = window.location?.href || ''
+    const text = 'Bekijk deze oefening'
+    if (navigator && typeof navigator.share === 'function') {
+      await navigator.share({ title, text, url })
+      return
+    }
+  } catch(_) { /* fall through to clipboard */ }
+  // Fallback: copy to clipboard
+  try {
+    const url = window.location?.href || ''
+    if (navigator && navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      await navigator.clipboard.writeText(url)
+      store.notify('Link gekopieerd naar klembord', 'success', 2500)
+    } else {
+      // As a last resort, show a prompt so the user can copy manually
+      window.prompt('Kopieer de link naar deze oefening:', url)
+    }
+  } catch(_) {
+    try { window.prompt('Kopieer de link naar deze oefening:', window.location?.href || '') } catch(__) {}
+  }
 }
 
 function onDelete() {

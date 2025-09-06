@@ -6,6 +6,8 @@ import {
     Star,
     Image,
     PencilRuler,
+    Download,
+    Share2,
 
     ArrowLeft,
     ArrowLeftToLine,
@@ -62,6 +64,8 @@ export function registerIcons(app) {
     app.component('Star', Star)
     app.component('Image', Image)
     app.component('PencilRuler', PencilRuler)
+    app.component('Download', Download)
+    app.component('Share', Share2)
 
     app.component('ArrowLeft', ArrowLeft)
     app.component('ArrowLeftToLine', ArrowLeftToLine)

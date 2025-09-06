@@ -1,0 +1,89 @@
+/* Print-specific styles to produce a clean PDF */
+
+@media print {
+  /* Page settings */
+  @page {
+    size: A4; margin: 12mm;
+  }
+
+  /* Hide app chrome */
+  header.sticky {
+    display: none !important;
+  }
+  /* App shell: left sidebar + mobile drawer + notification bar (if any) */
+  .xl\:block {
+    display: none !important;
+  }
+  .MobileSidebarDrawer, .NotificationBar {
+    display: none !important;
+  }
+
+  /* Hide interactive UI elements */
+  button, [role="button"], .dropdown-menu, .router-link-active, a[href^="javascript:"] {
+    display: none !important;
+  }
+  /* Also hide explicit back/actions buttons by ARIA label */
+  [aria-label="Terug"], [aria-label="Acties"] {
+    display: none !important;
+  }
+
+  /* Remove shadows/borders and simplify backgrounds */
+  .shadow, .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl, .shadow-2xl,
+  .shadow-inner, [class*="shadow-black/"] {
+    box-shadow: none !important;
+  }
+  .border, [class*="border-"] {
+    border: 0 !important;
+  }
+  .bg-gray-50, .bg-gray-100, .bg-white, .dark\:bg-gray-750, .dark\:bg-gray-700 {
+    background: #fff !important;
+  }
+
+  /* Expand main content */
+  main {
+    padding: 0 !important;
+  }
+  .container {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  /* Exercise detail content: avoid breaking images/captions */
+  .exercise-detail section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .exercise-detail img {
+    max-width: 100% !important;
+    height: auto !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .exercise-detail .prose {
+    color: #000 !important;
+  }
+
+  /* Hide lightbox/overlays entirely */
+  [class*="fixed"], [class*="absolute"]:has(.dropdown-menu) {
+    display: none !important;
+  }
+
+  /* Improve typography for print */
+  body {
+    color: #000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact; }
+}
+
+/* When we explicitly toggle print mode from JS, also apply similar cleanup */
+body.print-mode header.sticky {
+  display: none !important;
+}
+body.print-mode .xl\:block,
+body.print-mode .MobileSidebarDrawer,
+body.print-mode .NotificationBar {
+  display: none !important;
+}
+body.print-mode .dropdown-menu {
+  display: none !important;
+}
