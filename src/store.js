@@ -2,7 +2,9 @@ import { reactive, computed } from 'vue'
 
 const state = reactive({
     exercises: [],
+    trainings: [],
     nextId: 1,
+    nextTrainingId: 1,
     notifications: []
 })
 
@@ -68,6 +70,14 @@ function duplicateExercise(id, options = {}) {
     if (!options.silent) notify('Oefening gedupliceerd', 'info', 2500)
 }
 
+function duplicateTraining(id, options = {}) {
+    const orig = state.trainings.find(x => x.id === id)
+    if (!orig) return
+    const copy = { ...orig, id: state.nextTrainingId++, name: (orig.name || 'Training') + ' (kopie)', favorite: false, dateCreated: new Date().toISOString() }
+    state.trainings.unshift(copy)
+    if (!options.silent) notify('Training gedupliceerd', 'info', 2500)
+}
+
 function toggleFavorite(id) {
     const e = state.exercises.find(x => x.id === id)
     if (e) e.favorite = !e.favorite
@@ -88,6 +98,35 @@ function notify(message, type = 'success', timeout = 2500) {
     return id
 }
 
+// Trainings CRUD
+function addTraining(payload, options = {}) {
+    const { dateCreated, ...rest } = payload || {}
+    const favorite = typeof rest.favorite === 'boolean' ? rest.favorite : false
+    const t = { id: state.nextTrainingId++, favorite, dateCreated: dateCreated ?? new Date().toISOString(), ...rest }
+    state.trainings.unshift(t)
+    if (!options.silent) notify('Training aangemaakt', 'success', 2500)
+    return t
+}
+function updateTraining(id, updates, options = {}) {
+    const t = state.trainings.find(x => x.id === id)
+    if (!t) return
+    const { id: _ignore, dateCreated: _ignoredDate, ...rest } = updates || {}
+    const originalId = t.id
+    Object.assign(t, rest)
+    if (t.id !== originalId) t.id = originalId
+    if (!options.silent) notify('Training opgeslagen', 'success', 2500)
+}
+function deleteTraining(id, options = {}) {
+    const idx = state.trainings.findIndex(x => x.id === id)
+    if (idx !== -1) state.trainings.splice(idx, 1)
+    if (!options.silent) notify('Training verwijderd', 'error', 2500)
+}
+
+function toggleTrainingFavorite(id) {
+    const t = state.trainings.find(x => x.id === id)
+    if (t) t.favorite = !t.favorite
+}
+
 export default {
     state,
     addExercise,
@@ -95,6 +134,11 @@ export default {
     deleteExercise,
     duplicateExercise,
     toggleFavorite,
+    addTraining,
+    updateTraining,
+    deleteTraining,
+    duplicateTraining,
+    toggleTrainingFavorite,
     notify,
     removeNotification
 }

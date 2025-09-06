@@ -43,8 +43,8 @@
           class="form-input !rounded-md w-full md:w-72 !pl-9 pr-3 dark:!bg-gray-750 dark:!border-gray-600 dark:!text-gray-50 dark:placeholder:text-gray-400"
           :value="q"
           @input="$emit('update:q', $event.target && $event.target.value)"
-          placeholder="Zoek oefeningen..."
-          aria-label="Zoek oefeningen"
+          :placeholder="searchPlaceholder"
+          :aria-label="searchAriaLabel"
         />
       </div>
     </div>
@@ -63,7 +63,9 @@ export default {
     sortBy: { type: String, default: 'dateCreated' },
     sortDir: { type: String, default: 'desc' },
     viewMode: { type: String, default: 'card' },
-    showViewToggle: { type: Boolean, default: true }
+    showViewToggle: { type: Boolean, default: true },
+    searchPlaceholder: { type: String, default: 'Zoek oefeningen...' },
+    searchAriaLabel: { type: String, default: 'Zoek oefeningen' }
   },
   emits: ['update:q','update:favorites','toggle-filters','update:sortBy','update:sortDir','update:viewMode']
 }
