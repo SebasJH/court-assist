@@ -3,6 +3,7 @@ import ExercisesPage from '../views/ExercisePage.vue'
 import TrainingsPage from '../views/TrainingsPage.vue'
 import ExerciseDetail from '../views/ExerciseDetail.vue'
 import ExerciseEdit from '../views/ExerciseEdit.vue'
+import PlayEditorPage from '../views/PlayEditorPage.vue'
 
 const routes = [
     { path: '/', redirect: '/oefeningen' },
@@ -10,7 +11,8 @@ const routes = [
     { path: '/oefeningen/nieuw', component: ExerciseEdit },
     { path: '/oefening/:slug/bewerken', component: ExerciseEdit },
     { path: '/trainingen', component: TrainingsPage },
-    { path: '/oefening/:slug', component: ExerciseDetail }
+    { path: '/oefening/:slug', component: ExerciseDetail },
+    { path: '/play-editor', name: 'PlayEditor', component: PlayEditorPage, meta: { bypassUnsavedGuard: true } }
 ]
 
 const router = createRouter({ history: createWebHistory(), routes })

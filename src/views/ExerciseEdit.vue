@@ -91,7 +91,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted, nextTick } from 'vue'
 import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
 import PageHeader from '../components/PageHeader.vue'
 import ExerciseForm from '../components/exercise/ExerciseForm.vue'
@@ -131,6 +131,25 @@ function normalizeTab(t){
 // Initialize tab from query if provided
 try { formTab.value = normalizeTab(route.query.tab) } catch(_) {}
 
+// If returning from Play Editor, switch to Media tab without adding history entries
+onMounted(() => {
+  try {
+    const f = sessionStorage.getItem('playEditor_returnToMedia')
+    if (f) {
+      formTab.value = 'media'
+      // Apply any PlayEditor result to the form without remounting
+      nextTick(() => {
+        try {
+          if (formRef.value && typeof formRef.value.applyPlayEditorResultIfAny === 'function') {
+            formRef.value.applyPlayEditorResultIfAny()
+          }
+        } catch(_) {}
+      })
+      sessionStorage.removeItem('playEditor_returnToMedia')
+    }
+  } catch(_) {}
+})
+
 const isEditMode = computed(() => !!route.params.slug)
 
 const initialExercise = computed(() => {
@@ -147,7 +166,24 @@ function hasUnsaved(){
 }
 
 function goBack() {
-  if (!hasUnsaved()) { try { router.back() } catch (_) { router.push('/oefeningen') } return }
+  // Be conservative: if form not ready or cannot determine, show confirm modal
+  const formReady = !!(formRef.value)
+  const canCheck = formReady && typeof formRef.value.isDirty === 'function'
+  if (!canCheck) {
+    showLeaveConfirm.value = true
+    pendingRoute.value = null
+    return
+  }
+  if (!hasUnsaved()) {
+    // Clear any persisted draft before leaving (both new and edit)
+    try {
+      if (formRef.value && typeof formRef.value.clearDraft === 'function') {
+        formRef.value.clearDraft()
+      }
+    } catch(_) {}
+    try { router.back() } catch (_) { router.push('/oefeningen') }
+    return
+  }
   showLeaveConfirm.value = true
   pendingRoute.value = null
 }
@@ -189,6 +225,15 @@ function confirmLeave(){
   showLeaveConfirm.value = false
   const to = pendingRoute.value
   pendingRoute.value = null
+  // Clear any persisted draft and PlayEditor flags when leaving without saving
+  try {
+    if (formRef.value && typeof formRef.value.clearDraft === 'function') {
+      formRef.value.clearDraft()
+    }
+  } catch(_) {}
+  try { sessionStorage.removeItem('playEditor_result') } catch(_) {}
+  try { sessionStorage.removeItem('playEditor_ctx') } catch(_) {}
+  try { sessionStorage.removeItem('playEditor_returnToMedia') } catch(_) {}
   if (to && typeof to === 'object') {
     try { router.push(to.fullPath || to) } catch(_) { try { router.back() } catch(__) { router.push('/oefeningen') } }
   } else {
@@ -202,6 +247,8 @@ function cancelLeave(){
 }
 
 onBeforeRouteLeave((to, from, next) => {
+  // Allow navigating to the diagram editor without confirmation
+  if (to && (to.path === '/play-editor' || (to.matched || []).some(r => r.path === '/play-editor') || (to.meta && to.meta.bypassUnsavedGuard))) { next(); return }
   if (allowLeaveOnce.value) { next(); return }
   if (!hasUnsaved()) { next(); return }
   showLeaveConfirm.value = true
@@ -209,6 +256,14 @@ onBeforeRouteLeave((to, from, next) => {
   next(false)
 })
 
-watch(() => route.fullPath, () => { formKey.value++ })
+watch(() => route.fullPath, () => {
+  // Avoid remounting the form when returning from PlayEditor, to preserve dirty state
+  try {
+    if (sessionStorage.getItem('playEditor_returnToMedia')) {
+      return
+    }
+  } catch(_) {}
+  formKey.value++
+})
 watch(() => route.query.tab, (t) => { try { formTab.value = normalizeTab(t) } catch(_) {} })
 </script>

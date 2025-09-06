@@ -275,7 +275,7 @@
                     <!-- Hidden file input + trigger button with same styling as 'Teken diagram' -->
                     <input :ref="el => setFileInputRef(el, idx)" type="file" accept="image/*" class="hidden" @change="onPickDiagram($event, idx)"/>
                     <UiButton color="secondary" size="sm" icon="Image" @click="triggerPick(idx)">Afbeelding</UiButton>
-                    <UiButton color="secondary" size="sm" icon="PencilRuler" @click="openPlayEditor(idx)">Creeer</UiButton>
+                    <UiButton color="secondary" size="sm" icon="PencilRuler" @click="openPlayEditor(idx)">{{ (d.src || playEditorStates[idx]) ? 'Bewerken' : 'Creëer' }}</UiButton>
                   </div>
                 </div>
                 <div class="flex-1">
@@ -316,7 +316,8 @@
 </template>
 
 <script>
-import {ref, reactive, watch, computed, nextTick, onBeforeUnmount} from 'vue'
+import {ref, reactive, watch, computed, nextTick, onBeforeUnmount, onMounted} from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import store from '../../store'
 import RichTextEditor from '../form/RichTextEditor.vue'
 import IconPicker from '../form/IconPicker.vue'
@@ -345,6 +346,8 @@ export default {
   },
   emits: ['save','close','update:currentTab'],
   setup(props, {emit, expose}) {
+    const router = useRouter()
+    const route = useRoute()
     const emptyForm = () => ({
       id: null,
       name: '',
@@ -583,11 +586,62 @@ export default {
     const playEditorIndex = ref(-1)
     const playEditorStates = ref([]) // store serialized editor states by index for re-editing
 
+    // Draft persistence across Play Editor route
+    function draftKey(){
+      try {
+        const mode = (props.initial && props.initial.id) ? 'edit' : 'new'
+        const slug = route && route.params && route.params.slug ? String(route.params.slug) : 'new'
+        return `exercise_draft_${mode}_${slug}`
+      } catch(_) { return 'exercise_draft_new' }
+    }
+    function saveDraft(){
+      try {
+        const plainForm = JSON.parse(JSON.stringify(form))
+        const data = {
+          form: plainForm,
+          currentTab: (currentTab && currentTab.value) ? String(currentTab.value) : 'basis',
+          playEditorStates: Array.isArray(playEditorStates.value) ? playEditorStates.value : [],
+          initialSnapshot: initialSnapshot && initialSnapshot.value ? JSON.parse(JSON.stringify(initialSnapshot.value)) : null
+        }
+        sessionStorage.setItem(draftKey(), JSON.stringify(data))
+      } catch(_) {}
+    }
+    function restoreDraft(){
+      try {
+        const raw = sessionStorage.getItem(draftKey())
+        if (!raw) return false
+        const data = JSON.parse(raw)
+        if (data && data.form && typeof data.form === 'object') {
+          Object.assign(form, data.form)
+        }
+        if (data && typeof data.currentTab === 'string') {
+          try { currentTab.value = data.currentTab } catch(_) {}
+        }
+        if (data && Array.isArray(data.playEditorStates)) {
+          playEditorStates.value = data.playEditorStates
+        }
+        if (data && data.initialSnapshot) {
+          try { initialSnapshot.value = JSON.parse(JSON.stringify(data.initialSnapshot)) } catch(_) { initialSnapshot.value = data.initialSnapshot }
+        }
+        return true
+      } catch(_) { return false }
+    }
+    function clearDraft(){
+      try { sessionStorage.removeItem(draftKey()) } catch(_) {}
+    }
+
     function openPlayEditor(idx){
-      if (!Array.isArray(form.diagrams)) form.diagrams = []
-      if (!form.diagrams[idx]) form.diagrams[idx] = { src: '', caption: '' }
-      playEditorIndex.value = idx
-      showPlayEditor.value = true
+      try {
+        // Persist current draft before navigating away
+        try { saveDraft() } catch(_) {}
+        const token = genUid()
+        const curTab = (currentTab && currentTab.value) ? String(currentTab.value) : 'basis'
+        const from = (route && (route.fullPath || route.path)) ? String(route.fullPath || route.path) : '/oefeningen'
+        const state = Array.isArray(playEditorStates.value) ? (playEditorStates.value[idx] || null) : null
+        const ctx = { token, idx, from, tab: curTab, initialState: state }
+        try { sessionStorage.setItem('playEditor_ctx', JSON.stringify(ctx)) } catch(_) {}
+        router.push('/play-editor')
+      } catch (_) {}
     }
     function closePlayEditor(){
       showPlayEditor.value = false
@@ -780,6 +834,8 @@ export default {
         delete saveData.id
       }
 
+      // Clear any persisted draft as we're saving now
+      try { clearDraft() } catch(_) {}
       emit('save', saveData)
     }
 
@@ -806,7 +862,16 @@ export default {
     }
 
     const initialSnapshot = ref(null)
-    nextTick(() => { try { initialSnapshot.value = JSON.parse(JSON.stringify(buildNormalized())) } catch (_) { initialSnapshot.value = null } })
+    nextTick(() => {
+      try {
+        // Only initialize if not already restored from a persisted draft
+        if (!initialSnapshot.value) {
+          initialSnapshot.value = JSON.parse(JSON.stringify(buildNormalized()))
+        }
+      } catch (_) {
+        initialSnapshot.value = initialSnapshot.value || null
+      }
+    })
 
     function isDirty() {
       try {
@@ -816,8 +881,8 @@ export default {
       } catch (_) { return false }
     }
 
-    // Expose save so parents (like ExerciseEdit page) can trigger save from header
-    expose({ save, isDirty })
+    // Expose methods so parents (like ExerciseEdit page) can trigger actions
+    expose({ save, isDirty, clearDraft, applyPlayEditorResultIfAny })
 
     const isEdit = computed(() => !!(props.initial && props.initial.id))
 
@@ -835,6 +900,40 @@ export default {
         form.minPlayers = (min === '' || min === null) ? null : Number(min)
         form.maxPlayers = (max === '' || max === null) ? null : Number(max)
       }
+    })
+
+    function applyPlayEditorResultIfAny(){
+      try {
+        const rawRes = sessionStorage.getItem('playEditor_result')
+        const rawCtx = sessionStorage.getItem('playEditor_ctx')
+        const res = rawRes ? JSON.parse(rawRes) : null
+        const ctx = rawCtx ? JSON.parse(rawCtx) : null
+        if (!res || typeof res.idx !== 'number') return
+        const idx = res.idx
+        if (idx < 0 || idx > 1000) return
+        if (!Array.isArray(form.diagrams)) form.diagrams = []
+        if (!form.diagrams[idx]) form.diagrams[idx] = { uid: genUid(), src: '', caption: '' }
+        if (!form.diagrams[idx].uid) form.diagrams[idx].uid = genUid()
+        if (typeof res.dataUrl === 'string' && res.dataUrl.startsWith('data:image/')) {
+          form.diagrams[idx].src = res.dataUrl
+        }
+        const states = Array.isArray(playEditorStates.value) ? playEditorStates.value.slice() : []
+        states[idx] = res.state || (ctx && ctx.initialState ? ctx.initialState : null)
+        playEditorStates.value = states
+        // Clear the stored data so it won't re-apply
+        try { sessionStorage.removeItem('playEditor_result') } catch(_) {}
+        try { sessionStorage.removeItem('playEditor_ctx') } catch(_) {}
+        // Switch to Media tab to make it visible (optional). Keep current tab if ctx.tab exists.
+        try {
+          // Always switch to Media tab after returning from Play Editor
+          currentTab.value = 'media'
+        } catch(_) {}
+      } catch(_) {}
+    }
+
+    onMounted(() => {
+      try { restoreDraft() } catch(_) {}
+      try { setTimeout(applyPlayEditorResultIfAny, 0) } catch(_) {}
     })
 
     return {
