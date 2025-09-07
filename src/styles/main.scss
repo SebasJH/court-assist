@@ -7,19 +7,11 @@
 
 @import './base/_global.scss';
 @import './base/_form.scss';
+@import './base/header.scss';
 @import './base/_sidebar.scss';
+@import './base/_print.scss';
 
 @import './components/modal';
 @import './components/dropdown';
 @import './components/_exercise.scss';
-@import './base/_print.scss';
-
-
-//// Custom animation delays
-//.animation-delay-2000 {
-//  animation-delay: 2s;
-//}
-//
-//.animation-delay-4000 {
-//  animation-delay: 4s;
-//}
+@import  './components/_training.scss';

@@ -1,11 +1,11 @@
 <template>
-  <div class="training-card-item relative bg-white dark:bg-gray-750 border border-gray-200 dark:border-gray-600 rounded-xl p-4 hover:shadow-md transition-shadow duration-150 cursor-pointer" @click="goToDetail" role="link" :aria-label="`Open ${training.name}`">
+  <div class="training-card-item" @click="goToDetail" role="link" :aria-label="`Open ${training.name}`">
     <div class="flex items-start gap-3">
       <div class="flex-1 min-w-0">
         <div class="flex items-center justify-between gap-2">
           <div class="min-w-0">
             <div v-if="training.theme" class="mb-1">
-              <span class="px-2 py-1 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-200 text-xs">{{ training.theme }}</span>
+              <span class="training-theme">{{ training.theme }}</span>
             </div>
             <h3 class="font-semibold text-gray-800 dark:text-gray-50 truncate">{{ training.name }}</h3>
           </div>
@@ -23,14 +23,15 @@
         <button
           ref="menuButtonRef"
           type="button"
-          class="inline-flex items-center justify-center w-8 h-8 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-650 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 transition-colors"
+          class="menu dropdown-button w-9 h-9 flex items-center justify-center rounded-lg transition-colors duration-200 cursor-pointer"
           aria-haspopup="menu"
           :aria-expanded="menuOpen ? 'true' : 'false'"
           aria-label="Acties"
           @click="toggleMenu"
         >
-          <MoreVertical class="w-4 h-4" />
+          <Ellipsis />
         </button>
+
         <div v-if="menuOpen" ref="menuRef" class="dropdown-menu fixed w-56 whitespace-nowrap border rounded-md shadow-lg flex flex-col z-[4000]" :style="menuStyle">
           <button @click="onEdit" class="dropdown-item">
             <Pencil class="w-fit h-4" />

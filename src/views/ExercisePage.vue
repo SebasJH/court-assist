@@ -992,11 +992,4 @@ export default {
   opacity: 0;
   transform: translateY(8px) scale(0.98);
 }
-/* Mobile header search transition */
-.header-search-enter-active,
-.header-search-leave-active { transition: all 200ms ease; }
-.header-search-enter-from { opacity: 0; transform: translateX(8px); }
-.header-search-enter-to { opacity: 1; transform: translateX(0); }
-.header-search-leave-from { opacity: 1; transform: translateX(0); }
-.header-search-leave-to { opacity: 0; transform: translateX(8px); }
 </style>

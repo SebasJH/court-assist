@@ -23,7 +23,7 @@
 
     <!-- Main: name + categories + mobile details -->
     <div class="flex-1 min-w-0">
-      <div class="exercise-title text-base font-semibold leading-tight title-2line md:truncate">{{ exercise.name }}</div>
+      <div class="exercise-title clamp-2">{{ exercise.name }}</div>
       <div class="flex flex-wrap gap-1 mt-0.5">
         <span
           v-for="cat in exercise.category"
@@ -238,11 +238,5 @@ function onToggleFavFromMenu(){ toggleFav(); closeMenu() }
 </script>
 
 <style scoped>
-/* 2-line clamp for the exercise title on small screens; md+ uses single-line truncate via utility */
-.title-2line {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
+
 </style>

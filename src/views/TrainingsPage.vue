@@ -103,7 +103,7 @@
 
     <!-- Trainings list -->
     <div class="mt-4">
-      <div v-if="viewMode==='grid'" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div v-if="viewMode==='grid'" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-6">
         <TrainingCard v-for="t in filteredTrainings" :key="t.id" :training="t" @request-delete="openDeleteFromItem" />
       </div>
 
@@ -319,9 +319,4 @@ export default {
 </script>
 
 <style scoped>
-.header-search-enter-active, .header-search-leave-active { transition: all 200ms ease; }
-.header-search-enter-from { opacity: 0; transform: translateX(8px); }
-.header-search-enter-to { opacity: 1; transform: translateX(0); }
-.header-search-leave-from { opacity: 1; transform: translateX(0); }
-.header-search-leave-to { opacity: 0; transform: translateX(8px); }
 </style>

@@ -1,6 +1,7 @@
 /* Exercise card item */
 
 .exercise-card-item {
+  @apply relative cursor-pointer rounded-xl shadow-md px-8 pt-8 pb-5 border duration-200 transform transition-all hover:scale-[1.02] hover:shadow-lg;
   @apply bg-white border-gray-50;
   @apply dark:bg-gray-750 dark:border-gray-700;
 
@@ -15,6 +16,7 @@
   }
 
   .exercise-title {
+    @apply text-lg font-bold break-words;
     @apply text-gray-800;
     @apply dark:text-gray-50;
   }
@@ -60,6 +62,7 @@
   }
 
   .exercise-title {
+    @apply text-base font-semibold leading-tight md:truncate;
     @apply text-gray-800;
     @apply dark:text-gray-50;
   }

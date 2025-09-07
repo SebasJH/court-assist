@@ -1,5 +1,5 @@
 <template>
-  <div class="exercise-card-item relative cursor-pointer rounded-xl shadow-md px-8 pt-8 pb-5 border duration-200 transform transition-all hover:scale-[1.02] hover:shadow-lg" role="link" :aria-label="`Open ${exercise.name}`" @click="goToDetail" tabindex="0" @keydown.enter.prevent="goToDetail" :class="zClass">
+  <div class="exercise-card-item" role="link" :aria-label="`Open ${exercise.name}`" @click="goToDetail" tabindex="0" @keydown.enter.prevent="goToDetail" :class="zClass">
     <div class="flex flex-col h-full">
       <div class="flex items-start gap-3">
 
@@ -19,7 +19,7 @@
 
         <!-- Title -->
         <div class="flex-1 min-w-0 pr-8">
-          <div class="exercise-title text-lg font-bold  break-words clamp-2">{{ exercise.name }}</div>
+          <div class="exercise-title clamp-2">{{ exercise.name }}</div>
 
           <!-- Categories -->
           <div class="flex flex-wrap gap-1 mt-1">
@@ -324,16 +324,4 @@ function goToDetail() {
 
 <style scoped>
 
-.clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.clamp-3 {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
 </style>
