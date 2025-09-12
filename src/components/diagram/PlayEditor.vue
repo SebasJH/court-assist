@@ -1,11 +1,11 @@
 <template>
   <div class="flex h-full flex-col">
     <!-- Editor area -->
-    <div class="flex-1 overflow-auto px-0 sm:px-0 py-0">
-      <div class="w-full">
-        <div class="relative flex">
-          <div class="relative flex-1" ref="leftPane">
-            <div class="relative" :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }">
+    <div class="flex-1 overflow-y-auto overflow-x-hidden px-0 sm:px-0 py-0">
+      <div class="w-full h-full">
+        <div class="relative flex h-full">
+          <div class="relative flex-1 flex items-center justify-center h-full" ref="leftPane">
+            <div class="relative overflow-hidden" :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }">
               <!-- Court HTML injected -->
               <div ref="courtContainer" class="block w-full h-full z-0"></div>
               <!-- SVG overlay for objects (actions & players) -->
@@ -140,6 +140,66 @@ export default {
     }
     const courtContainer = ref(null)
     const svgRef = ref(null)
+    const playableBounds = ref({ minX: 0, minY: 0, maxX: 1, maxY: 1 })
+
+    function updatePlayableBounds(){
+      try {
+        const container = courtContainer.value
+        const overlay = svgRef.value
+        if (!container || !overlay || typeof overlay.getBoundingClientRect !== 'function') {
+          playableBounds.value = { minX: 0, minY: 0, maxX: 1, maxY: 1 }
+          return
+        }
+        const svg = container.querySelector && container.querySelector('svg')
+        const bg = svg && svg.querySelector ? svg.querySelector('#editor_court_bg') : null
+        const overlayRect = overlay.getBoundingClientRect()
+        let minX = 0, minY = 0, maxX = 1, maxY = 1
+        if (bg && typeof bg.getBoundingClientRect === 'function') {
+          const bgRect = bg.getBoundingClientRect()
+          const nx1 = (bgRect.left - overlayRect.left) / overlayRect.width
+          const ny1 = (bgRect.top - overlayRect.top) / overlayRect.height
+          const nx2 = (bgRect.right - overlayRect.left) / overlayRect.width
+          const ny2 = (bgRect.bottom - overlayRect.top) / overlayRect.height
+          minX = Math.max(0, Math.min(1, Math.min(nx1, nx2)))
+          maxX = Math.max(0, Math.min(1, Math.max(nx1, nx2)))
+          minY = Math.max(0, Math.min(1, Math.min(ny1, ny2)))
+          maxY = Math.max(0, Math.min(1, Math.max(ny1, ny2)))
+        } else if (svg && typeof svg.getBoundingClientRect === 'function') {
+          // Fallback: use root svg rect projected into overlay space
+          const svgr = svg.getBoundingClientRect()
+          const nx1 = (svgr.left - overlayRect.left) / overlayRect.width
+          const ny1 = (svgr.top - overlayRect.top) / overlayRect.height
+          const nx2 = (svgr.right - overlayRect.left) / overlayRect.width
+          const ny2 = (svgr.bottom - overlayRect.top) / overlayRect.height
+          minX = Math.max(0, Math.min(1, Math.min(nx1, nx2)))
+          maxX = Math.max(0, Math.min(1, Math.max(nx1, nx2)))
+          minY = Math.max(0, Math.min(1, Math.min(ny1, ny2)))
+          maxY = Math.max(0, Math.min(1, Math.max(ny1, ny2)))
+        }
+        // Expand slightly to allow placing centers on the white boundary lines
+        const eps = 0.003
+        minX = Math.max(0, minX - eps)
+        minY = Math.max(0, minY - eps)
+        maxX = Math.min(1, maxX + eps)
+        maxY = Math.min(1, maxY + eps)
+        if (maxX > minX + 0.002 && maxY > minY + 0.002) {
+          playableBounds.value = { minX, minY, maxX, maxY }
+        } else {
+          playableBounds.value = { minX: 0, minY: 0, maxX: 1, maxY: 1 }
+        }
+      } catch (_) {
+        playableBounds.value = { minX: 0, minY: 0, maxX: 1, maxY: 1 }
+      }
+    }
+
+    function clampXY(x, y){
+      try {
+        const b = playableBounds.value || { minX: 0, minY: 0, maxX: 1, maxY: 1 }
+        const cx = Math.max(b.minX, Math.min(b.maxX, x))
+        const cy = Math.max(b.minY, Math.min(b.maxY, y))
+        return { x: cx, y: cy }
+      } catch(_) { return { x: Math.max(0, Math.min(1, x)), y: Math.max(0, Math.min(1, y)) } }
+    }
 
     const court = ref('half') // 'half' | 'full'
     function normalizeSuggestedCourt(v){
@@ -165,8 +225,10 @@ export default {
       }
     }
 
-    const HALF_RATIO = 800/450 // width/height for half court suggested canvas size
-    const FULL_RATIO = 800/900
+    // Default aspect ratios (fallbacks); will be updated from injected SVG viewBox
+    const DEFAULT_HALF_RATIO = 800/450 // width/height for half court fallback
+    const DEFAULT_FULL_RATIO = 50/94
+    const currentRatio = ref(DEFAULT_HALF_RATIO)
 
     const leftPane = ref(null)
     const editorWidth = ref(900)
@@ -176,11 +238,15 @@ export default {
     const canvasSize = computed(() => {
       const availW = Math.max(0, Math.floor(editorWidth.value || 0))
       const availH = Math.max(0, Math.floor(editorHeight.value || 0))
-      const ratio = (court.value === 'half') ? HALF_RATIO : FULL_RATIO // width / height
+      const ratio = Math.max(0.01, Number(currentRatio.value) || (court.value === 'half' ? DEFAULT_HALF_RATIO : DEFAULT_FULL_RATIO)) // width / height
       if (availW <= 0 || availH <= 0) return { w: 0, h: 0 }
-      // Height-first fit: always occupy full available height; width may overflow horizontally if needed
-      const h = availH
-      const w = Math.round(h * ratio)
+      // Height-first fit: occupy full available height, but clamp width to available width to avoid horizontal scroll
+      let h = availH
+      let w = Math.round(h * ratio)
+      if (w > availW) {
+        w = availW
+        h = Math.round(w / ratio)
+      }
       return { w, h }
     })
 
@@ -226,16 +292,59 @@ export default {
           svg.style.width = canvasWidth.value + 'px'
           svg.style.height = canvasHeight.value + 'px'
           svg.style.display = 'block'
+          // Remove any decorative visuals that extend beyond the box and could misalign with overlay
+          try { svg.style.boxShadow = 'none'; } catch(_) {}
+          try { svg.style.borderRadius = '0px'; } catch(_) {}
+          // Update aspect ratio using the best available method
+          let ratioFromSvg = 0
+          // Compute ratio from viewBox with sensible fallbacks
+          try {
+            // 1) Use viewBox on the top-level SVG
+            const vb = svg.getAttribute('viewBox')
+            if (vb) {
+              const parts = vb.trim().split(/\s+/)
+              if (parts.length === 4) {
+                const vw = parseFloat(parts[2])
+                const vh = parseFloat(parts[3])
+                if (isFinite(vw) && isFinite(vh) && vh > 0) {
+                  ratioFromSvg = Math.max(0.01, vw / vh)
+                }
+              }
+            }
+          } catch(_) {}
+          if (!ratioFromSvg) {
+            try {
+              // 2) Fallback to nested first child SVG viewBox, if present
+              const inner = svg.querySelector && svg.querySelector('svg')
+              const ivb = inner && inner.getAttribute ? inner.getAttribute('viewBox') : null
+              if (ivb) {
+                const parts = ivb.trim().split(/\s+/)
+                if (parts.length === 4) {
+                  const vw = parseFloat(parts[2])
+                  const vh = parseFloat(parts[3])
+                  if (isFinite(vw) && isFinite(vh) && vh > 0) {
+                    ratioFromSvg = Math.max(0.01, vw / vh)
+                  }
+                }
+              }
+            } catch(_) {}
+          }
+          currentRatio.value = ratioFromSvg || ((court.value === 'half') ? DEFAULT_HALF_RATIO : DEFAULT_FULL_RATIO)
+        } else {
+          // No SVG found; use defaults per court
+          currentRatio.value = (court.value === 'half') ? DEFAULT_HALF_RATIO : DEFAULT_FULL_RATIO
         }
         // Also constrain wrapper div height to overlay alignment
         el.style.width = canvasWidth.value + 'px'
         el.style.height = canvasHeight.value + 'px'
         el.style.position = 'relative'
-        // center vertically with sidebar, allow max available width
+        // keep wrapper size as set by Vue binding to avoid conflicts
         const wrapper = el.parentElement
         if (wrapper) {
-          wrapper.style.width = '100%'
+          // no-op: wrapper width/height are controlled by template :style
         }
+        // update playable bounds after sizes are applied
+        updatePlayableBounds()
       } catch (_) {}
     }
 
@@ -322,7 +431,8 @@ export default {
       if (/^player[1-5]$/.test(tool.value)) {
         const id = nextId++
         const number = Number(tool.value.replace('player','')) || (players.length + 1)
-        players.push({ id, x, y, number, color: '#2563eb' })
+        const cl = clampXY(x, y)
+        players.push({ id, x: cl.x, y: cl.y, number, color: '#2563eb' })
         selectedPlayerId.value = id
         tool.value = ''
         redraw()
@@ -378,8 +488,9 @@ export default {
       if (!draggingId.value) return
       const p = players.find(pp => pp.id === draggingId.value)
       if (!p) return
-      p.x = Math.max(0, Math.min(1, x - dragOffset.value.dx))
-      p.y = Math.max(0, Math.min(1, y - dragOffset.value.dy))
+      const cl = clampXY(x - dragOffset.value.dx, y - dragOffset.value.dy)
+      p.x = cl.x
+      p.y = cl.y
       redraw()
     }
     function onPointerUp(e){
@@ -407,7 +518,8 @@ export default {
         if (/^player[1-5]$/.test(kind)) {
           const id = nextId++
           const number = Number(kind.replace('player','')) || (players.length + 1)
-          players.push({ id, x, y, number, color: '#2563eb' })
+          const cl = clampXY(x, y)
+          players.push({ id, x: cl.x, y: cl.y, number, color: '#2563eb' })
           redraw()
         } else if (['pass','dribble','screen','cut','shoot','handoff'].includes(kind)) {
           // when dropping a line tool, create a short line to the right with a movable middle point

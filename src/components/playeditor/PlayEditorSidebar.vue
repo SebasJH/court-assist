@@ -1,5 +1,5 @@
 <template>
-  <div class="relative z-[200] w-48 bg-white dark:bg-gray-800 border-l dark:border-gray-600 p-2 space-y-2 select-none">
+  <div class="relative z-[200] w-48 shrink-0 bg-white dark:bg-gray-800 border-l dark:border-gray-600 p-2 space-y-2 select-none">
     <!-- Selection inspector -->
     <div v-if="selectedInfo" class="mb-1">
       <div class="text-[11px] font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wide">Geselecteerd</div>

@@ -1,6 +1,6 @@
 <template>
   <div class="h-full flex flex-col">
-    <div class="px-5 sm:px-10 pt-4 pb-3 flex items-center gap-3 border-b dark:border-gray-600 bg-white dark:bg-gray-800">
+    <div ref="headerRef" class="px-5 sm:px-10 pt-4 pb-3 flex items-center gap-3 border-b dark:border-gray-600 bg-white dark:bg-gray-800">
       <button
         type="button"
         @click="goBack"
@@ -31,7 +31,7 @@
         </div>
       </div>
     </div>
-    <div class="flex-1 min-h-0">
+    <div class="flex-1 min-h-0" :style="{ height: availableHeight + 'px' }">
       <PlayEditor ref="editor" :initial="initialState" :suggestedCourt="''" @save="onEditorSave" />
     </div>
   </div>
@@ -51,6 +51,20 @@ export default {
     const initialState = ref(null)
     const ctx = ref(null)
     const router = useRouter()
+
+    // Height of editor area = 100vh - header height
+    const headerRef = ref(null)
+    const availableHeight = ref(0)
+    let headerRO = null
+    function updateAvailableHeight(){
+      try {
+        const vh = window.innerHeight || document.documentElement.clientHeight || 0
+        const headerEl = headerRef.value
+        const hh = headerEl && typeof headerEl.getBoundingClientRect === 'function' ? (headerEl.getBoundingClientRect().height || 0) : 0
+        const h = Math.max(0, Math.floor(vh - hh))
+        if (Math.abs(h - availableHeight.value) > 0.5) availableHeight.value = h
+      } catch(_) { availableHeight.value = 0 }
+    }
 
     const menuOpen = ref(false)
     const menuRef = ref(null)
@@ -90,9 +104,22 @@ export default {
           } catch(_) {}
         })
       } catch(_) {}
+      // Setup header observer and initial sizing
+      try {
+        if (headerRef.value && typeof ResizeObserver !== 'undefined') {
+          headerRO = new ResizeObserver(() => updateAvailableHeight())
+          headerRO.observe(headerRef.value)
+        }
+      } catch(_) {}
+      try { window.addEventListener('resize', updateAvailableHeight) } catch(_) {}
+      try { updateAvailableHeight() } catch(_) {}
       try { document.addEventListener('click', onDocClick, true) } catch(_) {}
     })
-    onBeforeUnmount(() => { try { document.removeEventListener('click', onDocClick, true) } catch(_) {} })
+    onBeforeUnmount(() => {
+      try { document.removeEventListener('click', onDocClick, true) } catch(_) {}
+      try { window.removeEventListener('resize', updateAvailableHeight) } catch(_) {}
+      try { if (headerRO && headerRef.value) { headerRO.disconnect(); headerRO = null } } catch(_) {}
+    })
 
     function saveFromPage(){
       if (editor.value && typeof editor.value.saveAsImage === 'function') {
@@ -125,7 +152,7 @@ export default {
       }
     }
 
-    return { editor, initialState, saveFromPage, onEditorSave, goBack, menuOpen, menuRef, chooseCourt, currentCourt }
+    return { editor, initialState, saveFromPage, onEditorSave, goBack, menuOpen, menuRef, chooseCourt, currentCourt, headerRef, availableHeight }
   }
 }
 </script>
