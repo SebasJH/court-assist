@@ -1,5 +1,5 @@
 <template>
-  <div class="training-card-item" @click="goToDetail" role="link" :aria-label="`Open ${training.name}`">
+  <div class="training-card-item" @click="goToDetail" role="link" :aria-label="`Open ${training.name}`" :class="zClass">
     <div class="flex items-start gap-3">
       <div class="flex-1 min-w-0">
         <div class="flex items-center justify-between gap-2">
@@ -19,7 +19,7 @@
       </div>
 
       <!-- Actions menu -->
-      <div class="ml-2 relative" @click.stop>
+      <div class="ml-2 relative" @click.stop @mouseenter="liftEnter" @mouseleave="liftLeave">
         <button
           ref="menuButtonRef"
           type="button"
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import store from '../../store'
 import { computeFixedMenuPosition } from '../../utils/menuPosition'
@@ -83,6 +83,12 @@ export default {
     const menuRef = ref(null)
     const menuButtonRef = ref(null)
     const menuStyle = ref({ left: '0px', top: '0px' })
+
+    // Lift the card while hovering menu area so dropdown stacks above neighbors
+    const hoverCount = ref(0)
+    function liftEnter(){ hoverCount.value++ }
+    function liftLeave(){ hoverCount.value = Math.max(0, hoverCount.value - 1) }
+    const zClass = computed(() => (menuOpen.value ? 'z-[2000]' : (hoverCount.value > 0 ? 'z-[1000]' : '')))
 
     function goToDetail(){
       try { router.push('/training/' + slugify(props.training.name)) } catch(_) {}

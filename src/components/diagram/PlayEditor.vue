@@ -17,7 +17,8 @@
       <div class="mx-auto" :style="{maxWidth: wrapperWidth + 'px'}">
         <div class="relative border rounded-lg bg-white dark:bg-gray-700 shadow-sm flex">
           <div class="relative flex-1">
-            <canvas ref="canvasRef" :width="canvasWidth" :height="canvasHeight" class="block w-full h-auto z-0"></canvas>
+            <!-- Court HTML injected -->
+            <div ref="courtContainer" class="block w-full h-auto z-0"></div>
             <!-- SVG overlay for objects (actions & players) -->
             <svg ref="svgRef" class="absolute inset-0 block z-[100]" :viewBox="'0 0 ' + canvasWidth + ' ' + canvasHeight" :width="canvasWidth" :height="canvasHeight"
                  @mousedown="onPointerDown" @mousemove="onPointerMove" @mouseup="onPointerUp" @mouseleave="onPointerUp"
@@ -115,6 +116,8 @@
 <script>
 import { ref, reactive, watch, onMounted, onBeforeUnmount, computed, nextTick } from 'vue'
 import UiButton from '../ui/Button.vue'
+import halfCourtHtml from '../halfcourt.html?raw'
+import fullCourtHtml from '../fullcourt.html?raw'
 
 export default {
   name: 'PlayEditor',
@@ -172,9 +175,8 @@ export default {
         }
       }
     }
-    const canvasRef = ref(null)
+    const courtContainer = ref(null)
     const svgRef = ref(null)
-    const ctx = ref(null)
 
     const court = ref('half') // 'half' | 'full'
     function normalizeSuggestedCourt(v){
@@ -210,6 +212,34 @@ export default {
 
     function setCourt(kind){ court.value = (kind === 'full') ? 'full' : 'half'; redraw() }
 
+    function renderCourt(){
+      try {
+        const el = courtContainer.value
+        if (!el) return
+        // Inject correct HTML once or when switching
+        const html = (court.value === 'full') ? fullCourtHtml : halfCourtHtml
+        // Only replace when different to avoid losing any internal state unnecessarily
+        if (el.__current !== (court.value || '')) {
+          el.innerHTML = html
+          el.__current = court.value || ''
+        }
+        // Ensure sizing: set explicit pixel size on the top-level SVG if found
+        const svg = el.querySelector('svg')
+        if (svg) {
+          svg.setAttribute('width', String(canvasWidth.value))
+          svg.setAttribute('height', String(canvasHeight.value))
+          // Make sure it does not overflow and fits container
+          svg.style.width = canvasWidth.value + 'px'
+          svg.style.height = canvasHeight.value + 'px'
+          svg.style.display = 'block'
+        }
+        // Also constrain wrapper div height to overlay alignment
+        el.style.width = canvasWidth.value + 'px'
+        el.style.height = canvasHeight.value + 'px'
+        el.style.position = 'relative'
+      } catch (_) {}
+    }
+
     function addPlayer() {
       const id = nextId++
       const number = players.length + 1
@@ -236,7 +266,7 @@ export default {
 
     function getCanvasPoint(evt) {
       const svg = svgRef.value
-      const host = (svg && typeof svg.getBoundingClientRect === 'function') ? svg : canvasRef.value
+      const host = (svg && typeof svg.getBoundingClientRect === 'function') ? svg : (courtContainer.value || svg)
       const rect = host.getBoundingClientRect()
       const clientX = evt.clientX
       const clientY = evt.clientY
@@ -248,8 +278,8 @@ export default {
     function pickPlayerAt(normX, normY) {
       // hit-test normalized, consider radius in normalized units
       const rPx = 18 // visual radius in px
-      const rx = rPx / canvasRef.value.width
-      const ry = rPx / canvasRef.value.height
+      const rx = rPx / canvasWidth.value
+      const ry = rPx / canvasHeight.value
       // find topmost (last) player containing point
       for (let i = players.length - 1; i >= 0; i--) {
         const p = players[i]
@@ -793,18 +823,18 @@ export default {
     function pickLineHandle(nx, ny){
       // nx,ny are normalized
       if (!lines.length) return null
-      const px = nx * canvasRef.value.width
-      const py = ny * canvasRef.value.height
+      const px = nx * canvasWidth.value
+      const py = ny * canvasHeight.value
       const handleRadius = 10
       // check from topmost line
       for (let i = lines.length - 1; i >= 0; i--) {
         const L = lines[i]
-        const x1 = L.x1 * canvasRef.value.width
-        const y1 = L.y1 * canvasRef.value.height
-        const x2 = L.x2 * canvasRef.value.width
-        const y2 = L.y2 * canvasRef.value.height
-        const xm = (L.xm != null ? L.xm : (L.x1 + L.x2)/2) * canvasRef.value.width
-        const ym = (L.ym != null ? L.ym : (L.y1 + L.y2)/2) * canvasRef.value.height
+        const x1 = L.x1 * canvasWidth.value
+        const y1 = L.y1 * canvasHeight.value
+        const x2 = L.x2 * canvasWidth.value
+        const y2 = L.y2 * canvasHeight.value
+        const xm = (L.xm != null ? L.xm : (L.x1 + L.x2)/2) * canvasWidth.value
+        const ym = (L.ym != null ? L.ym : (L.y1 + L.y2)/2) * canvasHeight.value
         const shape = L.shape || 'straight'
         // handle hits
         if (Math.hypot(px - x1, py - y1) <= handleRadius) return { index: i, handle: 'start' }
@@ -847,32 +877,49 @@ export default {
     }
 
     function redraw(){
-      if (!ctx.value) return
-      if (court.value === 'half') {
-        drawCourtHalf(ctx.value)
-      } else {
-        drawCourtFull(ctx.value)
-      }
-      // Live: actions/players are rendered as a separate SVG overlay, not on the Canvas.
-      // We intentionally do not draw lines or players on the Canvas here.
+      // No-op refresh for now; overlay SVG binds to reactive data.
+      // Ensure court HTML is present and sized correctly.
+      renderCourt()
     }
 
-    function drawTempLine(type, x1, y1, x2, y2){
-      if (!ctx.value) return
-      const tmp = { type, x1, y1, x2, y2 }
-      drawLine(ctx.value, tmp)
-    }
+    function drawTempLine(){ /* no-op: live preview is via SVG overlay */ }
 
-    function saveAsImage(){
+    async function saveAsImage(){
       try {
-        // Redraw on an export canvas to include everything consistently
+        // Compose export by rasterizing the injected court SVG + overlay vectors to a canvas
         const exportCanvas = document.createElement('canvas')
-        exportCanvas.width = canvasRef.value.width
-        exportCanvas.height = canvasRef.value.height
+        exportCanvas.width = canvasWidth.value
+        exportCanvas.height = canvasHeight.value
         const ec = exportCanvas.getContext('2d')
-        if (court.value === 'half') drawCourtHalf(ec); else drawCourtFull(ec)
+
+        // 1) Draw the new court background by converting the injected SVG element to a blob URL
+        const container = courtContainer.value
+        const svg = container ? container.querySelector('svg') : null
+        if (svg) {
+          // Clone the top-level SVG so we can safely serialize
+          const cloned = svg.cloneNode(true)
+          cloned.setAttribute('width', String(canvasWidth.value))
+          cloned.setAttribute('height', String(canvasHeight.value))
+          // Ensure inline styles applied
+          const svgText = new XMLSerializer().serializeToString(cloned)
+          const svgBlob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' })
+          const url = URL.createObjectURL(svgBlob)
+          await new Promise((resolve) => {
+            const img = new Image()
+            img.onload = () => { try { ec.drawImage(img, 0, 0, exportCanvas.width, exportCanvas.height) } catch(_) {} URL.revokeObjectURL(url); resolve() }
+            img.onerror = () => { URL.revokeObjectURL(url); resolve() }
+            img.src = url
+          })
+        } else {
+          // Fallback to simple background color if SVG not found
+          ec.fillStyle = '#f0e1cd'
+          ec.fillRect(0,0,exportCanvas.width, exportCanvas.height)
+        }
+
+        // 2) Draw lines and players on top to match the on-screen overlay
         lines.forEach(l => drawLine(ec, l))
         drawPlayers(ec)
+
         const url = exportCanvas.toDataURL('image/png')
         emit('save', { dataUrl: url, state: serializeState() })
       } catch (e) {
@@ -915,21 +962,19 @@ export default {
 
     onMounted(() => {
       try {
-        const c = canvasRef.value
-        ctx.value = c.getContext('2d')
         setCourt(normalizeSuggestedCourt(props.suggestedCourt || (props.initial && props.initial.court)))
         if (props.initial) loadState(props.initial)
         else {
           players.splice(0, players.length)
           for (let i=0;i<5;i++) players.push({ id: nextId++, x: 0.3 + i*0.08, y: 0.6, number: i+1, color: '#2563eb' })
         }
-        redraw()
+        renderCourt()
       } catch (_) {}
-      window.addEventListener('resize', redraw)
+      window.addEventListener('resize', renderCourt)
     })
-    onBeforeUnmount(() => { window.removeEventListener('resize', redraw) })
+    onBeforeUnmount(() => { window.removeEventListener('resize', renderCourt) })
 
-    watch(() => court.value, () => redraw())
+    watch(() => court.value, () => renderCourt())
 
     // Keep arrowShape UI in sync with selected line's shape
     watch(() => selectedLineIndex.value, (i) => {
@@ -941,7 +986,7 @@ export default {
     })
 
     return {
-      canvasRef,
+      courtContainer,
       svgRef,
       court,
       players,
