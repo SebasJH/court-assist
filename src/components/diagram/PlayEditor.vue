@@ -3,9 +3,9 @@
     <!-- Editor area -->
     <div class="flex-1 overflow-y-auto overflow-x-hidden px-0 sm:px-0 py-0">
       <div class="w-full h-full">
-        <div class="relative flex h-full">
-          <div class="relative flex-1 flex items-center justify-center h-full" ref="leftPane">
-            <div class="relative overflow-hidden" :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }">
+        <div class="relative flex h-full min-w-0">
+          <div class="relative flex-1 min-w-0 flex items-center justify-center h-full" ref="leftPane">
+            <div class="relative overflow-hidden max-w-full" :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }">
               <!-- Court HTML injected -->
               <div ref="courtContainer" class="block w-full h-full z-0"></div>
               <!-- SVG overlay for objects (actions & players) -->
