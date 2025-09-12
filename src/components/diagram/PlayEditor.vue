@@ -1,30 +1,19 @@
 <template>
   <div class="flex h-full flex-col">
-    <!-- Controls -->
-    <div class="px-5 sm:px-10 pt-4 pb-3 flex items-center gap-3 border-b dark:border-gray-600">
-      <div class="inline-flex rounded-md overflow-hidden border border-gray-300 dark:border-gray-600 h-10">
-        <button type="button" class="px-3 h-10 text-sm font-medium focus:outline-none"
-                :class="court==='half' ? 'bg-blue-500 text-white' : 'bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200'"
-                @click="setCourt('half')">Half court</button>
-        <button type="button" class="px-3 h-10 text-sm font-medium border-l border-gray-300 dark:border-gray-600 focus:outline-none"
-                :class="court==='full' ? 'bg-blue-500 text-white' : 'bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200'"
-                @click="setCourt('full')">Full court</button>
-      </div>
-    </div>
-
     <!-- Editor area -->
-    <div class="flex-1 overflow-auto px-5 sm:px-10 py-5">
-      <div class="mx-auto" :style="{maxWidth: wrapperWidth + 'px'}">
-        <div class="relative border rounded-lg bg-white dark:bg-gray-700 shadow-sm flex">
-          <div class="relative flex-1">
-            <!-- Court HTML injected -->
-            <div ref="courtContainer" class="block w-full h-auto z-0"></div>
-            <!-- SVG overlay for objects (actions & players) -->
-            <svg ref="svgRef" class="absolute inset-0 block z-[100]" :viewBox="'0 0 ' + canvasWidth + ' ' + canvasHeight" :width="canvasWidth" :height="canvasHeight"
-                 @mousedown="onPointerDown" @mousemove="onPointerMove" @mouseup="onPointerUp" @mouseleave="onPointerUp"
-                 @touchstart.prevent="onTouchStart" @touchmove.prevent="onTouchMove" @touchend.prevent="onTouchEnd"
-                 @dragover.prevent @drop.prevent="onCanvasDrop">
-              <defs>
+    <div class="flex-1 overflow-auto px-0 sm:px-0 py-0">
+      <div class="w-full">
+        <div class="relative flex">
+          <div class="relative flex-1" ref="leftPane">
+            <div class="relative" :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }">
+              <!-- Court HTML injected -->
+              <div ref="courtContainer" class="block w-full h-full z-0"></div>
+              <!-- SVG overlay for objects (actions & players) -->
+              <svg ref="svgRef" class="absolute inset-0 block z-[100] w-full h-full" :viewBox="'0 0 ' + canvasWidth + ' ' + canvasHeight" width="100%" height="100%"
+                   @mousedown="onPointerDown" @mousemove="onPointerMove" @mouseup="onPointerUp" @mouseleave="onPointerUp"
+                   @touchstart.prevent="onTouchStart" @touchmove.prevent="onTouchMove" @touchend.prevent="onTouchEnd"
+                   @dragover.prevent @drop.prevent="onCanvasDrop">
+                <defs>
                 <!-- Arrow marker (triangle) -->
                 <marker id="arrow_marker" markerWidth="7" markerHeight="8" refX="6" refY="4" orient="auto" markerUnits="userSpaceOnUse">
                   <polygon fill="#333" points="0 0, 7 4, 0 8 0.5 4" />
@@ -65,48 +54,20 @@
               </g>
 
               <!-- Players as SVG -->
-              <g>
-                <g v-for="p in players" :key="'p'+p.id" :transform="'translate(' + (p.x*canvasWidth) + ',' + (p.y*canvasHeight) + ')'">
-                  <circle :cx="0" :cy="0" r="18" :fill="p.color || '#2563eb'" />
-                  <text text-anchor="middle" dominant-baseline="middle" fill="#fff" style="font: bold 14px ui-sans-serif, system-ui, -apple-system;">{{ p.number || '?' }}</text>
-                </g>
-              </g>
+              <PlayersLayer :players="players" :width="canvasWidth" :height="canvasHeight" />
             </svg>
+            </div>
           </div>
           <!-- Right sidebar tools (outside the field, not overlay) -->
-          <div class="relative z-[200] w-48 bg-white dark:bg-gray-800 border-l dark:border-gray-600 p-2 space-y-2 select-none">
-            <!-- Selection inspector -->
-            <div v-if="selectedInfo" class="mb-1">
-              <div class="text-[11px] font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wide">Geselecteerd</div>
-              <div class="mt-1 text-xs text-gray-800 dark:text-gray-100 font-medium">{{ selectedInfo.name }}</div>
-              <!-- Arrow shape options only when a line is selected -->
-              <div v-if="selectedInfo.type==='line'" class="mt-2">
-                <div class="text-[10px] text-gray-500">Arrow shape</div>
-                <div class="mt-1 grid grid-cols-2 gap-1">
-                  <button type="button" class="tool-btn" :class="arrowShape==='straight' ? 'tool-active' : ''" @click="setArrowShape('straight')">Straight</button>
-                  <button type="button" class="tool-btn" :class="arrowShape==='curve' ? 'tool-active' : ''" @click="setArrowShape('curve')">Curve</button>
-                  <button type="button" class="tool-btn" :class="arrowShape==='zigzag' ? 'tool-active' : ''" @click="setArrowShape('zigzag')">Zig zag</button>
-                  <button type="button" class="tool-btn" :class="arrowShape==='curvedZigzag' ? 'tool-active' : ''" @click="setArrowShape('curvedZigzag')">Curved zig zag</button>
-                </div>
-              </div>
-              <div class="mt-2">
-                <button type="button" class="tool-btn w-full !text-red-600 dark:!text-red-400" @click="deleteSelected">Object verwijderen</button>
-              </div>
-            </div>
-            <div class="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Add actions</div>
-            <div class="grid grid-cols-2 gap-2">
-              <button type="button" class="tool-btn" :class="tool==='dribble' ? 'tool-active' : ''" @mousedown.prevent.stop="setTool('dribble')" @click="setTool('dribble')" draggable="true" @dragstart="(ev)=>onToolDragStart('dribble', ev)">Dribble</button>
-              <button type="button" class="tool-btn" :class="tool==='pass' ? 'tool-active' : ''" @mousedown.prevent.stop="setTool('pass')" @click="setTool('pass')" draggable="true" @dragstart="(ev)=>onToolDragStart('pass', ev)">Pass</button>
-              <button type="button" class="tool-btn" :class="tool==='cut' ? 'tool-active' : ''" @mousedown.prevent.stop="setTool('cut')" @click="setTool('cut')" draggable="true" @dragstart="(ev)=>onToolDragStart('cut', ev)">Cut</button>
-              <button type="button" class="tool-btn" :class="tool==='screen' ? 'tool-active' : ''" @mousedown.prevent.stop="setTool('screen')" @click="setTool('screen')" draggable="true" @dragstart="(ev)=>onToolDragStart('screen', ev)">Screen</button>
-              <button type="button" class="tool-btn" :class="tool==='shoot' ? 'tool-active' : ''" @mousedown.prevent.stop="setTool('shoot')" @click="setTool('shoot')" draggable="true" @dragstart="(ev)=>onToolDragStart('shoot', ev)">Shoot</button>
-              <button type="button" class="tool-btn" :class="tool==='handoff' ? 'tool-active' : ''" @mousedown.prevent.stop="setTool('handoff')" @click="setTool('handoff')" draggable="true" @dragstart="(ev)=>onToolDragStart('handoff', ev)">Handoff</button>
-            </div>
-            <div class="pt-2 text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Add player</div>
-            <div class="grid grid-cols-5 gap-1">
-              <button v-for="n in 5" :key="'p'+n" type="button" class="tool-btn !px-0" :class="tool==='player'+n ? 'tool-active' : ''" @mousedown.prevent.stop="setTool('player'+n)" @click="setTool('player'+n)" draggable="true" @dragstart="(ev)=>onToolDragStart('player'+n, ev)">{{ n }}</button>
-            </div>
-          </div>
+          <PlayEditorSidebar
+            :selectedInfo="selectedInfo"
+            :arrowShape="arrowShape"
+            :tool="tool"
+            @set-arrow-shape="setArrowShape"
+            @delete-selected="deleteSelected"
+            @set-tool="setTool"
+            @tool-drag-start="onToolDragStart"
+          />
         </div>
       </div>
     </div>
@@ -116,12 +77,14 @@
 <script>
 import { ref, reactive, watch, onMounted, onBeforeUnmount, computed, nextTick } from 'vue'
 import UiButton from '../ui/Button.vue'
+import PlayersLayer from '../playeditor/objects/PlayersLayer.vue'
+import PlayEditorSidebar from '../playeditor/PlayEditorSidebar.vue'
 import halfCourtSvg from '../../assets/courts/halfcourt.svg?raw'
-import fullCourtSvg from '../../assets/courts/fullcourt.svg?raw'
+import fullCourtHtmlRaw from '../fullcourt.html?raw'
 
 export default {
   name: 'PlayEditor',
-  components: { UiButton },
+  components: { UiButton, PlayersLayer, PlayEditorSidebar },
   props: {
     // Optional initial state to resume editing later
     initial: { type: Object, default: null },
@@ -205,19 +168,50 @@ export default {
     const HALF_RATIO = 800/450 // width/height for half court suggested canvas size
     const FULL_RATIO = 800/900
 
-    const canvasWidth = computed(() => 900) // fixed width for crisp export
-    const canvasHeight = computed(() => court.value === 'half' ? Math.round(canvasWidth.value / (HALF_RATIO)) : Math.round(canvasWidth.value / (FULL_RATIO)))
-    // Wrapper width = canvas + sidebar (192px)
+    const leftPane = ref(null)
+    const editorWidth = ref(900)
+    const editorHeight = ref(600)
+
+    // Compute size to fit inside available width/height, prioritizing height (no vertical scroll)
+    const canvasSize = computed(() => {
+      const availW = Math.max(0, Math.floor(editorWidth.value || 0))
+      const availH = Math.max(0, Math.floor(editorHeight.value || 0))
+      const ratio = (court.value === 'half') ? HALF_RATIO : FULL_RATIO // width / height
+      if (availW <= 0 || availH <= 0) return { w: 0, h: 0 }
+      // Height-first fit: always occupy full available height; width may overflow horizontally if needed
+      const h = availH
+      const w = Math.round(h * ratio)
+      return { w, h }
+    })
+
+    const canvasWidth = computed(() => canvasSize.value.w)
+    const canvasHeight = computed(() => canvasSize.value.h)
+    // Wrapper width no longer constrains; keep for compatibility if referenced (unused in template)
     const wrapperWidth = computed(() => canvasWidth.value + 192)
 
     function setCourt(kind){ court.value = (kind === 'full') ? 'full' : 'half'; redraw() }
+
+    // Cache and extractor for full-court SVG from the provided HTML file
+    let fullCourtSvgCache = ''
+    function getFullCourtSvg(){
+      if (fullCourtSvgCache) return fullCourtSvgCache
+      try {
+        const div = document.createElement('div')
+        div.innerHTML = fullCourtHtmlRaw
+        const svg = div.querySelector('svg')
+        fullCourtSvgCache = svg ? svg.outerHTML : fullCourtHtmlRaw
+      } catch (_) {
+        fullCourtSvgCache = fullCourtHtmlRaw
+      }
+      return fullCourtSvgCache
+    }
 
     function renderCourt(){
       try {
         const el = courtContainer.value
         if (!el) return
         // Inject correct HTML once or when switching
-        const html = (court.value === 'full') ? fullCourtSvg : halfCourtSvg
+        const html = (court.value === 'full') ? getFullCourtSvg() : halfCourtSvg
         // Only replace when different to avoid losing any internal state unnecessarily
         if (el.__current !== (court.value || '')) {
           el.innerHTML = html
@@ -237,6 +231,11 @@ export default {
         el.style.width = canvasWidth.value + 'px'
         el.style.height = canvasHeight.value + 'px'
         el.style.position = 'relative'
+        // center vertically with sidebar, allow max available width
+        const wrapper = el.parentElement
+        if (wrapper) {
+          wrapper.style.width = '100%'
+        }
       } catch (_) {}
     }
 
@@ -968,11 +967,40 @@ export default {
           players.splice(0, players.length)
           for (let i=0;i<5;i++) players.push({ id: nextId++, x: 0.3 + i*0.08, y: 0.6, number: i+1, color: '#2563eb' })
         }
+        // Measure available width using ResizeObserver
+        try {
+          const el = leftPane.value
+          const ro = new ResizeObserver(() => {
+            try {
+              const rect = el && typeof el.getBoundingClientRect === 'function' ? el.getBoundingClientRect() : null
+              const w = rect ? rect.width : null
+              const h = rect ? rect.height : null
+              let changed = false
+              if (w && Math.abs(w - editorWidth.value) > 0.5) { editorWidth.value = w; changed = true }
+              if (h && Math.abs(h - editorHeight.value) > 0.5) { editorHeight.value = h; changed = true }
+              if (changed) renderCourt()
+            } catch(_) {}
+          })
+          if (el) {
+            ro.observe(el)
+            // store observer on element for cleanup
+            el.__ro = ro
+            // initialize size
+            const rect = el.getBoundingClientRect()
+            if (rect) {
+              if (rect.width) editorWidth.value = rect.width
+              if (rect.height) editorHeight.value = rect.height
+            }
+          }
+        } catch(_) {}
         renderCourt()
       } catch (_) {}
       window.addEventListener('resize', renderCourt)
     })
-    onBeforeUnmount(() => { window.removeEventListener('resize', renderCourt) })
+    onBeforeUnmount(() => {
+      window.removeEventListener('resize', renderCourt)
+      try { const el = leftPane.value; if (el && el.__ro) { el.__ro.disconnect(); el.__ro = null } } catch(_) {}
+    })
 
     watch(() => court.value, () => renderCourt())
 
@@ -988,6 +1016,7 @@ export default {
     return {
       courtContainer,
       svgRef,
+      leftPane,
       court,
       players,
       tool,
