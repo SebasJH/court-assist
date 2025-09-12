@@ -116,8 +116,8 @@
 <script>
 import { ref, reactive, watch, onMounted, onBeforeUnmount, computed, nextTick } from 'vue'
 import UiButton from '../ui/Button.vue'
-import halfCourtHtml from '../halfcourt.html?raw'
-import fullCourtHtml from '../fullcourt.html?raw'
+import halfCourtSvg from '../../assets/courts/halfcourt.svg?raw'
+import fullCourtSvg from '../../assets/courts/fullcourt.svg?raw'
 
 export default {
   name: 'PlayEditor',
@@ -217,14 +217,14 @@ export default {
         const el = courtContainer.value
         if (!el) return
         // Inject correct HTML once or when switching
-        const html = (court.value === 'full') ? fullCourtHtml : halfCourtHtml
+        const html = (court.value === 'full') ? fullCourtSvg : halfCourtSvg
         // Only replace when different to avoid losing any internal state unnecessarily
         if (el.__current !== (court.value || '')) {
           el.innerHTML = html
           el.__current = court.value || ''
         }
         // Ensure sizing: set explicit pixel size on the top-level SVG if found
-        const svg = el.querySelector('svg')
+        const svg = el.querySelector('svg') || null
         if (svg) {
           svg.setAttribute('width', String(canvasWidth.value))
           svg.setAttribute('height', String(canvasHeight.value))
