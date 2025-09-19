@@ -85,6 +85,7 @@
             @delete-selected="deleteSelected"
             @set-tool="setTool"
             @tool-drag-start="onToolDragStart"
+            @quick-add-player="onQuickAddPlayer"
           />
         </div>
       </div>
@@ -393,6 +394,14 @@ export default {
     const lineDragOffset = ref({ dx: 0, dy: 0 })
     const selectedPlayerId = ref(null)
 
+    // Cursor helper for SVG overlay
+    function setSvgCursor(cur){
+      try {
+        const el = svgRef.value
+        if (el && el.style) el.style.cursor = cur || ''
+      } catch(_) {}
+    }
+
     function getCanvasPoint(evt) {
       const svg = svgRef.value
       const host = (svg && typeof svg.getBoundingClientRect === 'function') ? svg : (courtContainer.value || svg)
@@ -405,16 +414,19 @@ export default {
     }
 
     function pickPlayerAt(normX, normY) {
-      // hit-test normalized, consider radius in normalized units
-      const rPx = 18 // visual radius in px
-      const rx = rPx / canvasWidth.value
-      const ry = rPx / canvasHeight.value
+      // Hit-test normalized coordinates against a rectangular box that matches
+      // the visible 44x44 rect around the player. Expand by ~1px padding to
+      // avoid missing clicks on the outermost pixel due to rounding.
+      const halfPx = 22
+      const padPx = 1
+      const hx = (halfPx + padPx) / canvasWidth.value
+      const hy = (halfPx + padPx) / canvasHeight.value
       // find topmost (last) player containing point
       for (let i = players.length - 1; i >= 0; i--) {
         const p = players[i]
-        const dx = (normX - p.x)
-        const dy = (normY - p.y)
-        if ((dx*dx) / (rx*rx) + (dy*dy) / (ry*ry) <= 1) return p
+        const dx = Math.abs(normX - p.x)
+        const dy = Math.abs(normY - p.y)
+        if (dx <= hx && dy <= hy) return p
       }
       return null
     }
@@ -435,6 +447,7 @@ export default {
           const L = lines[hit.index]
           lineDragOffset.value = { dx: x - L.x1, dy: y - L.y1 }
         }
+        setSvgCursor('grabbing')
         redraw()
         return
       }
@@ -446,6 +459,7 @@ export default {
         selectedLineIndex.value = -1
         activeHandle.value = null
         selectedPlayerId.value = p.id
+        setSvgCursor('grabbing')
         return
       }
       // 3) empty area: if a tool is selected, create object by click-to-place (single-shot) and clear tool
@@ -474,6 +488,7 @@ export default {
       selectedLineIndex.value = -1
       activeHandle.value = null
       selectedPlayerId.value = null
+      setSvgCursor('')
       redraw()
     }
     function onPointerMove(e){
@@ -481,7 +496,8 @@ export default {
       // moving line handles
       if (selectedLineIndex.value >= 0 && activeHandle.value) {
         const L = lines[selectedLineIndex.value]
-        if (!L) return
+        if (!L) { setSvgCursor(''); return }
+        setSvgCursor('grabbing' )
         if (activeHandle.value === 'start') {
           L.x1 = Math.max(0, Math.min(1, x)); L.y1 = Math.max(0, Math.min(1, y))
         } else if (activeHandle.value === 'mid') {
@@ -506,9 +522,14 @@ export default {
         redraw()
         return
       }
-      if (!draggingId.value) return
+      if (!draggingId.value) {
+        // Not dragging: let CSS control hover cursor (grab on .pe-player:hover)
+        setSvgCursor('')
+        return
+      }
       const p = players.find(pp => pp.id === draggingId.value)
       if (!p) return
+      setSvgCursor('grabbing')
       const cl = clampXY(x - dragOffset.value.dx, y - dragOffset.value.dy)
       p.x = cl.x
       p.y = cl.y
@@ -517,6 +538,15 @@ export default {
     function onPointerUp(e){
       draggingId.value = null
       activeHandle.value = null
+      try {
+        if (e && e.clientX != null) {
+          const { x, y } = getCanvasPoint(e)
+          // Let CSS control the hover cursor after release
+          setSvgCursor('')
+        } else {
+          setSvgCursor('')
+        }
+      } catch(_) {}
     }
 
     // Touch helpers
@@ -552,6 +582,25 @@ export default {
           activeHandle.value = 'end'
           redraw()
         }
+      } catch(_) {}
+    }
+
+    function onQuickAddPlayer(n){
+      try {
+        const idx = Math.max(1, Math.min(5, Number(n) || 1)) - 1
+        const fixed = [
+          { x: 0.5 - 0.16, y: 0.76 }, // 1: leftmost
+          { x: 0.5 - 0.08, y: 0.76 }, // 2: left of center
+          { x: 0.5,         y: 0.76 }, // 3: center horizontally
+          { x: 0.5 + 0.08, y: 0.76 }, // 4: right of center
+          { x: 0.5 + 0.16, y: 0.76 }, // 5: rightmost
+        ]
+        const pos = fixed[idx] || { x: 0.5, y: 0.5 }
+        const id = nextId++
+        const number = Number(n) || (players.length + 1)
+        players.push({ id, x: pos.x, y: pos.y, number, color: '#2563eb' })
+        selectedPlayerId.value = id
+        redraw()
       } catch(_) {}
     }
 
@@ -1104,7 +1153,14 @@ export default {
         if (props.initial) loadState(props.initial)
         else {
           players.splice(0, players.length)
-          for (let i=0;i<5;i++) players.push({ id: nextId++, x: 0.3 + i*0.08, y: 0.6, number: i+1, color: '#2563eb' })
+          const defaultPos = [
+            { x: 0.5 - 0.16, y: 0.76 }, // 1
+            { x: 0.5 - 0.08, y: 0.76 }, // 2
+            { x: 0.5,         y: 0.76 }, // 3
+            { x: 0.5 + 0.08, y: 0.76 }, // 4
+            { x: 0.5 + 0.16, y: 0.76 }, // 5
+          ]
+          for (let i=0;i<5;i++) players.push({ id: nextId++, x: defaultPos[i].x, y: defaultPos[i].y, number: i+1, color: '#2563eb' })
         }
         // Measure available width using ResizeObserver
         try {
@@ -1172,6 +1228,7 @@ export default {
       padPane,
       court,
       players,
+      selectedPlayerId,
       tool,
       setTool,
       arrowShape,
@@ -1191,6 +1248,7 @@ export default {
       onTouchEnd,
       onToolDragStart,
       onCanvasDrop,
+      onQuickAddPlayer,
       saveAsImage,
       selectedInfo,
       deleteSelected,
@@ -1207,5 +1265,4 @@ export default {
 
 <style scoped>
 .tool-btn{ @apply text-xs px-2 py-1.5 border rounded bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-600; }
-.tool-active{ @apply bg-blue-500 text-white hover:bg-blue-600; }
 </style>
