@@ -128,7 +128,10 @@ export default {
       // Player selected
       if (selectedPlayerId.value) {
         const p = players.find(pp => pp.id === selectedPlayerId.value)
-        if (p) return { type: 'player', name: 'Speler ' + (p.number ?? ''), id: p.id, role: p.role || 'offense', pos: (p.pos != null && p.pos !== '') ? String(p.pos).slice(0,2) : String(p.number ?? '') }
+        if (p) {
+          const posLabel = (p.pos != null && p.pos !== '') ? String(p.pos).slice(0,2) : String(p.number ?? '')
+          return { type: 'player', name: 'Speler ' + posLabel, id: p.id, role: p.role || 'offense', pos: posLabel }
+        }
       }
       return null
     })
