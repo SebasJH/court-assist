@@ -93,6 +93,34 @@
             </div>
           </div>
         </div>
+        <!-- Color -->
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] text-gray-500">Kleur</span>
+          <div class="relative w-full" ref="colorWrap">
+            <button type="button"
+                    class="menu dropdown-button h-8 px-2 rounded-md flex items-center justify-between w-full border border-gray-300 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-600"
+                    @click.stop="toggleColorMenu">
+              <span class="inline-flex items-center gap-2">
+                <span class="inline-block w-4 h-4 rounded-sm border border-gray-300" :style="{ backgroundColor: (selectedInfo && selectedInfo.color) ? selectedInfo.color : '#111' }"></span>
+                <span class="text-xs">Kies kleur</span>
+              </span>
+              <svg class="w-3.5 h-3.5 opacity-70" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 011.08 1.04l-4.25 4.25a.75.75 0 01-1.06 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd"/></svg>
+            </button>
+            <div v-if="colorMenuOpen"
+                 :class="['dropdown-menu absolute top-full mt-2 w-48 border whitespace-nowrap rounded-md shadow-lg z-[3000] p-2', 'right-0']">
+              <div class="grid grid-cols-6 gap-2">
+                <button v-for="col in colorOptions" :key="'col'+col" type="button"
+                        :aria-label="'Kies kleur ' + col"
+                        class="w-6 h-6 rounded-sm border flex items-center justify-center"
+                        :class="isColorActive(col) ? 'ring-2 ring-blue-500' : 'border-gray-300 dark:border-gray-500'"
+                        :style="{ backgroundColor: col }"
+                        @click.stop="onSelectColor(col)">
+                  <span v-if="isColorActive(col)" class="block w-3 h-3 rounded-sm bg-white/90"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <!-- Arrow shape options only when a line is selected -->
       <div v-if="selectedInfo.type==='line'" class="mt-2">
@@ -177,11 +205,30 @@ export default {
     arrowShape: { type: String, default: 'straight' },
     tool: { type: String, default: '' }
   },
-  emits: ['set-arrow-shape','delete-selected','set-tool','tool-drag-start','quick-add-player','set-player-role','set-player-position'],
+  emits: ['set-arrow-shape','delete-selected','set-tool','tool-drag-start','quick-add-player','set-player-role','set-player-position','set-player-color'],
   data(){
-    return { roleMenuOpen: false, posMenuOpen: false, posInput: '' }
+    return { roleMenuOpen: false, posMenuOpen: false, colorMenuOpen: false, posInput: '' }
   },
   computed: {
+    colorOptions(){
+      // Exact requested palette in order:
+      // zwart, paars, donkerblauw, lichtblauw, lichtgroen, donkergroen,
+      // geel, oranje, rood, lichtgrijs, donkergrijs, wit
+      return [
+        '#000000', // zwart
+        '#7C3AED', // paars
+        '#1D4ED8', // donkerblauw
+        '#60A5FA', // lichtblauw
+        '#86EFAC', // lichtgroen
+        '#059669', // donkergroen
+        '#FACC15', // geel
+        '#F59E0B', // oranje
+        '#EF4444', // rood
+        '#D1D5DB', // lichtgrijs
+        '#4B5563', // donkergrijs
+        '#FFFFFF'  // wit
+      ]
+    },
     roleLabel(){
       const r = (this.selectedInfo && (this.selectedInfo.role || 'offense')) || 'offense'
       const code = (r === 'bal' ? 'ball' : r === 'aanval' ? 'offense' : r === 'verdediging' ? 'defense' : r)
@@ -204,9 +251,16 @@ export default {
     }
   },
   methods: {
+    isColorActive(col){
+      const cur = (this.selectedInfo && this.selectedInfo.color) ? String(this.selectedInfo.color).toLowerCase() : '#111'
+      return String(col || '').toLowerCase() === cur
+    },
     toggleRoleMenu(){
       this.roleMenuOpen = !this.roleMenuOpen
-      if (this.roleMenuOpen) this.posMenuOpen = false
+      if (this.roleMenuOpen) {
+        this.posMenuOpen = false
+        this.colorMenuOpen = false
+      }
     },
     onSelectRole(v){
       this.roleMenuOpen = false
@@ -216,8 +270,20 @@ export default {
       this.posMenuOpen = !this.posMenuOpen
       if (this.posMenuOpen) {
         this.roleMenuOpen = false
+        this.colorMenuOpen = false
         this.posInput = this.posLabel
       }
+    },
+    toggleColorMenu(){
+      this.colorMenuOpen = !this.colorMenuOpen
+      if (this.colorMenuOpen) {
+        this.roleMenuOpen = false
+        this.posMenuOpen = false
+      }
+    },
+    onSelectColor(col){
+      // Do not close the menu on click; only update the color
+      this.$emit('set-player-color', col)
     },
     isRoleActive(code){
       return String(this.currentRole || '').toLowerCase() === String(code || '').toLowerCase()
@@ -245,6 +311,7 @@ export default {
       try {
         const roleEl = this.$refs.roleWrap
         const posEl = this.$refs.posWrap
+        const colorEl = this.$refs.colorWrap
         const target = e && (e.target || e.srcElement)
         if (this.roleMenuOpen) {
           const insideRole = roleEl && roleEl.contains && target && roleEl.contains(target)
@@ -253,6 +320,10 @@ export default {
         if (this.posMenuOpen) {
           const insidePos = posEl && posEl.contains && target && posEl.contains(target)
           if (!insidePos) this.posMenuOpen = false
+        }
+        if (this.colorMenuOpen) {
+          const insideColor = colorEl && colorEl.contains && target && colorEl.contains(target)
+          if (!insideColor) this.colorMenuOpen = false
         }
       } catch(_) {}
     }
