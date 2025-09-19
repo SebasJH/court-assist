@@ -18,32 +18,41 @@
             </button>
             <div v-if="roleMenuOpen"
                  :class="['dropdown-menu absolute top-full mt-2 w-40 border whitespace-nowrap rounded-md shadow-lg flex flex-col z-[3000]', 'right-0']">
-              <button class="dropdown-item" :class="isRoleActive('ball') ? 'bg-blue-50 dark:bg-gray-600/50' : ''" @click.stop="onSelectRole('ball')">
-                <svg width="22" height="22" viewBox="-22 -22 44 44" aria-hidden="true">
-                  <g fill="none" stroke="#111">
-                    <circle r="20.5" stroke-width="2.5" />
-                  </g>
-                  <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111" style="font: 700 16px ui-sans-serif, system-ui, -apple-system; user-select: none; pointer-events: none;">{{ posLabel }}</text>
-                </svg>
+              <button class="dropdown-item !pl-3" :class="isRoleActive('ball') ? 'bg-blue-50 dark:bg-gray-600/50' : ''" @click.stop="onSelectRole('ball')">
+                <span class="inline-flex items-center justify-center w-8 h-8 rounded">
+                  <svg width="32" height="32" viewBox="-22 -22 44 44" aria-hidden="true">
+                    <g fill="none" stroke="#111">
+                      <circle r="20.5" stroke-width="2.5" />
+                    </g>
+                    <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111"
+                          :style="{ font: ((posLabel && posLabel.length >= 2) ? '700 20px ' : '700 24px ') + 'ui-sans-serif, system-ui, -apple-system', userSelect:'none' }">
+                      {{ posLabel }}
+                    </text>
+                  </svg>
+                </span>
                 Bal
               </button>
-              <button class="dropdown-item" :class="isRoleActive('offense') ? 'bg-blue-50 dark:bg-gray-600/50' : ''" @click.stop="onSelectRole('offense')">
-                <svg width="22" height="22" viewBox="-22 -22 44 44" aria-hidden="true">
-                  <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111"
-                        :style="{ font: ((posLabel && posLabel.length >= 2) ? '700 12px ' : '700 14px ') + 'ui-sans-serif, system-ui, -apple-system', userSelect:'none' }">
-                    {{ posLabel }}
-                  </text>
-                </svg>
+              <button class="dropdown-item !pl-3" :class="isRoleActive('offense') ? 'bg-blue-50 dark:bg-gray-600/50' : ''" @click.stop="onSelectRole('offense')">
+                <span class="inline-flex items-center justify-center w-8 h-8 rounded border border-gray-200 bg-white dark:border-gray-500 dark:bg-gray-600/40">
+                  <svg width="32" height="32" viewBox="-22 -22 44 44" aria-hidden="true">
+                    <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111"
+                          :style="{ font: ((posLabel && posLabel.length >= 2) ? '700 20px ' : '700 24px ') + 'ui-sans-serif, system-ui, -apple-system', userSelect:'none' }">
+                      {{ posLabel }}
+                    </text>
+                  </svg>
+                </span>
                 Aanval
               </button>
-              <button class="dropdown-item" :class="isRoleActive('defense') ? 'bg-blue-50 dark:bg-gray-600/50' : ''" @click.stop="onSelectRole('defense')">
-                <svg width="22" height="22" viewBox="-22 -22 44 44" aria-hidden="true">
-                  <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" :dx="-6" fill="#111" style="font: 700 14px ui-sans-serif, system-ui, -apple-system; user-select: none;">X</text>
-                  <text :x="5" :y="10" text-anchor="start" dominant-baseline="alphabetic" fill="#111"
-                        :style="{ font: ((posLabel && posLabel.length >= 2) ? '700 10px ' : '700 11px ') + 'ui-sans-serif, system-ui, -apple-system', userSelect:'none' }">
-                    {{ posLabel }}
-                  </text>
-                </svg>
+              <button class="dropdown-item !pl-3" :class="isRoleActive('defense') ? 'bg-blue-50 dark:bg-gray-600/50' : ''" @click.stop="onSelectRole('defense')">
+                <span class="inline-flex items-center justify-center w-8 h-8 rounded border border-gray-200 bg-white dark:border-gray-500 dark:bg-gray-600/40">
+                  <svg width="32" height="32" viewBox="-22 -22 44 44" aria-hidden="true">
+                    <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" :dx="-6" fill="#111" style="font: 700 22px ui-sans-serif, system-ui, -apple-system; user-select: none;">X</text>
+                    <text :x="5" :y="10" text-anchor="start" dominant-baseline="alphabetic" fill="#111"
+                          :style="{ font: ((posLabel && posLabel.length >= 2) ? '700 12px ' : '700 13px ') + 'ui-sans-serif, system-ui, -apple-system', userSelect:'none' }">
+                      {{ posLabel }}
+                    </text>
+                  </svg>
+                </span>
                 Verdediging
               </button>
             </div>
