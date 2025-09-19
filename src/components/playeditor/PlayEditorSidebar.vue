@@ -22,7 +22,7 @@
                 <span class="inline-flex items-center justify-center w-8 h-8 rounded">
                   <svg width="32" height="32" viewBox="-22 -22 44 44" aria-hidden="true">
                     <g fill="none" stroke="#111">
-                      <circle r="20.5" stroke-width="2.5" />
+                      <circle r="20.5" stroke-width="2" />
                     </g>
                     <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111"
                           :style="{ font: ((posLabel && posLabel.length >= 2) ? '700 20px ' : '700 24px ') + 'ui-sans-serif, system-ui, -apple-system', userSelect:'none' }">
@@ -33,8 +33,8 @@
                 Bal
               </button>
               <button class="dropdown-item !pl-3" :class="isRoleActive('offense') ? 'bg-blue-50 dark:bg-gray-600/50' : ''" @click.stop="onSelectRole('offense')">
-                <span class="inline-flex items-center justify-center w-8 h-8 rounded border border-gray-200 bg-white dark:border-gray-500 dark:bg-gray-600/40">
-                  <svg width="32" height="32" viewBox="-22 -22 44 44" aria-hidden="true">
+                <span class="inline-flex items-center justify-center w-[30px] h-[30px] rounded-sm border border-gray-200 bg-white dark:border-gray-500 dark:bg-gray-600/40">
+                  <svg width="30" height="30" viewBox="-22 -22 44 44" aria-hidden="true">
                     <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111"
                           :style="{ font: ((posLabel && posLabel.length >= 2) ? '700 20px ' : '700 24px ') + 'ui-sans-serif, system-ui, -apple-system', userSelect:'none' }">
                       {{ posLabel }}
@@ -44,12 +44,11 @@
                 Aanval
               </button>
               <button class="dropdown-item !pl-3" :class="isRoleActive('defense') ? 'bg-blue-50 dark:bg-gray-600/50' : ''" @click.stop="onSelectRole('defense')">
-                <span class="inline-flex items-center justify-center w-8 h-8 rounded border border-gray-200 bg-white dark:border-gray-500 dark:bg-gray-600/40">
-                  <svg width="32" height="32" viewBox="-22 -22 44 44" aria-hidden="true">
-                    <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" :dx="-6" fill="#111" style="font: 700 22px ui-sans-serif, system-ui, -apple-system; user-select: none;">X</text>
-                    <text :x="5" :y="10" text-anchor="start" dominant-baseline="alphabetic" fill="#111"
-                          :style="{ font: ((posLabel && posLabel.length >= 2) ? '700 12px ' : '700 13px ') + 'ui-sans-serif, system-ui, -apple-system', userSelect:'none' }">
-                      {{ posLabel }}
+                <span class="inline-flex items-center justify-center w-[30px] h-[30px] rounded-sm border border-gray-200 bg-white dark:border-gray-500 dark:bg-gray-600/40">
+                  <svg width="30" height="30" viewBox="-22 -22 44 44" aria-hidden="true">
+                    <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111"
+                          :style="{ font: ((posLabel && posLabel.length >= 2) ? '700 20px ' : '700 24px ') + 'ui-sans-serif, system-ui, -apple-system', userSelect:'none' }">
+                      X{{ posLabel }}
                     </text>
                   </svg>
                 </span>
@@ -119,9 +118,49 @@
       <button type="button" class="tool-btn" @mousedown.prevent.stop="$emit('set-tool','handoff')" @click="$emit('set-tool','handoff')" draggable="true" @dragstart="(ev)=>$emit('tool-drag-start','handoff', ev)">Handoff</button>
     </div>
     <div class="pt-2 text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Spelers toevoegen</div>
+    <!-- Row 1: Bal -->
     <div class="grid grid-cols-6 gap-1">
-      <button v-for="n in 5" :key="'p'+n" type="button" class="tool-btn !px-0" @click="$emit('quick-add-player', n)" draggable="true" @dragstart="(ev)=>$emit('tool-drag-start','player'+n, ev)">{{ n }}</button>
-      <button type="button" class="tool-btn !px-0" @click="$emit('quick-add-player', '?')">?</button>
+      <button v-for="n in 5" :key="'pb-ball-'+n" type="button" class="inline-flex items-center justify-center w-[30px] h-[30px] rounded cursor-all-scroll select-none" @click="$emit('quick-add-player', { n, role: 'ball' })" draggable="true" @dragstart="(ev)=>$emit('tool-drag-start','ball:'+n, ev)">
+        <svg width="30" height="30" viewBox="-15 -15 30 30" aria-hidden="true">
+          <g fill="none" stroke="#111"><circle r="13.5" stroke-width="2" /></g>
+          <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111"
+                :style="{ font: ((String(n).length >= 2) ? '700 11px ' : '700 13px ') + 'ui-sans-serif, system-ui, -apple-system', userSelect:'none' }">{{ n }}</text>
+        </svg>
+      </button>
+      <button type="button" class="inline-flex items-center justify-center w-[30px] h-[30px] rounded cursor-all-scroll select-none" @click="$emit('quick-add-player', { n: '?', role: 'ball' })" draggable="true" @dragstart="(ev)=>$emit('tool-drag-start','ball:?', ev)">
+        <svg width="30" height="30" viewBox="-15 -15 30 30" aria-hidden="true">
+          <g fill="none" stroke="#111"><circle r="14" stroke-width="2" /></g>
+          <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111" style="font:700 13px ui-sans-serif, system-ui, -apple-system; user-select:none">?</text>
+        </svg>
+      </button>
+    </div>
+    <!-- Row 2: Aanval -->
+    <div class="grid grid-cols-6 gap-1 mt-1">
+      <button v-for="n in 5" :key="'pb-off-'+n" type="button" class="inline-flex items-center justify-center w-[30px] h-[30px] rounded-sm cursor-all-scroll select-none border border-gray-200 bg-white dark:border-gray-500 dark:bg-gray-600/40" @click="$emit('quick-add-player', { n, role: 'offense' })" draggable="true" @dragstart="(ev)=>$emit('tool-drag-start','offense:'+n, ev)">
+        <svg width="30" height="30" viewBox="-22 -22 44 44" aria-hidden="true">
+          <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111"
+                :style="{ font: ((String(n).length >= 2) ? '700 12px ' : '700 14px ') + 'ui-sans-serif, system-ui, -apple-system', userSelect:'none' }">{{ n }}</text>
+        </svg>
+      </button>
+      <button type="button" class="inline-flex items-center justify-center w-[30px] h-[30px] rounded-sm cursor-all-scroll select-none border border-gray-200 bg-white dark:border-gray-500 dark:bg-gray-600/40" @click="$emit('quick-add-player', { n: '?', role: 'offense' })" draggable="true" @dragstart="(ev)=>$emit('tool-drag-start','offense:?', ev)">
+        <svg width="30" height="30" viewBox="-22 -22 44 44" aria-hidden="true">
+          <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111" style="font:700 14px ui-sans-serif, system-ui, -apple-system; user-select:none">?</text>
+        </svg>
+      </button>
+    </div>
+    <!-- Row 3: Verdediging -->
+    <div class="grid grid-cols-6 gap-1 mt-1">
+      <button v-for="n in 5" :key="'pb-def-'+n" type="button" class="inline-flex items-center justify-center w-[30px] h-[30px] rounded-sm cursor-all-scroll select-none border border-gray-200 bg-white dark:border-gray-500 dark:bg-gray-600/40" @click="$emit('quick-add-player', { n, role: 'defense' })" draggable="true" @dragstart="(ev)=>$emit('tool-drag-start','defense:'+n, ev)">
+        <svg width="30" height="30" viewBox="-22 -22 44 44" aria-hidden="true">
+          <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111"
+                :style="{ font: ((String(n).length >= 2) ? '700 12px ' : '700 14px ') + 'ui-sans-serif, system-ui, -apple-system', userSelect:'none' }">X{{ n }}</text>
+        </svg>
+      </button>
+      <button type="button" class="inline-flex items-center justify-center w-[30px] h-[30px] rounded-sm cursor-all-scroll select-none border border-gray-200 bg-white dark:border-gray-500 dark:bg-gray-600/40" @click="$emit('quick-add-player', { n: '?', role: 'defense' })" draggable="true" @dragstart="(ev)=>$emit('tool-drag-start','defense:?', ev)">
+        <svg width="30" height="30" viewBox="-22 -22 44 44" aria-hidden="true">
+          <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111" style="font:700 14px ui-sans-serif, system-ui, -apple-system; user-select:none">X?</text>
+        </svg>
+      </button>
     </div>
   </div>
 </template>

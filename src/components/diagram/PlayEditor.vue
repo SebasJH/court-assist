@@ -568,10 +568,23 @@ export default {
       try {
         const kind = (ev.dataTransfer && ev.dataTransfer.getData('text/plain')) || ''
         const { x, y } = getCanvasPoint(ev)
+        const cl = clampXY(x, y)
+        // New role-tagged kinds e.g., 'ball:3', 'offense:?', 'defense:5'
+        const m = kind.match(/^(ball|offense|defense):(\?|[1-5])$/)
+        if (m) {
+          let role = m[1]
+          const token = m[2]
+          const number = token === '?' ? null : Number(token)
+          const posLabel = token === '?' ? '' : String(number)
+          const id = nextId++
+          players.push({ id, x: cl.x, y: cl.y, number, color: '#2563eb', role, pos: posLabel })
+          redraw()
+          return
+        }
         if (/^player[1-5]$/.test(kind)) {
+          // Legacy offense drop support
           const id = nextId++
           const number = Number(kind.replace('player','')) || (players.length + 1)
-          const cl = clampXY(x, y)
           players.push({ id, x: cl.x, y: cl.y, number, color: '#2563eb', role: 'offense', pos: String(number) })
           redraw()
         } else if (['pass','dribble','screen','cut','shoot','handoff'].includes(kind)) {
@@ -587,7 +600,7 @@ export default {
       } catch(_) {}
     }
 
-    function onQuickAddPlayer(n){
+    function onQuickAddPlayer(arg){
       try {
         const fixed = [
           { x: 0.5 - 0.16, y: 0.76 }, // 1: leftmost
@@ -596,12 +609,21 @@ export default {
           { x: 0.5 + 0.08, y: 0.76 }, // 4: right of center
           { x: 0.5 + 0.16, y: 0.76 }, // 5: rightmost
         ]
+        // Support legacy input (number/'?') and new payload { n, role }
+        const payload = (arg && typeof arg === 'object' && ('n' in arg || 'role' in arg)) ? arg : { n: arg, role: 'offense' }
+        let n = payload.n
+        let role = String(payload.role || 'offense').toLowerCase()
+        if (role === 'bal') role = 'ball'
+        if (role === 'aanval') role = 'offense'
+        if (role === 'verdediging') role = 'defense'
+        if (!['ball','offense','defense'].includes(role)) role = 'offense'
+
         let pos = { x: 0.5, y: 0.76 }
         let number = null
         let labelPos = ''
         if (n === '?' || n === undefined || n === null) {
-          // Keep center position and leave number null so it renders as '?'
-          pos = { x: 0.5, y: 0.76 }
+          // Place '?' right next to player 5
+          pos = { x: 0.5 + 0.16 + 0.08, y: 0.76 }
           number = null
           labelPos = ''
         } else {
@@ -611,7 +633,7 @@ export default {
           labelPos = String(number)
         }
         const id = nextId++
-        players.push({ id, x: pos.x, y: pos.y, number, color: '#2563eb', role: 'offense', pos: labelPos })
+        players.push({ id, x: pos.x, y: pos.y, number, color: '#2563eb', role, pos: labelPos })
         selectedPlayerId.value = id
         redraw()
       } catch(_) {}
