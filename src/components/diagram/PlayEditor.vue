@@ -87,6 +87,7 @@
             @tool-drag-start="onToolDragStart"
             @quick-add-player="onQuickAddPlayer"
             @set-player-role="setPlayerRole"
+            @set-player-position="setPlayerPosition"
           />
         </div>
       </div>
@@ -127,7 +128,7 @@ export default {
       // Player selected
       if (selectedPlayerId.value) {
         const p = players.find(pp => pp.id === selectedPlayerId.value)
-        if (p) return { type: 'player', name: 'Speler ' + (p.number ?? ''), id: p.id, role: p.role || 'offense' }
+        if (p) return { type: 'player', name: 'Speler ' + (p.number ?? ''), id: p.id, role: p.role || 'offense', pos: (p.pos != null && p.pos !== '') ? String(p.pos).slice(0,2) : String(p.number ?? '') }
       }
       return null
     })
@@ -374,7 +375,7 @@ export default {
     function addPlayer() {
       const id = nextId++
       const number = players.length + 1
-      players.push({ id, x: 0.5, y: 0.5, number, color: '#2563eb', role: 'offense' }) // blue-600
+      players.push({ id, x: 0.5, y: 0.5, number, color: '#2563eb', role: 'offense', pos: String(number) }) // blue-600
       redraw()
     }
     function removePlayer(){ if (players.length>0) { players.pop(); redraw() } }
@@ -468,7 +469,7 @@ export default {
         const id = nextId++
         const number = Number(tool.value.replace('player','')) || (players.length + 1)
         const cl = clampXY(x, y)
-        players.push({ id, x: cl.x, y: cl.y, number, color: '#2563eb', role: 'offense' })
+        players.push({ id, x: cl.x, y: cl.y, number, color: '#2563eb', role: 'offense', pos: String(number) })
         selectedPlayerId.value = id
         tool.value = ''
         redraw()
@@ -571,7 +572,7 @@ export default {
           const id = nextId++
           const number = Number(kind.replace('player','')) || (players.length + 1)
           const cl = clampXY(x, y)
-          players.push({ id, x: cl.x, y: cl.y, number, color: '#2563eb', role: 'offense' })
+          players.push({ id, x: cl.x, y: cl.y, number, color: '#2563eb', role: 'offense', pos: String(number) })
           redraw()
         } else if (['pass','dribble','screen','cut','shoot','handoff'].includes(kind)) {
           // when dropping a line tool, create a short line to the right with a movable middle point
@@ -588,7 +589,6 @@ export default {
 
     function onQuickAddPlayer(n){
       try {
-        const idx = Math.max(1, Math.min(5, Number(n) || 1)) - 1
         const fixed = [
           { x: 0.5 - 0.16, y: 0.76 }, // 1: leftmost
           { x: 0.5 - 0.08, y: 0.76 }, // 2: left of center
@@ -596,10 +596,22 @@ export default {
           { x: 0.5 + 0.08, y: 0.76 }, // 4: right of center
           { x: 0.5 + 0.16, y: 0.76 }, // 5: rightmost
         ]
-        const pos = fixed[idx] || { x: 0.5, y: 0.5 }
+        let pos = { x: 0.5, y: 0.76 }
+        let number = null
+        let labelPos = ''
+        if (n === '?' || n === undefined || n === null) {
+          // Keep center position and leave number null so it renders as '?'
+          pos = { x: 0.5, y: 0.76 }
+          number = null
+          labelPos = ''
+        } else {
+          const idx = Math.max(1, Math.min(5, Number(n) || 1)) - 1
+          pos = fixed[idx] || { x: 0.5, y: 0.76 }
+          number = Number(n) || (players.length + 1)
+          labelPos = String(number)
+        }
         const id = nextId++
-        const number = Number(n) || (players.length + 1)
-        players.push({ id, x: pos.x, y: pos.y, number, color: '#2563eb', role: 'offense' })
+        players.push({ id, x: pos.x, y: pos.y, number, color: '#2563eb', role: 'offense', pos: labelPos })
         selectedPlayerId.value = id
         redraw()
       } catch(_) {}
@@ -617,6 +629,19 @@ export default {
           else if (s === 'verdediging') s = 'defense'
           if (!['ball','offense','defense'].includes(s)) s = 'offense'
           p.role = s
+          redraw()
+        }
+      } catch(_) {}
+    }
+
+    function setPlayerPosition(pos){
+      try {
+        const id = selectedPlayerId.value
+        if (!id) return
+        const p = players.find(pp => pp.id === id)
+        if (p) {
+          const val = String(pos == null ? '' : pos).toUpperCase().slice(0,2)
+          p.pos = val || String(p.number || '')
           redraw()
         }
       } catch(_) {}
@@ -1069,27 +1094,30 @@ export default {
         const x = p.x * w
         const y = p.y * h
         const role = (p.role === 'bal' ? 'ball' : p.role === 'verdediging' ? 'defense' : p.role === 'aanval' ? 'offense' : (p.role || 'offense'))
+        const label = String((p.pos != null && p.pos !== '') ? p.pos : (p.number != null ? p.number : '?')).slice(0,2)
         if (role === 'defense') {
-          // Big X centered
+          // Big X centered – shift slightly left to center composite with small label
           c.fillStyle = '#111'
           c.font = 'bold 28px ui-sans-serif, system-ui, -apple-system'
           c.textAlign = 'center'
           c.textBaseline = 'middle'
-          c.fillText('X', x, y)
-          // Small number at bottom-right of the X
-          c.font = 'bold 12px ui-sans-serif, system-ui, -apple-system'
+          c.fillText('X', x - 6, y)
+          // Small label at bottom-right of the X
+          const defTwo = (label && label.length >= 2)
+          c.font = (defTwo ? 'bold 10px ' : 'bold 12px ') + 'ui-sans-serif, system-ui, -apple-system'
           c.textAlign = 'left'
           c.textBaseline = 'alphabetic'
-          c.fillText(String(p.number || '?'), x + 10, y + 10)
+          c.fillText(label, x + 5, y + 10)
         } else {
-          // Number in center
+          // Label in center – shrink slightly for 2-character labels
+          const isTwoChar = (label && label.length >= 2)
           c.fillStyle = '#111'
-          c.font = 'bold 28px ui-sans-serif, system-ui, -apple-system'
+          c.font = (isTwoChar ? 'bold 22px ' : 'bold 28px ') + 'ui-sans-serif, system-ui, -apple-system'
           c.textAlign = 'center'
           c.textBaseline = 'middle'
-          c.fillText(String(p.number || '?'), x, y)
+          c.fillText(label, x, y)
           if (role === 'ball') {
-            // Thin circle around number
+            // Thin circle around label
             c.save()
             c.strokeStyle = '#111'
             c.lineWidth = 2.5
@@ -1152,7 +1180,7 @@ export default {
     }
 
     function serializeState(){
-      return { court: court.value, players: players.map(p => ({ id: p.id, x: p.x, y: p.y, number: p.number, color: p.color, role: (p.role === 'bal' ? 'ball' : p.role === 'verdediging' ? 'defense' : p.role === 'aanval' ? 'offense' : (p.role || 'offense')) })), lines: lines.map(l => ({...l})) }
+      return { court: court.value, players: players.map(p => ({ id: p.id, x: p.x, y: p.y, number: p.number, color: p.color, role: (p.role === 'bal' ? 'ball' : p.role === 'verdediging' ? 'defense' : p.role === 'aanval' ? 'offense' : (p.role || 'offense')), pos: (p.pos != null && p.pos !== '') ? String(p.pos).slice(0,2) : String(p.number || '') })), lines: lines.map(l => ({...l})) }
     }
     const initialBaseline = ref('')
     function isDirty(){
@@ -1166,7 +1194,10 @@ export default {
         if (obj && Array.isArray(obj.players)) {
           obj.players.forEach((p, idx) => {
             const id = p.id || (nextId++)
-            players.push({ id, x: Number(p.x)||0.5, y: Number(p.y)||0.5, number: p.number || (idx+1), color: p.color || '#2563eb', role: (p.role === 'bal' ? 'ball' : p.role === 'verdediging' ? 'defense' : p.role === 'aanval' ? 'offense' : (p.role || 'offense')) })
+            const number = p.number || (idx+1)
+            const role = (p.role === 'bal' ? 'ball' : p.role === 'verdediging' ? 'defense' : p.role === 'aanval' ? 'offense' : (p.role || 'offense'))
+            const pos = (p.pos != null && p.pos !== '') ? String(p.pos).slice(0,2) : String(number)
+            players.push({ id, x: Number(p.x)||0.5, y: Number(p.y)||0.5, number: number, color: p.color || '#2563eb', role, pos })
           })
           nextId = Math.max(nextId, players.length + 1)
         }
@@ -1201,7 +1232,7 @@ export default {
             { x: 0.5 + 0.08, y: 0.76 }, // 4
             { x: 0.5 + 0.16, y: 0.76 }, // 5
           ]
-          for (let i=0;i<5;i++) players.push({ id: nextId++, x: defaultPos[i].x, y: defaultPos[i].y, number: i+1, color: '#2563eb', role: (i===0 ? 'ball' : 'offense') })
+          for (let i=0;i<5;i++) players.push({ id: nextId++, x: defaultPos[i].x, y: defaultPos[i].y, number: i+1, color: '#2563eb', role: (i===0 ? 'ball' : 'offense'), pos: String(i+1) })
         }
         // Measure available width using ResizeObserver
         try {
@@ -1299,7 +1330,8 @@ export default {
       markerEndFor,
       dashFor,
       handlePos,
-      setPlayerRole
+      setPlayerRole,
+      setPlayerPosition
     }
   }
 }

@@ -8,16 +8,30 @@
       <!-- Selection indicator: animated dashed rectangle (not round) -->
       <rect v-if="selectedId === p.id" x="-22" y="-22" width="44" height="44" rx="4" ry="4" fill="none" stroke="#000" stroke-width="1.5" class="marching-ants" pointer-events="none" />
       <!-- Player rendering by role -->
-      <!-- Circle around number when role is 'ball' -->
+      <!-- Circle around label when role is 'ball' -->
       <circle v-if="(p.role || 'offense')==='ball'" :cx="0" :cy="0" r="20.5" fill="none" stroke="#111" stroke-width="2.5" pointer-events="none" />
-      <!-- Defense: show X with small number at bottom-right -->
+      <!-- Defense: show X with small label at bottom-right -->
       <template v-if="(p.role || 'offense')==='defense'">
-        <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111" style="font: bold 28px ui-sans-serif, system-ui, -apple-system; user-select: none; -webkit-user-select: none; -ms-user-select: none; pointer-events: none;">X</text>
-        <text :x="10" :y="10" text-anchor="start" dominant-baseline="alphabetic" fill="#111" style="font: bold 12px ui-sans-serif, system-ui, -apple-system; user-select: none; -webkit-user-select: none; -ms-user-select: none; pointer-events: none;">{{ p.number || '?' }}</text>
+        <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" :dx="-6" fill="#111" style="font-weight: 700; font-size: 28px; font-family: ui-sans-serif, system-ui, -apple-system; user-select: none; -webkit-user-select: none; -ms-user-select: none; pointer-events: none;">X</text>
+        <text :x="5" :y="10" text-anchor="start" dominant-baseline="alphabetic" fill="#111"
+              :style="{
+                fontWeight: 700,
+                fontSize: (((p.pos || String(p.number || '?')).slice(0,2).length >= 2) ? '10px' : '12px'),
+                fontFamily: 'ui-sans-serif, system-ui, -apple-system',
+                userSelect: 'none'
+              }"
+        >{{ (p.pos || String(p.number || '?')).slice(0,2) }}</text>
       </template>
       <template v-else>
-        <!-- Aanval and Bal: big number in the center -->
-        <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111" style="font: bold 28px ui-sans-serif, system-ui, -apple-system; user-select: none; -webkit-user-select: none; -ms-user-select: none; pointer-events: none;">{{ p.number || '?' }}</text>
+        <!-- Offense and Ball: big label in the center -->
+        <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111"
+              :style="{
+                fontWeight: 700,
+                fontSize: (((p.pos || String(p.number || '?')).slice(0,2).length >= 2) ? '22px' : '28px'),
+                fontFamily: 'ui-sans-serif, system-ui, -apple-system',
+                userSelect: 'none'
+              }"
+        >{{ (p.pos || String(p.number || '?')).slice(0,2) }}</text>
       </template>
     </g>
   </g>
