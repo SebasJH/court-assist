@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-full flex-col">
+  <div class="playeditor flex h-full flex-col">
     <!-- Editor area -->
     <div class="flex-1 overflow-y-auto overflow-x-hidden px-0 sm:px-0 py-0">
       <div class="w-full h-full">
@@ -19,13 +19,28 @@
                 <marker id="arrow_marker" markerWidth="7" markerHeight="8" refX="6" refY="4" orient="auto" markerUnits="userSpaceOnUse">
                   <polygon fill="#333" points="0 0, 7 4, 0 8 0.5 4" />
                 </marker>
+                <marker id="arrow_marker_active" markerWidth="7" markerHeight="8" refX="6" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+                  <polygon fill="#0a84ff" points="0 0, 7 4, 0 8 0.5 4" />
+                </marker>
                 <!-- Screen marker (thin rectangle) -->
                 <marker id="screen_marker" markerWidth="2" markerHeight="13" refX="1" refY="6.5" orient="auto" markerUnits="userSpaceOnUse">
                   <polygon fill="#333" points="0 0, 1 0, 1 13, 0 13" />
                 </marker>
+                <marker id="screen_marker_active" markerWidth="2" markerHeight="13" refX="1" refY="6.5" orient="auto" markerUnits="userSpaceOnUse">
+                  <polygon fill="#0a84ff" points="0 0, 1 0, 1 13, 0 13" />
+                </marker>
                 <!-- Shot marker (circle + crosshair) -->
                 <marker id="shot_marker" markerWidth="13" markerHeight="39" refX="6.5" refY="6.5" orient="auto" markerUnits="userSpaceOnUse">
                   <g stroke="#333" stroke-width="1" fill="none">
+                    <circle r="4.55" cx="6.5" cy="6.5" />
+                    <path d="M 13 6.5 L 8.45 6.5" />
+                    <path d="M 0 6.5 L 4.55 6.5" />
+                    <path d="M 6.5 0 L 6.5 4.55" />
+                    <path d="M 6.5 13 L 6.5 8.45" />
+                  </g>
+                </marker>
+                <marker id="shot_marker_active" markerWidth="13" markerHeight="39" refX="6.5" refY="6.5" orient="auto" markerUnits="userSpaceOnUse">
+                  <g stroke="#0a84ff" stroke-width="1" fill="none">
                     <circle r="4.55" cx="6.5" cy="6.5" />
                     <path d="M 13 6.5 L 8.45 6.5" />
                     <path d="M 0 6.5 L 4.55 6.5" />
@@ -39,12 +54,12 @@
               <g>
                 <path v-for="(l, idx) in lines" :key="'ln'+idx"
                       :d="pathD(l)"
-                      :stroke="'#333'"
+                      :stroke="selectedLineIndex===idx ? '#0a84ff' : '#333'"
                       fill="none"
-                      :stroke-width="3"
+                      :stroke-width="selectedLineIndex===idx ? 4 : 3"
                       stroke-linecap="round"
                       :stroke-dasharray="dashFor(l)"
-                      :marker-end="markerEndFor(l)" />
+                      :marker-end="markerEndFor(l, idx)" />
 
                 <!-- Selection handles for selected line -->
                 <template v-if="selectedLineIndex>=0 && lines[selectedLineIndex]">
@@ -55,7 +70,7 @@
               </g>
 
               <!-- Players as SVG -->
-              <PlayersLayer :players="players" :width="canvasWidth" :height="canvasHeight" />
+              <PlayersLayer :players="players" :width="canvasWidth" :height="canvasHeight" :selected-id="selectedPlayerId" />
             </svg>
               </div>
             </div>
@@ -674,17 +689,18 @@ export default {
     }
 
     // SVG-like markers via Canvas: emulate markers for arrow, screen, and shot per TheHoopsGeek style
-    function drawLine(c, line){
+    function drawLine(c, line, isSelected = false){
       const w = c.canvas.width, h = c.canvas.height
       const x1 = line.x1 * w, y1 = line.y1 * h
       const x2 = line.x2 * w, y2 = line.y2 * h
       const xm = (line.xm != null ? line.xm : (line.x1 + line.x2)/2) * w
       const ym = (line.ym != null ? line.ym : (line.y1 + line.y2)/2) * h
       c.save()
-      c.lineWidth = 3
+      c.lineWidth = isSelected ? 4 : 3
       c.lineCap = 'round'
-      c.strokeStyle = '#111827'
-      c.fillStyle = '#111827'
+      const color = isSelected ? '#0a84ff' : '#333'
+      c.strokeStyle = color
+      c.fillStyle = color
       const shape = line.shape || 'straight'
       if (line.type === 'pass' || line.type === 'handoff' || line.type === 'shoot') {
         c.setLineDash([10, 8])
@@ -745,7 +761,7 @@ export default {
         // shot marker: circle with crosshair at end
         c.save()
         c.translate(x2, y2)
-        c.strokeStyle = '#111827'
+        c.strokeStyle = color
         c.lineWidth = 1
         c.beginPath(); c.arc(0, 0, 9, 0, Math.PI*2); c.stroke()
         c.beginPath(); c.moveTo(-9, 0); c.lineTo(-3, 0); c.stroke()
@@ -824,11 +840,13 @@ export default {
       if (!line) return ''
       return (line.type === 'pass' || line.type === 'handoff' || line.type === 'shoot') ? '10 8' : ''
     }
-    function markerEndFor(line){
+    function markerEndFor(line, idx){
       if (!line) return null
-      if (line.type === 'screen') return 'url(#screen_marker)'
-      if (line.type === 'shoot') return 'url(#shot_marker)'
-      return 'url(#arrow_marker)'
+      const isSelected = (typeof idx === 'number' && selectedLineIndex.value === idx)
+      const suffix = isSelected ? '_active' : ''
+      if (line.type === 'screen') return `url(#screen_marker${suffix})`
+      if (line.type === 'shoot') return `url(#shot_marker${suffix})`
+      return `url(#arrow_marker${suffix})`
     }
     function pathD(line){
       const w = canvasWidth.value
@@ -983,12 +1001,11 @@ export default {
       players.forEach(p => {
         const x = p.x * w
         const y = p.y * h
-        // shadow
-        c.beginPath(); c.fillStyle = 'rgba(0,0,0,0.08)'; c.arc(x+1.5, y+1.5, 18, 0, Math.PI*2); c.fill()
-        // circle
-        c.beginPath(); c.fillStyle = p.color || '#2563eb'; c.arc(x, y, 18, 0, Math.PI*2); c.fill()
-        // number
-        c.fillStyle = '#ffffff'; c.font = 'bold 14px ui-sans-serif, system-ui, -apple-system'; c.textAlign = 'center'; c.textBaseline = 'middle';
+        // Draw only the number, large and black, to match on-screen SVG styling
+        c.fillStyle = '#111'
+        c.font = 'bold 28px ui-sans-serif, system-ui, -apple-system'
+        c.textAlign = 'center'
+        c.textBaseline = 'middle'
         c.fillText(String(p.number || '?'), x, y)
       })
     }
@@ -1034,7 +1051,7 @@ export default {
         }
 
         // 2) Draw lines and players on top to match the on-screen overlay
-        lines.forEach(l => drawLine(ec, l))
+        lines.forEach((l, idx) => drawLine(ec, l, selectedLineIndex.value === idx))
         drawPlayers(ec)
 
         const url = exportCanvas.toDataURL('image/png')

@@ -18,7 +18,7 @@
         <button type="button" class="tool-btn w-full !text-red-600 dark:!text-red-400" @click="$emit('delete-selected')">Object verwijderen</button>
       </div>
     </div>
-    <div class="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Add actions</div>
+    <div class="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Acties toevoegen</div>
     <div class="grid grid-cols-2 gap-2">
       <button type="button" class="tool-btn" :class="tool==='dribble' ? 'tool-active' : ''" @mousedown.prevent.stop="$emit('set-tool','dribble')" @click="$emit('set-tool','dribble')" draggable="true" @dragstart="(ev)=>$emit('tool-drag-start','dribble', ev)">Dribble</button>
       <button type="button" class="tool-btn" :class="tool==='pass' ? 'tool-active' : ''" @mousedown.prevent.stop="$emit('set-tool','pass')" @click="$emit('set-tool','pass')" draggable="true" @dragstart="(ev)=>$emit('tool-drag-start','pass', ev)">Pass</button>
@@ -27,7 +27,7 @@
       <button type="button" class="tool-btn" :class="tool==='shoot' ? 'tool-active' : ''" @mousedown.prevent.stop="$emit('set-tool','shoot')" @click="$emit('set-tool','shoot')" draggable="true" @dragstart="(ev)=>$emit('tool-drag-start','shoot', ev)">Shoot</button>
       <button type="button" class="tool-btn" :class="tool==='handoff' ? 'tool-active' : ''" @mousedown.prevent.stop="$emit('set-tool','handoff')" @click="$emit('set-tool','handoff')" draggable="true" @dragstart="(ev)=>$emit('tool-drag-start','handoff', ev)">Handoff</button>
     </div>
-    <div class="pt-2 text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Add player</div>
+    <div class="pt-2 text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Spelers toevoegen</div>
     <div class="grid grid-cols-5 gap-1">
       <button v-for="n in 5" :key="'p'+n" type="button" class="tool-btn !px-0" :class="tool==='player'+n ? 'tool-active' : ''" @mousedown.prevent.stop="$emit('set-tool','player'+n)" @click="$emit('set-tool','player'+n)" draggable="true" @dragstart="(ev)=>$emit('tool-drag-start','player'+n, ev)">{{ n }}</button>
     </div>
@@ -47,6 +47,10 @@ export default {
 </script>
 
 <style scoped>
-.tool-btn{ @apply text-xs px-2 py-1.5 border rounded bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-600; }
-.tool-active{ @apply bg-blue-500 text-white hover:bg-blue-600; }
+.tool-btn {
+  @apply text-xs px-2 py-1.5 border rounded bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-600;
+}
+.tool-active {
+  @apply bg-blue-500 text-white hover:bg-blue-600;
+}
 </style>

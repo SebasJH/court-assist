@@ -1,0 +1,15 @@
+.playeditor {
+  // Ensure the editor root scopes these styles
+  svg {
+    .pe-player {
+      // On hover, show drag hand
+      &:hover {
+        cursor: grab;
+      }
+      // While active (mouse down), show grabbing hand
+      &:active {
+        cursor: grabbing;
+      }
+    }
+  }
+}
