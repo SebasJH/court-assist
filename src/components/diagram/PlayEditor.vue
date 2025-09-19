@@ -581,7 +581,7 @@ export default {
           const number = token === '?' ? null : Number(token)
           const posLabel = token === '?' ? '' : String(number)
           const id = nextId++
-          players.push({ id, x: cl.x, y: cl.y, number, color: '#111', role, pos: posLabel })
+          players.push({ id, x: cl.x, y: cl.y, number, color: (role === 'defense' ? '#EF4444' : '#111'), role, pos: posLabel })
           redraw()
           return
         }
@@ -637,7 +637,7 @@ export default {
           labelPos = String(number)
         }
         const id = nextId++
-        players.push({ id, x: pos.x, y: pos.y, number, color: '#111', role, pos: labelPos })
+        players.push({ id, x: pos.x, y: pos.y, number, color: (role === 'defense' ? '#EF4444' : '#111'), role, pos: labelPos })
         selectedPlayerId.value = id
         redraw()
       } catch(_) {}
