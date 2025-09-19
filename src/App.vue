@@ -11,7 +11,7 @@
     <NotificationBar />
 
     <!-- Desktop sidebar -->
-    <div class="hidden xl:block relative z-10">
+    <div v-if="!isPlayEditorRoute" class="hidden xl:block relative z-10">
       <Sidebar />
     </div>
 
@@ -21,6 +21,7 @@
 
     <!-- Mobile sidebar drawer -->
     <MobileSidebarDrawer
+      v-if="!isPlayEditorRoute"
       :open="mobileSidebarOpen"
       @close="mobileSidebarOpen = false"
     >
@@ -38,6 +39,14 @@ export default {
   data() {
     return {
       mobileSidebarOpen: false
+    }
+  },
+  computed: {
+    isPlayEditorRoute() {
+      try {
+        const p = this.$route && (this.$route.fullPath || this.$route.path) || ''
+        return String(p).startsWith('/play-editor')
+      } catch (_) { return false }
     }
   },
   methods: {

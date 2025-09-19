@@ -32,14 +32,14 @@
       </div>
     </div>
     <div class="flex-1 min-h-0" :style="{ height: availableHeight + 'px' }">
-      <PlayEditor ref="editor" :initial="initialState" :suggestedCourt="''" @save="onEditorSave" />
+      <PlayEditor ref="editor" :initial="initialState" :suggestedCourt="''" :showTools="true" @save="onEditorSave" />
     </div>
   </div>
 </template>
 
 <script>
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, onBeforeRouteLeave } from 'vue-router'
 import PlayEditor from '../components/diagram/PlayEditor.vue'
 import UiButton from '../components/ui/Button.vue'
 
@@ -114,18 +114,45 @@ export default {
       try { window.addEventListener('resize', updateAvailableHeight) } catch(_) {}
       try { updateAvailableHeight() } catch(_) {}
       try { document.addEventListener('click', onDocClick, true) } catch(_) {}
+      try { window.addEventListener('beforeunload', onBeforeUnload) } catch(_) {}
     })
     onBeforeUnmount(() => {
       try { document.removeEventListener('click', onDocClick, true) } catch(_) {}
       try { window.removeEventListener('resize', updateAvailableHeight) } catch(_) {}
       try { if (headerRO && headerRef.value) { headerRO.disconnect(); headerRO = null } } catch(_) {}
+      try { window.removeEventListener('beforeunload', onBeforeUnload) } catch(_) {}
     })
 
+    const ignoreGuard = ref(false)
+
     function saveFromPage(){
+      ignoreGuard.value = true
       if (editor.value && typeof editor.value.saveAsImage === 'function') {
         try { editor.value.saveAsImage() } catch (_) {}
       }
+      // After save, we navigate back in onEditorSave; keep guard disabled
     }
+
+    function onBeforeUnload(e){
+      try {
+        if (ignoreGuard.value) return
+        const dirty = editor.value && typeof editor.value.isDirty === 'function' ? editor.value.isDirty() : false
+        if (dirty) {
+          e.preventDefault()
+          e.returnValue = ''
+        }
+      } catch(_) {}
+    }
+
+    onBeforeRouteLeave((to, from, next) => {
+      try {
+        if (ignoreGuard.value) { next(); return }
+        const dirty = editor.value && typeof editor.value.isDirty === 'function' ? editor.value.isDirty() : false
+        if (!dirty) { next(); return }
+        const ok = window.confirm('Je hebt onopgeslagen wijzigingen in het diagram. Weet je zeker dat je deze pagina wilt verlaten?')
+        if (ok) next(); else next(false)
+      } catch(_) { next() }
+    })
 
     function goBack(){
       try {

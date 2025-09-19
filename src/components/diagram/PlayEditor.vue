@@ -5,15 +5,16 @@
       <div class="w-full h-full">
         <div class="relative flex h-full min-w-0">
           <div class="relative flex-1 min-w-0 flex items-center justify-center h-full" ref="leftPane">
-            <div class="relative overflow-hidden max-w-full" :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }">
-              <!-- Court HTML injected -->
-              <div ref="courtContainer" class="block w-full h-full z-0"></div>
-              <!-- SVG overlay for objects (actions & players) -->
-              <svg ref="svgRef" class="absolute inset-0 block z-[100] w-full h-full" :viewBox="'0 0 ' + canvasWidth + ' ' + canvasHeight" width="100%" height="100%"
-                   @mousedown="onPointerDown" @mousemove="onPointerMove" @mouseup="onPointerUp" @mouseleave="onPointerUp"
-                   @touchstart.prevent="onTouchStart" @touchmove.prevent="onTouchMove" @touchend.prevent="onTouchEnd"
-                   @dragover.prevent @drop.prevent="onCanvasDrop">
-                <defs>
+            <div ref="padPane" class="w-full h-full flex items-center justify-center p-8">
+              <div class="relative overflow-hidden max-w-full" :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }">
+                <!-- Court HTML injected -->
+                <div ref="courtContainer" class="block w-full h-full z-0"></div>
+                <!-- SVG overlay for objects (actions & players) -->
+                <svg ref="svgRef" class="absolute inset-0 block z-[100] w-full h-full" :viewBox="'0 0 ' + canvasWidth + ' ' + canvasHeight" width="100%" height="100%"
+                     @mousedown="onPointerDown" @mousemove="onPointerMove" @mouseup="onPointerUp" @mouseleave="onPointerUp"
+                     @touchstart.prevent="onTouchStart" @touchmove.prevent="onTouchMove" @touchend.prevent="onTouchEnd"
+                     @dragover.prevent @drop.prevent="onCanvasDrop">
+                  <defs>
                 <!-- Arrow marker (triangle) -->
                 <marker id="arrow_marker" markerWidth="7" markerHeight="8" refX="6" refY="4" orient="auto" markerUnits="userSpaceOnUse">
                   <polygon fill="#333" points="0 0, 7 4, 0 8 0.5 4" />
@@ -56,10 +57,12 @@
               <!-- Players as SVG -->
               <PlayersLayer :players="players" :width="canvasWidth" :height="canvasHeight" />
             </svg>
+              </div>
             </div>
           </div>
           <!-- Right sidebar tools (outside the field, not overlay) -->
           <PlayEditorSidebar
+            v-if="showTools"
             :selectedInfo="selectedInfo"
             :arrowShape="arrowShape"
             :tool="tool"
@@ -89,7 +92,9 @@ export default {
     // Optional initial state to resume editing later
     initial: { type: Object, default: null },
     // Suggest a court from parent (e.g., from exercise.court)
-    suggestedCourt: { type: String, default: '' }
+    suggestedCourt: { type: String, default: '' },
+    // Show or hide the tools sidebar (hidden on PlayEditor page)
+    showTools: { type: Boolean, default: true }
   },
   emits: ['save','cancel'],
   setup(props, { emit }) {
@@ -231,6 +236,7 @@ export default {
     const currentRatio = ref(DEFAULT_HALF_RATIO)
 
     const leftPane = ref(null)
+    const padPane = ref(null)
     const editorWidth = ref(900)
     const editorHeight = ref(600)
 
@@ -1041,6 +1047,10 @@ export default {
     function serializeState(){
       return { court: court.value, players: players.map(p => ({ id: p.id, x: p.x, y: p.y, number: p.number, color: p.color })), lines: lines.map(l => ({...l})) }
     }
+    const initialBaseline = ref('')
+    function isDirty(){
+      try { return JSON.stringify(serializeState()) !== (initialBaseline.value || '') } catch(_) { return false }
+    }
     function loadState(obj){
       try {
         players.splice(0, players.length)
@@ -1081,12 +1091,18 @@ export default {
         }
         // Measure available width using ResizeObserver
         try {
-          const el = leftPane.value
+          const el = padPane.value || leftPane.value
           const ro = new ResizeObserver(() => {
             try {
-              const rect = el && typeof el.getBoundingClientRect === 'function' ? el.getBoundingClientRect() : null
-              const w = rect ? rect.width : null
-              const h = rect ? rect.height : null
+              const host = padPane.value || leftPane.value
+              const rect = host && typeof host.getBoundingClientRect === 'function' ? host.getBoundingClientRect() : null
+              const style = host && window.getComputedStyle ? window.getComputedStyle(host) : null
+              const pl = style ? parseFloat(style.paddingLeft) || 0 : 0
+              const pr = style ? parseFloat(style.paddingRight) || 0 : 0
+              const pt = style ? parseFloat(style.paddingTop) || 0 : 0
+              const pb = style ? parseFloat(style.paddingBottom) || 0 : 0
+              const w = rect ? Math.max(0, rect.width - pl - pr) : null
+              const h = rect ? Math.max(0, rect.height - pt - pb) : null
               let changed = false
               if (w && Math.abs(w - editorWidth.value) > 0.5) { editorWidth.value = w; changed = true }
               if (h && Math.abs(h - editorHeight.value) > 0.5) { editorHeight.value = h; changed = true }
@@ -1098,20 +1114,27 @@ export default {
             // store observer on element for cleanup
             el.__ro = ro
             // initialize size
-            const rect = el.getBoundingClientRect()
+            const host = el
+            const rect = host.getBoundingClientRect()
+            const style = window.getComputedStyle ? window.getComputedStyle(host) : null
+            const pl = style ? parseFloat(style.paddingLeft) || 0 : 0
+            const pr = style ? parseFloat(style.paddingRight) || 0 : 0
+            const pt = style ? parseFloat(style.paddingTop) || 0 : 0
+            const pb = style ? parseFloat(style.paddingBottom) || 0 : 0
             if (rect) {
-              if (rect.width) editorWidth.value = rect.width
-              if (rect.height) editorHeight.value = rect.height
+              if (rect.width) editorWidth.value = Math.max(0, rect.width - pl - pr)
+              if (rect.height) editorHeight.value = Math.max(0, rect.height - pt - pb)
             }
           }
         } catch(_) {}
         renderCourt()
+        try { initialBaseline.value = JSON.stringify(serializeState()) } catch(_) { initialBaseline.value = '' }
       } catch (_) {}
       window.addEventListener('resize', renderCourt)
     })
     onBeforeUnmount(() => {
       window.removeEventListener('resize', renderCourt)
-      try { const el = leftPane.value; if (el && el.__ro) { el.__ro.disconnect(); el.__ro = null } } catch(_) {}
+      try { const el = (padPane.value || leftPane.value); if (el && el.__ro) { el.__ro.disconnect(); el.__ro = null } } catch(_) {}
     })
 
     watch(() => court.value, () => renderCourt())
@@ -1129,6 +1152,7 @@ export default {
       courtContainer,
       svgRef,
       leftPane,
+      padPane,
       court,
       players,
       tool,
@@ -1153,6 +1177,7 @@ export default {
       saveAsImage,
       selectedInfo,
       deleteSelected,
+      isDirty,
       // SVG helpers
       pathD,
       markerEndFor,

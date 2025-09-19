@@ -219,7 +219,7 @@
               <UiButton color="primary" class="!py-1 !px-2" icon="Plus" @click="addDiagram">Voeg afbeelding toe</UiButton>
             </div>
           </div>
-          <transition-group v-else name="diagram" tag="div" class="flex flex-col gap-3">
+          <transition-group v-else name="diagram" :css="!disableDiagramAnim" tag="div" class="flex flex-col gap-3">
             <div
               v-for="(d, idx) in form.diagrams"
               :key="d.uid || idx"
@@ -320,7 +320,7 @@
 
 <script>
 import {ref, reactive, watch, computed, nextTick, onBeforeUnmount, onMounted} from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter, useRoute, onBeforeRouteLeave } from 'vue-router'
 import store from '../../store'
 import RichTextEditor from '../form/RichTextEditor.vue'
 import IconPicker from '../form/IconPicker.vue'
@@ -642,6 +642,8 @@ export default {
     const showPlayEditor = ref(false)
     const playEditorIndex = ref(-1)
     const playEditorStates = ref([]) // store serialized editor states by index for re-editing
+    // Suppress one-time diagram transition when returning from Play Editor
+    const disableDiagramAnim = ref(false)
 
     // Draft persistence across Play Editor route
     function draftKey(){
@@ -874,6 +876,8 @@ export default {
       }
     }
 
+    const ignoreGuard = ref(false)
+
     function save() {
       if (!validate()) {
         // Switch to the relevant tab before scrolling to the first error
@@ -909,6 +913,8 @@ export default {
 
       // Clear any persisted draft as we're saving now
       try { clearDraft() } catch(_) {}
+      // Suppress unsaved-change guards during the save flow
+      ignoreGuard.value = true
       emit('save', saveData)
     }
 
@@ -954,6 +960,30 @@ export default {
       } catch (_) { return false }
     }
 
+    const dirtyFlag = computed(() => isDirty())
+
+    function onBeforeUnload(e){
+      try {
+        if (ignoreGuard.value) return
+        if (!dirtyFlag.value) return
+        e.preventDefault()
+        e.returnValue = ''
+      } catch(_) {}
+    }
+
+    onBeforeRouteLeave((to, from, next) => {
+      try {
+        // If we're in a controlled save flow, do not prompt
+        if (ignoreGuard.value) { next(); return }
+        // Allow navigation to Play Editor without prompting
+        const destPath = (to && (to.fullPath || to.path)) ? String(to.fullPath || to.path) : ''
+        if (destPath && destPath.startsWith('/play-editor')) { next(); return }
+        if (!dirtyFlag.value) { next(); return }
+        const ok = window.confirm('Je hebt onopgeslagen wijzigingen in de oefening. Weet je zeker dat je deze pagina wilt verlaten?')
+        if (ok) next(); else next(false)
+      } catch(_) { next() }
+    })
+
     // Expose methods so parents (like ExerciseEdit page) can trigger actions
     expose({ save, isDirty, clearDraft, applyPlayEditorResultIfAny })
 
@@ -961,6 +991,7 @@ export default {
 
     onBeforeUnmount(() => {
       if (maxCapTimer) clearTimeout(maxCapTimer)
+      try { window.removeEventListener('beforeunload', onBeforeUnload) } catch(_) {}
     })
 
     const playersRange = computed({
@@ -1006,7 +1037,18 @@ export default {
 
     onMounted(() => {
       try { restoreDraft() } catch(_) {}
+      // One-time suppression of diagram animation when returning from Play Editor
+      try {
+        const flag = sessionStorage.getItem('playEditor_returnToMedia')
+        if (flag === '1') {
+          disableDiagramAnim.value = true
+          try { sessionStorage.removeItem('playEditor_returnToMedia') } catch(_) {}
+          // Reset after first render cycle so future interactions animate normally
+          nextTick(() => setTimeout(() => { disableDiagramAnim.value = false }, 0))
+        }
+      } catch(_) {}
       try { setTimeout(applyPlayEditorResultIfAny, 0) } catch(_) {}
+      try { window.addEventListener('beforeunload', onBeforeUnload) } catch(_) {}
     })
 
     return {
@@ -1053,7 +1095,8 @@ export default {
       playersGroupRef,
       maxPlayersInputRef,
       showMaxCapTip,
-      playersRange
+      playersRange,
+      disableDiagramAnim
     }
   }
 }
