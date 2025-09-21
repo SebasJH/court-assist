@@ -62,9 +62,10 @@
                        @input="onPosInput"
                        @keydown.enter.prevent.stop="onApplyCustomPos"
                        @blur="onApplyCustomPos"
-                       maxlength="2"
                        class="w-full border rounded px-2 h-8 text-xs bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-100"
-                       :placeholder="posLabel" />
+                       :class="posTooLong ? 'border-red-500 focus:ring-red-500' : ''"
+                       placeholder="?" />
+                <p v-if="posTooLong" class="mt-1 text-[11px] text-red-600">Maximaal 2 tekens</p>
               </div>
             </div>
           </div>
@@ -197,7 +198,7 @@ export default {
   },
   emits: ['set-arrow-shape','delete-selected','set-tool','tool-drag-start','quick-add-player','set-player-role','set-player-position','set-player-color'],
   data(){
-    return { roleMenuOpen: false, posMenuOpen: false, colorMenuOpen: false, posInput: '' }
+    return { roleMenuOpen: false, posMenuOpen: false, colorMenuOpen: false, posInput: '', posTooLong: false }
   },
   computed: {
     colorOptions(){
@@ -261,7 +262,9 @@ export default {
       if (this.posMenuOpen) {
         this.roleMenuOpen = false
         this.colorMenuOpen = false
-        this.posInput = this.posLabel
+        const raw = (this.selectedInfo && this.selectedInfo.pos != null) ? String(this.selectedInfo.pos) : ''
+        this.posInput = (raw === '' || raw === '?') ? '' : raw
+        this.posTooLong = false
       }
     },
     toggleColorMenu(){
@@ -288,14 +291,22 @@ export default {
     },
     onPosInput(){
       if (typeof this.posInput !== 'string') this.posInput = ''
-      this.posInput = this.posInput.toUpperCase().slice(0,2)
-      // Live update position while typing (no need to press Enter)
+      const raw = this.posInput
+      this.posTooLong = (raw.length > 2)
+      if (this.posTooLong) {
+        // Prevent more than 2 characters but show error feedback
+        this.posInput = raw.slice(0,2)
+      }
+      // Emit current value (can be empty to indicate placeholder)
       this.$emit('set-player-position', this.posInput)
     },
     onApplyCustomPos(){
-      const val = (this.posInput || '').toUpperCase().slice(0,2)
+      const raw = (typeof this.posInput === 'string') ? this.posInput : ''
+      const val = raw.slice(0,2)
       this.posMenuOpen = false
-      if (val) this.$emit('set-player-position', val)
+      this.posTooLong = false
+      // Do not coerce empty to '?'; keep it empty and rely on placeholder/UI to show '?'
+      this.$emit('set-player-position', val)
     },
     onDocClick(e){
       try {
@@ -335,8 +346,9 @@ export default {
           this.roleMenuOpen = false
           this.posMenuOpen = false
         }
-        // Keep posInput in sync with current value
-        this.posInput = (newVal && newVal.pos) ? String(newVal.pos).slice(0,2) : ''
+        // Keep posInput in sync with current value (preserve case) and reset error state
+        this.posInput = (newVal && newVal.pos != null) ? String(newVal.pos) : ''
+        this.posTooLong = false
         this.lastSelKey = key
       },
       immediate: true

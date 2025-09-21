@@ -130,8 +130,8 @@ export default {
       if (selectedPlayerId.value) {
         const p = players.find(pp => pp.id === selectedPlayerId.value)
         if (p) {
-          const posLabel = (p.pos != null && p.pos !== '') ? String(p.pos).slice(0,2) : String(p.number ?? '')
-          return { type: 'player', name: 'Speler ' + posLabel, id: p.id, role: p.role || 'offense', pos: posLabel, color: p.color || '#111' }
+          const posLabel = (p.pos != null && p.pos !== '') ? String(p.pos).slice(0,2) : '?'
+          return { type: 'player', name: 'Speler ' + posLabel, id: p.id, role: p.role || 'offense', pos: (p.pos != null ? p.pos : ''), color: p.color || '#111' }
         }
       }
       return null
@@ -666,8 +666,8 @@ export default {
         if (!id) return
         const p = players.find(pp => pp.id === id)
         if (p) {
-          const val = String(pos == null ? '' : pos).toUpperCase().slice(0,2)
-          p.pos = val || String(p.number || '')
+          const val = String(pos == null ? '' : pos).slice(0,2)
+          p.pos = val
           redraw()
         }
       } catch(_) {}

@@ -16,22 +16,22 @@
         <text :x="5" :y="10" text-anchor="start" dominant-baseline="alphabetic" :fill="p.color || '#111'"
               :style="{
                 fontWeight: 700,
-                fontSize: (((p.pos || String(p.number || '?')).slice(0,2).length >= 2) ? '10px' : '12px'),
+                fontSize: ((((p.pos != null && p.pos !== '') ? String(p.pos) : '?').slice(0,2).length >= 2) ? '10px' : '12px'),
                 fontFamily: 'ui-sans-serif, system-ui, -apple-system',
                 userSelect: 'none'
               }"
-        >{{ (p.pos || String(p.number || '?')).slice(0,2) }}</text>
+        >{{ ((p.pos != null && p.pos !== '') ? String(p.pos) : '?').slice(0,2) }}</text>
       </template>
       <template v-else>
         <!-- Offense and Ball: big label in the center -->
         <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" :fill="p.color || '#111'"
               :style="{
                 fontWeight: 700,
-                fontSize: (((p.pos || String(p.number || '?')).slice(0,2).length >= 2) ? '22px' : '28px'),
+                fontSize: ((((p.pos != null && p.pos !== '') ? String(p.pos) : '?').slice(0,2).length >= 2) ? '22px' : '28px'),
                 fontFamily: 'ui-sans-serif, system-ui, -apple-system',
                 userSelect: 'none'
               }"
-        >{{ (p.pos || String(p.number || '?')).slice(0,2) }}</text>
+        >{{ ((p.pos != null && p.pos !== '') ? String(p.pos) : '?').slice(0,2) }}</text>
       </template>
     </g>
   </g>
