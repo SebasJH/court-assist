@@ -19,39 +19,15 @@
             <div v-if="roleMenuOpen"
                  :class="['dropdown-menu absolute top-full mt-2 w-40 border whitespace-nowrap rounded-md shadow-lg flex flex-col z-[3000]', 'right-0']">
               <button class="dropdown-item !pl-3" :class="isRoleActive('ball') ? 'bg-blue-50 dark:bg-gray-600/50' : ''" @click.stop="onSelectRole('ball')">
-                <span class="inline-flex items-center justify-center w-8 h-8 rounded">
-                  <svg width="32" height="32" viewBox="-22 -22 44 44" aria-hidden="true">
-                    <g fill="none" stroke="#111">
-                      <circle r="20.5" stroke-width="2" />
-                    </g>
-                    <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111"
-                          :style="{ font: ((posLabel && posLabel.length >= 2) ? '700 20px ' : '700 24px ') + 'ui-sans-serif, system-ui, -apple-system', userSelect:'none' }">
-                      {{ posLabel }}
-                    </text>
-                  </svg>
-                </span>
+                <PlayerBadge role="ball" :label="posLabel" :draggable="false" :size="30" />
                 Bal
               </button>
               <button class="dropdown-item !pl-3" :class="isRoleActive('offense') ? 'bg-blue-50 dark:bg-gray-600/50' : ''" @click.stop="onSelectRole('offense')">
-                <span class="inline-flex items-center justify-center w-[30px] h-[30px] rounded-sm border border-gray-200 bg-white dark:border-gray-500 dark:bg-gray-600/40">
-                  <svg width="30" height="30" viewBox="-22 -22 44 44" aria-hidden="true">
-                    <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111"
-                          :style="{ font: ((posLabel && posLabel.length >= 2) ? '700 20px ' : '700 24px ') + 'ui-sans-serif, system-ui, -apple-system', userSelect:'none' }">
-                      {{ posLabel }}
-                    </text>
-                  </svg>
-                </span>
+                <PlayerBadge role="offense" :label="posLabel" :draggable="false" :size="30" />
                 Aanval
               </button>
               <button class="dropdown-item !pl-3" :class="isRoleActive('defense') ? 'bg-blue-50 dark:bg-gray-600/50' : ''" @click.stop="onSelectRole('defense')">
-                <span class="inline-flex items-center justify-center w-[30px] h-[30px] rounded-sm border border-gray-200 bg-white dark:border-gray-500 dark:bg-gray-600/40">
-                  <svg width="30" height="30" viewBox="-22 -22 44 44" aria-hidden="true">
-                    <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111"
-                          :style="{ font: ((posLabel && posLabel.length >= 2) ? '700 20px ' : '700 24px ') + 'ui-sans-serif, system-ui, -apple-system', userSelect:'none' }">
-                      X{{ posLabel }}
-                    </text>
-                  </svg>
-                </span>
+                <PlayerBadge role="defense" :label="posLabel" :draggable="false" :size="30" />
                 Verdediging
               </button>
             </div>
@@ -133,7 +109,7 @@
         </div>
       </div>
       <div class="mt-2">
-        <UiButton color="danger" size="sm" :customClass="'w-full h-8 text-xs'" @click="$emit('delete-selected')">{{ deleteLabel }}</UiButton>
+        <UiButton color="danger" size="sm" :customClass="'w-full'" @click="$emit('delete-selected')">{{ deleteLabel }}</UiButton>
       </div>
     </div>
     <div :class="['text-[11px] font-semibold text-gray-500 uppercase tracking-wide', selectedInfo ? 'border-t border-gray-200 dark:border-gray-600 pt-3 mt-1' : '']">Acties toevoegen</div>
@@ -149,47 +125,60 @@
     <div class="space-y-1 mt-2">
       <!-- Row 1: Bal -->
       <div class="grid grid-cols-6 gap-1">
-        <button v-for="n in 5" :key="'pb-ball-'+n" type="button" class="inline-flex items-center justify-center w-[30px] h-[30px] rounded cursor-all-scroll select-none" @click="$emit('quick-add-player', { n, role: 'ball' })" draggable="true" @dragstart="(ev)=>$emit('tool-drag-start','ball:'+n, ev)">
-          <svg width="30" height="30" viewBox="-15 -15 30 30" aria-hidden="true">
-            <g fill="none" stroke="#111"><circle r="13.5" stroke-width="2" /></g>
-            <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111"
-                  :style="{ font: ((String(n).length >= 2) ? '700 11px ' : '700 13px ') + 'ui-sans-serif, system-ui, -apple-system', userSelect:'none' }">{{ n }}</text>
-          </svg>
-        </button>
-        <button type="button" class="inline-flex items-center justify-center w-[30px] h-[30px] rounded cursor-all-scroll select-none" @click="$emit('quick-add-player', { n: '?', role: 'ball' })" draggable="true" @dragstart="(ev)=>$emit('tool-drag-start','ball:?', ev)">
-          <svg width="30" height="30" viewBox="-15 -15 30 30" aria-hidden="true">
-            <g fill="none" stroke="#111"><circle r="14" stroke-width="2" /></g>
-            <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111" style="font:700 13px ui-sans-serif, system-ui, -apple-system; user-select:none">?</text>
-          </svg>
-        </button>
+        <PlayerBadge
+          v-for="n in 5"
+          :key="'pb-ball-'+n"
+          role="ball"
+          :label="n"
+          :draggable="true"
+          @click="$emit('quick-add-player', { n, role: 'ball' })"
+          @dragstart="(ev)=>$emit('tool-drag-start','ball:'+n, ev)"
+        />
+        <PlayerBadge
+          role="ball"
+          label="?"
+          :draggable="true"
+          @click="$emit('quick-add-player', { n: '?', role: 'ball' })"
+          @dragstart="(ev)=>$emit('tool-drag-start','ball:?', ev)"
+        />
       </div>
       <!-- Row 2: Aanval -->
       <div class="grid grid-cols-6 gap-1">
-        <button v-for="n in 5" :key="'pb-off-'+n" type="button" class="inline-flex items-center justify-center w-[30px] h-[30px] rounded-sm cursor-all-scroll select-none border border-gray-200 bg-white dark:border-gray-500 dark:bg-gray-600/40" @click="$emit('quick-add-player', { n, role: 'offense' })" draggable="true" @dragstart="(ev)=>$emit('tool-drag-start','offense:'+n, ev)">
-          <svg width="30" height="30" viewBox="-22 -22 44 44" aria-hidden="true">
-            <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111"
-                  :style="{ font: ((String(n).length >= 2) ? '700 12px ' : '700 14px ') + 'ui-sans-serif, system-ui, -apple-system', userSelect:'none' }">{{ n }}</text>
-          </svg>
-        </button>
-        <button type="button" class="inline-flex items-center justify-center w-[30px] h-[30px] rounded-sm cursor-all-scroll select-none border border-gray-200 bg-white dark:border-gray-500 dark:bg-gray-600/40" @click="$emit('quick-add-player', { n: '?', role: 'offense' })" draggable="true" @dragstart="(ev)=>$emit('tool-drag-start','offense:?', ev)">
-          <svg width="30" height="30" viewBox="-22 -22 44 44" aria-hidden="true">
-            <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111" style="font:700 14px ui-sans-serif, system-ui, -apple-system; user-select:none">?</text>
-          </svg>
-        </button>
+        <PlayerBadge
+          v-for="n in 5"
+          :key="'pb-off-'+n"
+          role="offense"
+          :label="n"
+          :draggable="true"
+          @click="$emit('quick-add-player', { n, role: 'offense' })"
+          @dragstart="(ev)=>$emit('tool-drag-start','offense:'+n, ev)"
+        />
+        <PlayerBadge
+          role="offense"
+          label="?"
+          :draggable="true"
+          @click="$emit('quick-add-player', { n: '?', role: 'offense' })"
+          @dragstart="(ev)=>$emit('tool-drag-start','offense:?', ev)"
+        />
       </div>
       <!-- Row 3: Verdediging -->
       <div class="grid grid-cols-6 gap-1">
-        <button v-for="n in 5" :key="'pb-def-'+n" type="button" class="inline-flex items-center justify-center w-[30px] h-[30px] rounded-sm cursor-all-scroll select-none border border-gray-200 bg-white dark:border-gray-500 dark:bg-gray-600/40" @click="$emit('quick-add-player', { n, role: 'defense' })" draggable="true" @dragstart="(ev)=>$emit('tool-drag-start','defense:'+n, ev)">
-          <svg width="30" height="30" viewBox="-22 -22 44 44" aria-hidden="true">
-            <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111"
-                  :style="{ font: ((String(n).length >= 2) ? '700 12px ' : '700 14px ') + 'ui-sans-serif, system-ui, -apple-system', userSelect:'none' }">X{{ n }}</text>
-          </svg>
-        </button>
-        <button type="button" class="inline-flex items-center justify-center w-[30px] h-[30px] rounded-sm cursor-all-scroll select-none border border-gray-200 bg-white dark:border-gray-500 dark:bg-gray-600/40" @click="$emit('quick-add-player', { n: '?', role: 'defense' })" draggable="true" @dragstart="(ev)=>$emit('tool-drag-start','defense:?', ev)">
-          <svg width="30" height="30" viewBox="-22 -22 44 44" aria-hidden="true">
-            <text text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" dy="0.05em" fill="#111" style="font:700 14px ui-sans-serif, system-ui, -apple-system; user-select:none">X?</text>
-          </svg>
-        </button>
+        <PlayerBadge
+          v-for="n in 5"
+          :key="'pb-def-'+n"
+          role="defense"
+          :label="n"
+          :draggable="true"
+          @click="$emit('quick-add-player', { n, role: 'defense' })"
+          @dragstart="(ev)=>$emit('tool-drag-start','defense:'+n, ev)"
+        />
+        <PlayerBadge
+          role="defense"
+          label="?"
+          :draggable="true"
+          @click="$emit('quick-add-player', { n: '?', role: 'defense' })"
+          @dragstart="(ev)=>$emit('tool-drag-start','defense:?', ev)"
+        />
       </div>
     </div>
   </div>
@@ -197,9 +186,10 @@
 
 <script>
 import UiButton from '../ui/Button.vue'
+import PlayerBadge from './PlayerBadge.vue'
 export default {
   name: 'PlayEditorSidebar',
-  components: { UiButton },
+  components: { UiButton, PlayerBadge },
   props: {
     selectedInfo: { type: Object, default: null },
     arrowShape: { type: String, default: 'straight' },
