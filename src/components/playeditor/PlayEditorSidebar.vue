@@ -70,6 +70,24 @@
             </div>
           </div>
         </div>
+        <!-- Coordinates -->
+        <div class="flex items-center gap-2">
+<!--          <span class="text-[10px] text-gray-500">Coördinaten</span>-->
+          <div class="flex items-center gap-2 w-full">
+            <label class="flex items-center gap-1 text-[10px] text-gray-500">
+              X
+              <input type="number" step="1" min="-30" max="30" v-model="coordsX"
+                     @input="onCoordInput('x')" @blur="onCoordBlur('x')"
+                     class="w-20 border rounded px-2 h-8 text-xs bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-100" />
+            </label>
+            <label class="flex items-center gap-1 text-[10px] text-gray-500">
+              Y
+              <input type="number" step="1" min="-30" max="30" v-model="coordsY"
+                     @input="onCoordInput('y')" @blur="onCoordBlur('y')"
+                     class="w-20 border rounded px-2 h-8 text-xs bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-100" />
+            </label>
+          </div>
+        </div>
         <!-- Color -->
         <div class="flex items-center gap-2">
           <span class="text-[10px] text-gray-500">Kleur</span>
@@ -196,9 +214,9 @@ export default {
     arrowShape: { type: String, default: 'straight' },
     tool: { type: String, default: '' }
   },
-  emits: ['set-arrow-shape','delete-selected','set-tool','tool-drag-start','quick-add-player','set-player-role','set-player-position','set-player-color'],
+  emits: ['set-arrow-shape','delete-selected','set-tool','tool-drag-start','quick-add-player','set-player-role','set-player-position','set-player-color','set-player-coordinates'],
   data(){
-    return { roleMenuOpen: false, posMenuOpen: false, colorMenuOpen: false, posInput: '', posTooLong: false }
+    return { roleMenuOpen: false, posMenuOpen: false, colorMenuOpen: false, posInput: '', posTooLong: false, coordsX: '', coordsY: '', lastValidCoords: { x: 0, y: 0 } }
   },
   computed: {
     colorOptions(){
@@ -242,6 +260,42 @@ export default {
     }
   },
   methods: {
+    round2(n){ const x = Number(n); if (!isFinite(x)) return 0; return Math.round(x*100)/100 },
+    clampSigned(v){ return Math.max(-30, Math.min(30, Number(v))) },
+    onCoordInput(which){
+      try {
+        const valStr = which === 'x' ? this.coordsX : this.coordsY
+        // Allow partial input without forcing
+        if (valStr === '' || valStr === '-' || valStr === '.' || valStr === '-.') {
+          return
+        }
+        const num = Number(valStr)
+        if (!isFinite(num)) {
+          return
+        }
+        const clamped = this.clampSigned(num)
+        // Save last valid numeric value
+        if (which === 'x') this.lastValidCoords.x = this.round2(clamped)
+        else this.lastValidCoords.y = this.round2(clamped)
+        // Emit live update using last valid values
+        this.$emit('set-player-coordinates', { x: this.lastValidCoords.x, y: this.lastValidCoords.y })
+      } catch(_) {}
+    },
+    onCoordBlur(which){
+      try {
+        const parseAndFormat = (s, fallback) => {
+          const n = Number(s)
+          if (!isFinite(n)) return fallback.toFixed(2)
+          const cl = this.round2(this.clampSigned(n))
+          return cl.toFixed(2)
+        }
+        this.coordsX = parseAndFormat(this.coordsX, this.lastValidCoords.x)
+        this.coordsY = parseAndFormat(this.coordsY, this.lastValidCoords.y)
+        // Update lastValid with formatted values
+        this.lastValidCoords = { x: Number(this.coordsX), y: Number(this.coordsY) }
+        this.$emit('set-player-coordinates', { x: this.lastValidCoords.x, y: this.lastValidCoords.y })
+      } catch(_) {}
+    },
     isColorActive(col){
       const cur = (this.selectedInfo && this.selectedInfo.color) ? String(this.selectedInfo.color).toLowerCase() : '#111'
       return String(col || '').toLowerCase() === cur
@@ -349,6 +403,12 @@ export default {
         // Keep posInput in sync with current value (preserve case) and reset error state
         this.posInput = (newVal && newVal.pos != null) ? String(newVal.pos) : ''
         this.posTooLong = false
+        // Sync coordinates inputs from selected info (rounded to 2 decimals)
+        const cx = (newVal && newVal.coordinates && typeof newVal.coordinates.x === 'number') ? newVal.coordinates.x : 0
+        const cy = (newVal && newVal.coordinates && typeof newVal.coordinates.y === 'number') ? newVal.coordinates.y : 0
+        this.coordsX = (Math.round(cx * 100) / 100).toFixed(2)
+        this.coordsY = (Math.round(cy * 100) / 100).toFixed(2)
+        this.lastValidCoords = { x: Number(this.coordsX), y: Number(this.coordsY) }
         this.lastSelKey = key
       },
       immediate: true

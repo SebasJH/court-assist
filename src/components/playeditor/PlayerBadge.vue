@@ -116,5 +116,4 @@ export default {
 </script>
 
 <style scoped>
-/* No additional styles; relying on Tailwind classes for consistency */
 </style>

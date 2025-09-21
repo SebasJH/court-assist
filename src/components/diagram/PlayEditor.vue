@@ -89,6 +89,7 @@
             @set-player-role="setPlayerRole"
             @set-player-position="setPlayerPosition"
             @set-player-color="setPlayerColor"
+            @set-player-coordinates="setPlayerCoordinates"
           />
         </div>
       </div>
@@ -117,6 +118,44 @@ export default {
   },
   emits: ['save','cancel'],
   setup(props, { emit }) {
+    function round2(n){
+      const x = Number(n)
+      if (!isFinite(x)) return 0
+      return Math.round(x * 100) / 100
+    }
+    const SCALE_MAX = 30 // UI magnitude at edges (±30)
+    // Convert normalized x in [minX..maxX] to signed percentage [-100..100] from center horizontally
+    function normToUserX(nx){
+      const b = playableBounds.value || { minX: 0, maxX: 1 }
+      const cx = (b.minX + b.maxX) / 2
+      const hw = Math.max(1e-6, (b.maxX - b.minX) / 2)
+      return ((nx - cx) / hw) * SCALE_MAX
+    }
+    // Convert normalized y in [minY..maxY] to signed percentage [-100..100] from center vertically
+    function normToUserY(ny){
+      const b = playableBounds.value || { minY: 0, maxY: 1 }
+      const cy = (b.minY + b.maxY) / 2
+      const hh = Math.max(1e-6, (b.maxY - b.minY) / 2)
+      return ((ny - cy) / hh) * SCALE_MAX
+    }
+    // Map desired signed value ([-100..100]) back to normalized x (ignore previous side)
+    function userToNormX(val, currentNx){
+      const b = playableBounds.value || { minX: 0, maxX: 1 }
+      const cx = (b.minX + b.maxX) / 2
+      const hw = Math.max(1e-6, (b.maxX - b.minX) / 2)
+      const v = Math.max(-SCALE_MAX, Math.min(SCALE_MAX, Number(val)))
+      const nx = cx + (v / SCALE_MAX) * hw
+      return Math.max(b.minX, Math.min(b.maxX, nx))
+    }
+    // Map desired signed value ([-100..100]) back to normalized y (ignore previous side)
+    function userToNormY(val, currentNy){
+      const b = playableBounds.value || { minY: 0, maxY: 1 }
+      const cy = (b.minY + b.maxY) / 2
+      const hh = Math.max(1e-6, (b.maxY - b.minY) / 2)
+      const v = Math.max(-SCALE_MAX, Math.min(SCALE_MAX, Number(val)))
+      const ny = cy + (v / SCALE_MAX) * hh
+      return Math.max(b.minY, Math.min(b.maxY, ny))
+    }
     // Derived selection info for inspector
     const selectedInfo = computed(() => {
       // Line selected
@@ -131,7 +170,7 @@ export default {
         const p = players.find(pp => pp.id === selectedPlayerId.value)
         if (p) {
           const posLabel = (p.pos != null && p.pos !== '') ? String(p.pos).slice(0,2) : '?'
-          return { type: 'player', name: 'Speler ' + posLabel, id: p.id, role: p.role || 'offense', pos: (p.pos != null ? p.pos : ''), color: p.color || '#111' }
+          return { type: 'player', name: 'Speler ' + posLabel, id: p.id, role: p.role || 'offense', pos: (p.pos != null ? p.pos : ''), color: p.color || '#111', coordinates: { x: round2(normToUserX(p.x)), y: round2(normToUserY(p.y)) } }
         }
       }
       return null
@@ -581,7 +620,7 @@ export default {
           const number = token === '?' ? null : Number(token)
           const posLabel = token === '?' ? '' : String(number)
           const id = nextId++
-          players.push({ id, x: cl.x, y: cl.y, number, color: (role === 'defense' ? '#EF4444' : '#111'), role, pos: posLabel })
+          players.push({ id, x: cl.x, y: cl.y, coordinates: { x: round2(cl.x), y: round2(cl.y) }, number, color: (role === 'defense' ? '#EF4444' : '#111'), role, pos: posLabel })
           redraw()
           return
         }
@@ -589,7 +628,7 @@ export default {
           // Legacy offense drop support
           const id = nextId++
           const number = Number(kind.replace('player','')) || (players.length + 1)
-          players.push({ id, x: cl.x, y: cl.y, number, color: '#111', role: 'offense', pos: String(number) })
+          players.push({ id, x: cl.x, y: cl.y, coordinates: { x: round2(cl.x), y: round2(cl.y) }, number, color: '#111', role: 'offense', pos: String(number) })
           redraw()
         } else if (['pass','dribble','screen','cut','shoot','handoff'].includes(kind)) {
           // when dropping a line tool, create a short line to the right with a movable middle point
@@ -637,7 +676,7 @@ export default {
           labelPos = String(number)
         }
         const id = nextId++
-        players.push({ id, x: pos.x, y: pos.y, number, color: (role === 'defense' ? '#EF4444' : '#111'), role, pos: labelPos })
+        players.push({ id, x: pos.x, y: pos.y, coordinates: { x: round2(pos.x), y: round2(pos.y) }, number, color: (role === 'defense' ? '#EF4444' : '#111'), role, pos: labelPos })
         selectedPlayerId.value = id
         redraw()
       } catch(_) {}
@@ -684,6 +723,26 @@ export default {
           p.color = col
           redraw()
         }
+      } catch(_) {}
+    }
+
+    function setPlayerCoordinates(coords){
+      try {
+        const id = selectedPlayerId.value
+        if (!id) return
+        const p = players.find(pp => pp.id === id)
+        if (!p) return
+        // coords.x and coords.y are magnitudes [0..100] from center; preserve side
+        let mx = Number(coords && coords.x)
+        let my = Number(coords && coords.y)
+        if (!isFinite(mx)) mx = normToUserX(p.x)
+        if (!isFinite(my)) my = normToUserY(p.y)
+        const nx = userToNormX(mx, p.x)
+        const ny = userToNormY(my, p.y)
+        const cl = clampXY(nx, ny)
+        p.x = cl.x
+        p.y = cl.y
+        redraw()
       } catch(_) {}
     }
 
@@ -1238,7 +1297,11 @@ export default {
             const number = p.number || (idx+1)
             const role = (p.role === 'bal' ? 'ball' : p.role === 'verdediging' ? 'defense' : p.role === 'aanval' ? 'offense' : (p.role || 'offense'))
             const pos = (p.pos != null && p.pos !== '') ? String(p.pos).slice(0,2) : String(number)
-            players.push({ id, x: Number(p.x)||0.5, y: Number(p.y)||0.5, number: number, color: p.color || '#111', role, pos })
+            {
+              const xx = Number(p.x)||0.5
+              const yy = Number(p.y)||0.5
+              players.push({ id, x: xx, y: yy, coordinates: { x: round2(xx), y: round2(yy) }, number: number, color: p.color || '#111', role, pos })
+            }
           })
           nextId = Math.max(nextId, players.length + 1)
         }
@@ -1273,7 +1336,7 @@ export default {
             { x: 0.5 + 0.08, y: 0.76 }, // 4
             { x: 0.5 + 0.16, y: 0.76 }, // 5
           ]
-          for (let i=0;i<5;i++) players.push({ id: nextId++, x: defaultPos[i].x, y: defaultPos[i].y, number: i+1, color: '#111', role: (i===0 ? 'ball' : 'offense'), pos: String(i+1) })
+          for (let i=0;i<5;i++) players.push({ id: nextId++, x: defaultPos[i].x, y: defaultPos[i].y, coordinates: { x: round2(defaultPos[i].x), y: round2(defaultPos[i].y) }, number: i+1, color: '#111', role: (i===0 ? 'ball' : 'offense'), pos: String(i+1) })
         }
         // Measure available width using ResizeObserver
         try {
@@ -1373,7 +1436,8 @@ export default {
       handlePos,
       setPlayerRole,
       setPlayerPosition,
-      setPlayerColor
+      setPlayerColor,
+      setPlayerCoordinates
     }
   }
 }
