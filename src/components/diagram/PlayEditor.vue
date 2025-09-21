@@ -204,6 +204,22 @@ export default {
         }
       }
     }
+
+    function onKeyDown(e){
+      try {
+        const key = e && e.key
+        if (key !== 'Delete' && key !== 'Backspace') return
+        const t = e.target
+        const tag = t && t.tagName ? String(t.tagName).toLowerCase() : ''
+        const isEditable = (tag === 'input' || tag === 'textarea' || (t && t.isContentEditable))
+        if (isEditable) return
+        if (selectedLineIndex.value >= 0 || selectedPlayerId.value) {
+          e.preventDefault()
+          deleteSelected()
+        }
+      } catch(_) {}
+    }
+
     const courtContainer = ref(null)
     const svgRef = ref(null)
     const playableBounds = ref({ minX: 0, minY: 0, maxX: 1, maxY: 1 })
@@ -1380,9 +1396,11 @@ export default {
         try { initialBaseline.value = JSON.stringify(serializeState()) } catch(_) { initialBaseline.value = '' }
       } catch (_) {}
       window.addEventListener('resize', renderCourt)
+      window.addEventListener('keydown', onKeyDown)
     })
     onBeforeUnmount(() => {
       window.removeEventListener('resize', renderCourt)
+      window.removeEventListener('keydown', onKeyDown)
       try { const el = (padPane.value || leftPane.value); if (el && el.__ro) { el.__ro.disconnect(); el.__ro = null } } catch(_) {}
     })
 
